@@ -1,8 +1,23 @@
 // ignore_for_file: unnecessary_this
 
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
+
+class CustomWidgetData 
+{
+  final Color backgroundColor;
+  final int width;
+  final int height;
+
+  CustomWidgetData
+  (
+    {
+      required this.backgroundColor,
+      required this.width,
+      required this.height,
+    }
+  );
+}
 
 void main() 
 {
