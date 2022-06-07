@@ -4,40 +4,48 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
-void main() 
+void main()
 {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget 
+class MyApp extends StatelessWidget
 {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) 
+  Widget build(BuildContext context)
   {
-    return const MaterialApp
+    return MaterialApp
     (
-      home: MyHomePage(title: 'title'),
+      home: MyHomePage(context: context, title: 'title'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget 
+class MyHomePage extends StatefulWidget
 {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  static TextStyle? style1, style2;
+
+  MyHomePage({Key? key, required BuildContext context, required this.title}) : super(key: key)
+  {
+    style1 = Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.red);
+    style2 = Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.green);
+  }
   final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> 
+class _MyHomePageState extends State<MyHomePage>
 {
   final ValueNotifier<int> _counter = ValueNotifier<int>(0);
+  var _style = ValueNotifier<TextStyle>(MyHomePage.style1!);
+
   final Widget goodJob = const Text('Good job!');
   @override
-  Widget build(BuildContext context) 
+  Widget build(BuildContext context)
   {
     return Scaffold
     (
@@ -50,27 +58,34 @@ class _MyHomePageState extends State<MyHomePage>
           children: <Widget>
           [
             const Text('You have pushed the button this many times:'),
-            ValueListenableBuilder<int>
+            ValueListenableBuilder<TextStyle>
             (
-              builder: (BuildContext context, int value, Widget? child) 
+              valueListenable: _style,
+              builder: (BuildContext context, TextStyle style, Widget? child)
               {
-                // This builder will only get called when the _counter
-                // is updated.
-                return Row
+                return ValueListenableBuilder<int>
                 (
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>
-                  [
-                    Text('$value'),
-                    child!,
-                  ],
+                  builder: (BuildContext context, int value, Widget? child)
+                  {
+                    // This builder will only get called when the _counter
+                    // is updated.
+                    return Row
+                    (
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>
+                      [
+                        Text('$value', style: style),
+                        //child!,
+                      ],
+                    );
+                  },
+                  valueListenable: _counter,
+                  // The child parameter is most helpful if the child is
+                  // expensive to build and does not depend on the value from
+                  // the notifier.
+                  //child: goodJob,
                 );
-              },
-              valueListenable: _counter,
-              // The child parameter is most helpful if the child is
-              // expensive to build and does not depend on the value from
-              // the notifier.
-              child: goodJob,
+              }
             )
           ],
         ),
@@ -78,13 +93,17 @@ class _MyHomePageState extends State<MyHomePage>
       floatingActionButton: FloatingActionButton
       (
         child: const Icon(Icons.plus_one),
-        onPressed: () => _counter.value += 1,
+        onPressed: ()
+        {
+          _counter.value += 1;
+          _style.value = ((_counter.value & 1) == 1) ? MyHomePage.style1! : MyHomePage.style2!;
+        },
       ),
     );
   }
 }
 
-class EventBinder 
+class EventBinder
 {
   getValueBuilder<T>(String id,
     {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) {}
@@ -92,7 +111,7 @@ class EventBinder
 
 typedef EventBinder_ValueBuilder = Function<T>();
 
-class EventInfo 
+class EventInfo
 {
   String id;
   dynamic state;
@@ -101,9 +120,9 @@ class EventInfo
   EventInfo(this.id);
 
   getValueBuilder<T>(BuildContext context,
-    {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) 
+    {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child})
   {
-    if (state == null && valueBuilder != null) 
+    if (state == null && valueBuilder != null)
     {
       state = valueBuilder<T>();
       listenable = ValueNotifier<T>(state);
@@ -116,18 +135,18 @@ class EventInfo
   }
 }
 
-class EventHandler 
+class EventHandler
 {
   EventHandler? next;
   EventHandler? prev;
 
-  EventHandler() 
+  EventHandler()
   {
     next = this;
     prev = this;
   }
 
-  void addNext(EventHandler nextEvent) 
+  void addNext(EventHandler nextEvent)
   {
     assert(next != null && prev != null && nextEvent.next != null && nextEvent.prev != null);
 
@@ -139,14 +158,14 @@ class EventHandler
     nextP.next = thisN;
   }
 
-  void addPrev(EventHandler prevEvent) 
+  void addPrev(EventHandler prevEvent)
   {
     addPrev(this.prev!);
   }
 
-  void remove() 
+  void remove()
   {
-    if (this.next != null && this.prev != null) 
+    if (this.next != null && this.prev != null)
     {
       this.prev!.next = this.next;
       this.next!.prev = this.prev;
@@ -155,20 +174,42 @@ class EventHandler
     }
   }
 
-  void invalidate() 
+  void invalidate()
   {
-    if (this.next != null && this.prev != null) 
+    if (this.next != null && this.prev != null)
     {
       var event = this;
 
-      do 
+      do
       {
         final nextEvent = event.next!;
         event.next = null;
         event.prev = null;
         event = nextEvent;
-      } 
+      }
       while (event != this);
     }
+  }
+}
+
+class EventValueNotifier<T> extends ValueNotifier<T>
+{
+  EventValueNotifier(super.value);
+
+  forceValue(T newValue)
+  {
+    if (value == newValue)
+    {
+      forceEvent();
+    }
+    else
+    {
+      value = newValue;
+    }
+  }
+
+  forceEvent()
+  {
+    this.notifyListeners();
   }
 }
