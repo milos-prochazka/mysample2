@@ -57,71 +57,113 @@ class _MyHomePageState extends State<MyHomePage>
 {
   final ValueNotifier<int> _counter = ValueNotifier<int>(0);
   var _style = ValueNotifier<TextStyle>(MyHomePage.style1!);
+  final binder = EventBinder();
+
+  _MyHomePageState()
+  {
+    binder.addValue('a', 1);
+    binder.addValue('b', 2);
+  }
 
   final Widget goodJob = const Text('Good job!');
   @override
   Widget build(BuildContext context)
   {
-    return Scaffold
+    return binder.build
     (
-      appBar: AppBar(title: Text(widget.title)),
-      body: Center
+      context: context,
+      child: Scaffold
       (
-        child: Column
+        appBar: AppBar(title: Text(widget.title)),
+        body: Center
         (
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>
-          [
-            const Text('You have pushed the button this many times:'),
-            ValueListenableBuilder<TextStyle>
-            (
-              valueListenable: _style,
-              builder: (BuildContext context, TextStyle style, Widget? child)
-              {
-                return ValueListenableBuilder<int>
-                (
-                  builder: (BuildContext context, int value, Widget? child)
-                  {
-                    // This builder will only get called when the _counter
-                    // is updated.
-                    return Row
-                    (
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>
-                      [
-                        Text('$value', style: style),
-                        //child!,
-                      ],
-                    );
-                  },
-                  valueListenable: _counter,
-                  // The child parameter is most helpful if the child is
-                  // expensive to build and does not depend on the value from
-                  // the notifier.
-                  //child: goodJob,
-                );
-              }
-            )
-          ],
+          child: Column
+          (
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>
+            [
+              const Text('You have pushed the button this many times:'),
+              ValueListenableBuilder<TextStyle>
+              (
+                valueListenable: _style,
+                builder: (BuildContext context, TextStyle style, Widget? child)
+                {
+                  return ValueListenableBuilder<int>
+                  (
+                    builder: (BuildContext context, int value, Widget? child)
+                    {
+                      // This builder will only get called when the _counter
+                      // is updated.
+                      return Row
+                      (
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>
+                        [
+                          Text('$value', style: style),
+                          //child!,
+                        ],
+                      );
+                    },
+                    valueListenable: _counter,
+                    // The child parameter is most helpful if the child is
+                    // expensive to build and does not depend on the value from
+                    // the notifier.
+                    //child: goodJob,
+                  );
+                }
+              )
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton
-      (
-        child: const Icon(Icons.plus_one),
-        onPressed: ()
-        {
-          _counter.value += 1;
-          _style.value = ((_counter.value & 1) == 1) ? MyHomePage.style1! : MyHomePage.style2!;
-        },
-      ),
+        floatingActionButton: FloatingActionButton
+        (
+          child: const Icon(Icons.plus_one),
+          onPressed: ()
+          {
+            _counter.value += 1;
+            _style.value = ((_counter.value & 1) == 1) ? MyHomePage.style1! : MyHomePage.style2!;
+          },
+        ),
+      )
     );
   }
 }
 
 class EventBinder
 {
+  final values = <String, ValueState>{};
+
+  addValue(String name, dynamic value)
+  {
+    values[name] = ValueState(name, value);
+  }
+
   getValueBuilder<T>(String id,
     {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) {}
+
+  Widget build({Key? key, required BuildContext context, required Widget child})
+  {
+    return InheritedEventBinder(key: key, binder: this, child: child);
+  }
+
+  static EventBinder of(BuildContext context)
+  {
+    final ihnerited = context.dependOnInheritedWidgetOfExactType<InheritedEventBinder>();
+
+    return ihnerited!.binder;
+  }
+}
+
+class InheritedEventBinder extends InheritedWidget
+{
+  final EventBinder binder;
+  const InheritedEventBinder({super.key, required super.child, required this.binder});
+
+  @override
+  bool updateShouldNotify(covariant InheritedWidget oldWidget)
+  {
+    return true;
+  }
 }
 
 typedef EventBinder_ValueBuilder = Function<T>();
@@ -141,6 +183,7 @@ class EventInfo
     {
       state = valueBuilder<T>();
       listenable = ValueNotifier<T>(state);
+      AnimatedBuilder ab;
     }
 
     return ValueListenableBuilder
@@ -227,4 +270,12 @@ class EventValueNotifier<T> extends ValueNotifier<T>
   {
     this.notifyListeners();
   }
+}
+
+class ValueState
+{
+  String name;
+  dynamic state;
+
+  ValueState(this.name, this.state);
 }
