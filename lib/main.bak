@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_this
 
 import 'dart:collection';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class CustomWidgetData 
@@ -185,7 +186,6 @@ class EventInfo
     {
       state = valueBuilder<T>();
       listenable = ValueNotifier<T>(state);
-      AnimatedBuilder ab;
     }
 
     return ValueListenableBuilder
@@ -274,13 +274,43 @@ class EventValueNotifier<T> extends ValueNotifier<T>
   }
 }
 
-class ValueState<T> 
+class ValueState<T> extends ChangeNotifier implements ValueListenable<T> 
 {
   String name;
-  dynamic value;
   ValuePresenter? presenter;
 
-  ValueState(this.name, this.value, {this.presenter});
+  ValueState(this.name, this._value, {this.presenter});
 
-  P read<P>() => presenter == null ? value as P : presenter!<T, P>(value as T);
+  P read<P>() => presenter == null ? _value as P : presenter!<T, P>(_value as T);
+
+  dynamic _value;
+
+  @override
+  T get value => _value as T;
+
+  set value(T newValue) 
+  {
+    if (_value != newValue) 
+    {
+      _value = newValue;
+      this.notifyListeners();
+    }
+  }
+
+  forceValue(T newValue) 
+  {
+    _value = newValue;
+    this.notifyListeners();
+  }
+
+  forceEvent() 
+  {
+    this.notifyListeners();
+  }
+
+  getWidgetBuilder(BuildContext context,
+    {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) 
+  {
+    return ValueListenableBuilder(builder: widgetBuilder, valueListenable: this, child: child);
+  }
 }
