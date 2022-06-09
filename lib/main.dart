@@ -129,22 +129,24 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
+typedef ValuePresenter = P Function<T, P>(T value);
+
 class EventBinder
 {
   final values = <String, ValueState>{};
 
-  addValue(String name, dynamic value)
+  addValue<T>(String name, T value, {ValuePresenter? presenter})
   {
-    values[name] = ValueState(name, value);
+    values[name] = ValueState(name, value, presenter: presenter);
   }
-
-  getValueBuilder<T>(String id,
-    {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) {}
 
   Widget build({Key? key, required BuildContext context, required Widget child})
   {
     return InheritedEventBinder(key: key, binder: this, child: child);
   }
+
+  getValueBuilder<T>(String id,
+    {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) {}
 
   static EventBinder of(BuildContext context)
   {
@@ -272,10 +274,13 @@ class EventValueNotifier<T> extends ValueNotifier<T>
   }
 }
 
-class ValueState
+class ValueState<T>
 {
   String name;
-  dynamic state;
+  dynamic value;
+  ValuePresenter? presenter;
 
-  ValueState(this.name, this.state);
+  ValueState(this.name, this.value, {this.presenter});
+
+  P read<P>() => presenter == null ? value as P : presenter!<T, P>(value as T);
 }
