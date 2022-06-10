@@ -56,14 +56,22 @@ class MyHomePage extends StatefulWidget
 
 class _MyHomePageState extends State<MyHomePage> 
 {
-  final ValueNotifier<int> _counter = ValueNotifier<int>(0);
+  //final ValueNotifier<int> _counter = ValueNotifier<int,String>(0);
+  final _counter = ValueState<int, String>('counter', 0);
   var _style = ValueNotifier<TextStyle>(MyHomePage.style1!);
   final binder = EventBinder();
 
   _MyHomePageState() 
   {
-    binder.addValue('a', 1);
+    binder.addValue<int, String>('counter', 1, presenter: <String, int>(value) => '[$value]');
     binder.addValue('b', 2);
+
+    //String s = binder.read('a');
+
+    _counter.presenter = <int, String>(value) 
+    {
+      return '<<< $value >>>';
+    };
   }
 
   final Widget goodJob = const Text('Good job!');
@@ -84,33 +92,11 @@ class _MyHomePageState extends State<MyHomePage>
             children: <Widget>
             [
               const Text('You have pushed the button this many times:'),
-              ValueListenableBuilder<TextStyle>
+              _counter.buildWidget
               (
-                valueListenable: _style,
-                builder: (BuildContext context, TextStyle style, Widget? child) 
+                context, widgetBuilder: <String>(context, value, child) 
                 {
-                  return ValueListenableBuilder<int>
-                  (
-                    builder: (BuildContext context, int value, Widget? child) 
-                    {
-                      // This builder will only get called when the _counter
-                      // is updated.
-                      return Row
-                      (
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>
-                        [
-                          Text('$value', style: style),
-                          //child!,
-                        ],
-                      );
-                    },
-                    valueListenable: _counter,
-                    // The child parameter is most helpful if the child is
-                    // expensive to build and does not depend on the value from
-                    // the notifier.
-                    //child: goodJob,
-                  );
+                  return Text(value);
                 }
               )
             ],
@@ -121,6 +107,9 @@ class _MyHomePageState extends State<MyHomePage>
           child: const Icon(Icons.plus_one),
           onPressed: () 
           {
+            var v = binder['counter'];
+            v.value++;
+
             _counter.value += 1;
             _style.value = ((_counter.value & 1) == 1) ? MyHomePage.style1! : MyHomePage.style2!;
           },
@@ -130,15 +119,22 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
-typedef ValuePresenter = P Function<T, P>(T value);
+typedef ValuePresenter = dynamic Function<T, P>(T value);
 
 class EventBinder 
 {
   final values = <String, ValueState>{};
 
-  addValue<T>(String name, T value, {ValuePresenter? presenter}) 
+  operator [](String name) => values[name];
+
+  addValue<T, P>(String name, T value, {ValuePresenter? presenter}) 
   {
-    values[name] = ValueState(name, value, presenter: presenter);
+    values[name] = ValueState<T, P>(name, value, presenter: presenter);
+  }
+
+  P read<P>(String name) 
+  {
+    return values[name]!.read<P>();
   }
 
   Widget build({Key? key, required BuildContext context, required Widget child}) 
@@ -274,16 +270,23 @@ class EventValueNotifier<T> extends ValueNotifier<T>
   }
 }
 
-class ValueState<T> extends ChangeNotifier implements ValueListenable<T> 
+/////////////////////////////////////////////////////////////////////////////////////////
+
+class ValueState<T, P> extends ChangeNotifier implements ValueListenable<T> 
 {
   String name;
   ValuePresenter? presenter;
 
   ValueState(this.name, this._value, {this.presenter});
 
-  P read<P>() => presenter == null ? _value as P : presenter!<T, P>(_value as T);
+  P read<P>() 
+  {
+    P result;
+    result = presenter == null ? _value as P : presenter!<T, P>(_value) as P;
+    return result;
+  }
 
-  dynamic _value;
+  T _value;
 
   @override
   T get value => _value as T;
@@ -308,9 +311,67 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
     this.notifyListeners();
   }
 
-  getWidgetBuilder(BuildContext context,
-    {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) 
+  Widget buildWidget(BuildContext context,
+    {required ValueWidgetBuilder<dynamic> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) 
   {
-    return ValueListenableBuilder(builder: widgetBuilder, valueListenable: this, child: child);
+    return ValueStateBuilder<T, P>
+    (
+      valueState: this,
+      builder: widgetBuilder,
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+class ValueStateBuilder<T, P> extends StatefulWidget 
+{
+  final ValueState<T, P> valueState;
+  final ValueWidgetBuilder<dynamic> builder;
+  final Widget? child;
+
+  const ValueStateBuilder({super.key, required this.valueState, required this.builder, this.child});
+
+  @override
+  State<ValueStateBuilder> createState() => _ValueStateBuilderState<T, P>();
+}
+
+class _ValueStateBuilderState<T, P> extends State<ValueStateBuilder> 
+{
+  @override
+  void initState() 
+  {
+    super.initState();
+    widget.valueState.addListener(_valueChanged);
+  }
+
+  @override
+  Widget build(BuildContext context) 
+  {
+    return widget.builder(context, widget.valueState.read(), widget.child);
+  }
+
+  @override
+  void didUpdateWidget(ValueStateBuilder<T, P> oldWidget) 
+  {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.valueState != widget.valueState) 
+    {
+      oldWidget.valueState.removeListener(_valueChanged);
+      widget.valueState.addListener(_valueChanged);
+    }
+  }
+
+  @override
+  void dispose() 
+  {
+    widget.valueState.removeListener(_valueChanged);
+    super.dispose();
+  }
+
+  void _valueChanged() 
+  {
+    setState(() {});
   }
 }
