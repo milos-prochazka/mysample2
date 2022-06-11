@@ -4,7 +4,7 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class CustomWidgetData 
+class CustomWidgetData
 {
   final Color backgroundColor;
   final int width;
@@ -20,17 +20,17 @@ class CustomWidgetData
   );
 }
 
-void main() 
+void main()
 {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget 
+class MyApp extends StatelessWidget
 {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) 
+  Widget build(BuildContext context)
   {
     return MaterialApp
     (
@@ -39,11 +39,11 @@ class MyApp extends StatelessWidget
   }
 }
 
-class MyHomePage extends StatefulWidget 
+class MyHomePage extends StatefulWidget
 {
   static TextStyle? style1, style2;
 
-  MyHomePage({Key? key, required BuildContext context, required this.title}) : super(key: key) 
+  MyHomePage({Key? key, required BuildContext context, required this.title}) : super(key: key)
   {
     style1 = Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.red);
     style2 = Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.green);
@@ -54,21 +54,21 @@ class MyHomePage extends StatefulWidget
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> 
+class _MyHomePageState extends State<MyHomePage>
 {
   //final ValueNotifier<int> _counter = ValueNotifier<int,String>(0);
   final _counter = ValueState<int>('counter', 0);
   var _style = ValueNotifier<TextStyle>(MyHomePage.style1!);
   final binder = EventBinder();
 
-  _MyHomePageState() 
+  _MyHomePageState()
   {
     binder.addValue<int>('counter', 1, presenter: <int>(value) => '[$value]');
     binder.addValue('b', 2);
 
     //String s = binder.read('a');
 
-    _counter.presenter = <String>(value) 
+    _counter.presenter = <String>(value)
     {
       return '<<< $value >>>';
     };
@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage>
 
   final Widget goodJob = const Text('Good job!');
   @override
-  Widget build(BuildContext context) 
+  Widget build(BuildContext context)
   {
     return binder.build
     (
@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage>
               EventBinder.of(context).values['counter']!.buildWidget
               (
                 context,
-                widgetBuilder: <String>(context, value, child) 
+                widgetBuilder: <String>(context, value, child)
                 {
                   return Text(value);
                 }
@@ -107,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage>
         floatingActionButton: FloatingActionButton
         (
           child: const Icon(Icons.plus_one),
-          onPressed: () 
+          onPressed: ()
           {
             var v = binder['counter'];
             v.value++;
@@ -123,23 +123,23 @@ class _MyHomePageState extends State<MyHomePage>
 
 typedef ValuePresenter = dynamic Function<T>(T value);
 
-class EventBinder 
+class EventBinder
 {
   final values = <String, ValueState>{};
 
   operator [](String name) => values[name];
 
-  addValue<T>(String name, T value, {ValuePresenter? presenter}) 
+  addValue<T>(String name, T value, {ValuePresenter? presenter})
   {
     values[name] = ValueState<T>(name, value, presenter: presenter);
   }
 
-  P read<P>(String name) 
+  P read<P>(String name)
   {
     return values[name]!.read<P>();
   }
 
-  Widget build({Key? key, required BuildContext context, required WidgetBuilder builder}) 
+  Widget build({Key? key, required BuildContext context, required WidgetBuilder builder})
   {
     return EventBinderWidget(key: key, binder: this, child: Builder(builder: builder));
   }
@@ -148,7 +148,7 @@ class EventBinder
     {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) {}
   */
 
-  static EventBinder of(BuildContext context) 
+  static EventBinder of(BuildContext context)
   {
     final ihnerited = context.dependOnInheritedWidgetOfExactType<EventBinderWidget>();
 
@@ -156,13 +156,13 @@ class EventBinder
   }
 }
 
-class EventBinderWidget extends InheritedWidget 
+class EventBinderWidget extends InheritedWidget
 {
   final EventBinder binder;
   const EventBinderWidget({super.key, required super.child, required this.binder});
 
   @override
-  bool updateShouldNotify(covariant InheritedWidget oldWidget) 
+  bool updateShouldNotify(covariant InheritedWidget oldWidget)
   {
     return true;
   }
@@ -277,14 +277,14 @@ class EventValueNotifier<T> extends ValueNotifier<T>
 */
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class ValueState<T> extends ChangeNotifier implements ValueListenable<T> 
+class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
 {
   String name;
   ValuePresenter? presenter;
 
   ValueState(this.name, this._value, {this.presenter});
 
-  P read<P>() 
+  P read<P>()
   {
     P result;
     result = presenter == null ? _value as P : presenter!<T>(_value) as P;
@@ -296,28 +296,28 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
   @override
   T get value => _value;
 
-  set value(T newValue) 
+  set value(T newValue)
   {
-    if (_value != newValue) 
+    if (_value != newValue)
     {
       _value = newValue;
       this.notifyListeners();
     }
   }
 
-  forceValue(T newValue) 
+  forceValue(T newValue)
   {
     _value = newValue;
     this.notifyListeners();
   }
 
-  forceEvent() 
+  forceEvent()
   {
     this.notifyListeners();
   }
 
   Widget buildWidget(BuildContext context,
-    {required ValueWidgetBuilder<dynamic> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) 
+    {required ValueWidgetBuilder<dynamic> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child})
   {
     return ValueStateBuilder<T>
     (
@@ -329,7 +329,7 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-class ValueStateBuilder<T> extends StatefulWidget 
+class ValueStateBuilder<T> extends StatefulWidget
 {
   final ValueState<T> valueState;
   final ValueWidgetBuilder<dynamic> builder;
@@ -341,27 +341,27 @@ class ValueStateBuilder<T> extends StatefulWidget
   State<ValueStateBuilder> createState() => _ValueStateBuilderState<T>();
 }
 
-class _ValueStateBuilderState<T> extends State<ValueStateBuilder> 
+class _ValueStateBuilderState<T> extends State<ValueStateBuilder>
 {
   @override
-  void initState() 
+  void initState()
   {
     super.initState();
     widget.valueState.addListener(_valueChanged);
   }
 
   @override
-  Widget build(BuildContext context) 
+  Widget build(BuildContext context)
   {
     return widget.builder(context, widget.valueState.read(), widget.child);
   }
 
   @override
-  void didUpdateWidget(ValueStateBuilder<T> oldWidget) 
+  void didUpdateWidget(ValueStateBuilder<T> oldWidget)
   {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.valueState != widget.valueState) 
+    if (oldWidget.valueState != widget.valueState)
     {
       oldWidget.valueState.removeListener(_valueChanged);
       widget.valueState.addListener(_valueChanged);
@@ -369,13 +369,13 @@ class _ValueStateBuilderState<T> extends State<ValueStateBuilder>
   }
 
   @override
-  void dispose() 
+  void dispose()
   {
     widget.valueState.removeListener(_valueChanged);
     super.dispose();
   }
 
-  void _valueChanged() 
+  void _valueChanged()
   {
     setState(() {});
   }

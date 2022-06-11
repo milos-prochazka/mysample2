@@ -81,42 +81,42 @@ class _MyHomePageState extends State<MyHomePage>
     return binder.build
     (
       context: context,
-      builder: (BuildContext context)=> Scaffold
+      builder: (BuildContext context) => Scaffold
+      (
+        appBar: AppBar(title: Text(widget.title)),
+        body: Center
         (
-          appBar: AppBar(title: Text(widget.title)),
-          body: Center
+          child: Column
           (
-            child: Column
-            (
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>
-              [
-                const Text('You have pushed the button this many times:'),
-                //_counter.buildWidget
-                EventBinder.of(context).values['counter']!.buildWidget
-                (
-                  context, widgetBuilder: <String>(context, value, child) 
-                  {
-                    return Text(value);
-                  }
-                )
-              ],
-            ),
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>
+            [
+              const Text('You have pushed the button this many times:'),
+              //_counter.buildWidget
+              EventBinder.of(context).values['counter']!.buildWidget
+              (
+                context,
+                widgetBuilder: <String>(context, value, child) 
+                {
+                  return Text(value);
+                }
+              )
+            ],
           ),
-          floatingActionButton: FloatingActionButton
-          (
-            child: const Icon(Icons.plus_one),
-            onPressed: () 
-            {
-              var v = binder['counter'];
-              v.value++;
+        ),
+        floatingActionButton: FloatingActionButton
+        (
+          child: const Icon(Icons.plus_one),
+          onPressed: () 
+          {
+            var v = binder['counter'];
+            v.value++;
 
-              _counter.value += 1;
-              _style.value = ((_counter.value & 1) == 1) ? MyHomePage.style1! : MyHomePage.style2!;
-            },
-          ),
-        )
-      
+            _counter.value += 1;
+            _style.value = ((_counter.value & 1) == 1) ? MyHomePage.style1! : MyHomePage.style2!;
+          },
+        ),
+      )
     );
   }
 }
