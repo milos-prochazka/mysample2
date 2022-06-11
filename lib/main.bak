@@ -57,18 +57,18 @@ class MyHomePage extends StatefulWidget
 class _MyHomePageState extends State<MyHomePage> 
 {
   //final ValueNotifier<int> _counter = ValueNotifier<int,String>(0);
-  final _counter = ValueState<int, String>('counter', 0);
+  final _counter = ValueState<int>('counter', 0);
   var _style = ValueNotifier<TextStyle>(MyHomePage.style1!);
   final binder = EventBinder();
 
   _MyHomePageState() 
   {
-    binder.addValue<int, String>('counter', 1, presenter: <String, int>(value) => '[$value]');
+    binder.addValue<int>('counter', 1, presenter: <int>(value) => '[$value]');
     binder.addValue('b', 2);
 
     //String s = binder.read('a');
 
-    _counter.presenter = <int, String>(value) 
+    _counter.presenter = <String>(value) 
     {
       return '<<< $value >>>';
     };
@@ -81,45 +81,47 @@ class _MyHomePageState extends State<MyHomePage>
     return binder.build
     (
       context: context,
-      child: Scaffold
-      (
-        appBar: AppBar(title: Text(widget.title)),
-        body: Center
+      builder: (BuildContext context)=> Scaffold
         (
-          child: Column
+          appBar: AppBar(title: Text(widget.title)),
+          body: Center
           (
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>
-            [
-              const Text('You have pushed the button this many times:'),
-              _counter.buildWidget
-              (
-                context, widgetBuilder: <String>(context, value, child) 
-                {
-                  return Text(value);
-                }
-              )
-            ],
+            child: Column
+            (
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>
+              [
+                const Text('You have pushed the button this many times:'),
+                //_counter.buildWidget
+                EventBinder.of(context).values['counter']!.buildWidget
+                (
+                  context, widgetBuilder: <String>(context, value, child) 
+                  {
+                    return Text(value);
+                  }
+                )
+              ],
+            ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton
-        (
-          child: const Icon(Icons.plus_one),
-          onPressed: () 
-          {
-            var v = binder['counter'];
-            v.value++;
+          floatingActionButton: FloatingActionButton
+          (
+            child: const Icon(Icons.plus_one),
+            onPressed: () 
+            {
+              var v = binder['counter'];
+              v.value++;
 
-            _counter.value += 1;
-            _style.value = ((_counter.value & 1) == 1) ? MyHomePage.style1! : MyHomePage.style2!;
-          },
-        ),
-      )
+              _counter.value += 1;
+              _style.value = ((_counter.value & 1) == 1) ? MyHomePage.style1! : MyHomePage.style2!;
+            },
+          ),
+        )
+      
     );
   }
 }
 
-typedef ValuePresenter = dynamic Function<T, P>(T value);
+typedef ValuePresenter = dynamic Function<T>(T value);
 
 class EventBinder 
 {
@@ -127,9 +129,9 @@ class EventBinder
 
   operator [](String name) => values[name];
 
-  addValue<T, P>(String name, T value, {ValuePresenter? presenter}) 
+  addValue<T>(String name, T value, {ValuePresenter? presenter}) 
   {
-    values[name] = ValueState<T, P>(name, value, presenter: presenter);
+    values[name] = ValueState<T>(name, value, presenter: presenter);
   }
 
   P read<P>(String name) 
@@ -137,26 +139,27 @@ class EventBinder
     return values[name]!.read<P>();
   }
 
-  Widget build({Key? key, required BuildContext context, required Widget child}) 
+  Widget build({Key? key, required BuildContext context, required WidgetBuilder builder}) 
   {
-    return InheritedEventBinder(key: key, binder: this, child: child);
+    return EventBinderWidget(key: key, binder: this, child: Builder(builder: builder));
   }
 
-  getValueBuilder<T>(String id,
+  /*getValueBuilder<T>(String id,
     {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) {}
+  */
 
   static EventBinder of(BuildContext context) 
   {
-    final ihnerited = context.dependOnInheritedWidgetOfExactType<InheritedEventBinder>();
+    final ihnerited = context.dependOnInheritedWidgetOfExactType<EventBinderWidget>();
 
     return ihnerited!.binder;
   }
 }
 
-class InheritedEventBinder extends InheritedWidget 
+class EventBinderWidget extends InheritedWidget 
 {
   final EventBinder binder;
-  const InheritedEventBinder({super.key, required super.child, required this.binder});
+  const EventBinderWidget({super.key, required super.child, required this.binder});
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) 
@@ -167,7 +170,9 @@ class InheritedEventBinder extends InheritedWidget
 
 typedef EventBinder_ValueBuilder = Function<T>();
 
-class EventInfo 
+/*typedef EventBinder_ValueBuilder = Function<T>();
+
+class EventInfo
 {
   String id;
   dynamic state;
@@ -176,9 +181,9 @@ class EventInfo
   EventInfo(this.id);
 
   getValueBuilder<T>(BuildContext context,
-    {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) 
+    {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child})
   {
-    if (state == null && valueBuilder != null) 
+    if (state == null && valueBuilder != null)
     {
       state = valueBuilder<T>();
       listenable = ValueNotifier<T>(state);
@@ -191,18 +196,18 @@ class EventInfo
   }
 }
 
-class EventHandler 
+class EventHandler
 {
   EventHandler? next;
   EventHandler? prev;
 
-  EventHandler() 
+  EventHandler()
   {
     next = this;
     prev = this;
   }
 
-  void addNext(EventHandler nextEvent) 
+  void addNext(EventHandler nextEvent)
   {
     assert(next != null && prev != null && nextEvent.next != null && nextEvent.prev != null);
 
@@ -214,14 +219,14 @@ class EventHandler
     nextP.next = thisN;
   }
 
-  void addPrev(EventHandler prevEvent) 
+  void addPrev(EventHandler prevEvent)
   {
     addPrev(this.prev!);
   }
 
-  void remove() 
+  void remove()
   {
-    if (this.next != null && this.prev != null) 
+    if (this.next != null && this.prev != null)
     {
       this.prev!.next = this.next;
       this.next!.prev = this.prev;
@@ -230,49 +235,49 @@ class EventHandler
     }
   }
 
-  void invalidate() 
+  void invalidate()
   {
-    if (this.next != null && this.prev != null) 
+    if (this.next != null && this.prev != null)
     {
       var event = this;
 
-      do 
+      do
       {
         final nextEvent = event.next!;
         event.next = null;
         event.prev = null;
         event = nextEvent;
-      } 
+      }
       while (event != this);
     }
   }
 }
 
-class EventValueNotifier<T> extends ValueNotifier<T> 
+class EventValueNotifier<T> extends ValueNotifier<T>
 {
   EventValueNotifier(super.value);
 
-  forceValue(T newValue) 
+  forceValue(T newValue)
   {
-    if (value == newValue) 
+    if (value == newValue)
     {
       forceEvent();
-    } 
-    else 
+    }
+    else
     {
       value = newValue;
     }
   }
 
-  forceEvent() 
+  forceEvent()
   {
     this.notifyListeners();
   }
 }
-
+*/
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class ValueState<T, P> extends ChangeNotifier implements ValueListenable<T> 
+class ValueState<T> extends ChangeNotifier implements ValueListenable<T> 
 {
   String name;
   ValuePresenter? presenter;
@@ -282,14 +287,14 @@ class ValueState<T, P> extends ChangeNotifier implements ValueListenable<T>
   P read<P>() 
   {
     P result;
-    result = presenter == null ? _value as P : presenter!<T, P>(_value) as P;
+    result = presenter == null ? _value as P : presenter!<T>(_value) as P;
     return result;
   }
 
   T _value;
 
   @override
-  T get value => _value as T;
+  T get value => _value;
 
   set value(T newValue) 
   {
@@ -314,7 +319,7 @@ class ValueState<T, P> extends ChangeNotifier implements ValueListenable<T>
   Widget buildWidget(BuildContext context,
     {required ValueWidgetBuilder<dynamic> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) 
   {
-    return ValueStateBuilder<T, P>
+    return ValueStateBuilder<T>
     (
       valueState: this,
       builder: widgetBuilder,
@@ -324,19 +329,19 @@ class ValueState<T, P> extends ChangeNotifier implements ValueListenable<T>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-class ValueStateBuilder<T, P> extends StatefulWidget 
+class ValueStateBuilder<T> extends StatefulWidget 
 {
-  final ValueState<T, P> valueState;
+  final ValueState<T> valueState;
   final ValueWidgetBuilder<dynamic> builder;
   final Widget? child;
 
   const ValueStateBuilder({super.key, required this.valueState, required this.builder, this.child});
 
   @override
-  State<ValueStateBuilder> createState() => _ValueStateBuilderState<T, P>();
+  State<ValueStateBuilder> createState() => _ValueStateBuilderState<T>();
 }
 
-class _ValueStateBuilderState<T, P> extends State<ValueStateBuilder> 
+class _ValueStateBuilderState<T> extends State<ValueStateBuilder> 
 {
   @override
   void initState() 
@@ -352,7 +357,7 @@ class _ValueStateBuilderState<T, P> extends State<ValueStateBuilder>
   }
 
   @override
-  void didUpdateWidget(ValueStateBuilder<T, P> oldWidget) 
+  void didUpdateWidget(ValueStateBuilder<T> oldWidget) 
   {
     super.didUpdateWidget(oldWidget);
 
