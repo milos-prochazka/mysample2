@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage>
 
   _MyHomePageState()
   {
-    binder.addValue<int, String>('counter', 1, presenter: <String, int>(value) => '[$value]');
+    binder.addValue<int, String>('counter', 1, presenter: <int,String>(value) => '[$value]');
     binder.addValue('b', 2);
 
     //String s = binder.read('a');
