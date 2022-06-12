@@ -63,15 +63,9 @@ class _MyHomePageState extends State<MyHomePage>
 
   _MyHomePageState() 
   {
-    binder.addValue<int>('counter', 1, presenter: <int>(value) => '[$value]');
-    binder.addValue('b', 2);
-
-    //String s = binder.read('a');
-
-    _counter.presenter = <String>(value) 
-    {
-      return '<<< $value >>>';
-    };
+    final cnt = binder.addValue('counter', 1, presenter: <int>(value) => '[$value]');
+    final button = binder.addValue('button', null, listener: () => cnt.value++);
+    var brk = 1;
   }
 
   final Widget goodJob = const Text('Good job!');
@@ -109,8 +103,10 @@ class _MyHomePageState extends State<MyHomePage>
           child: const Icon(Icons.plus_one),
           onPressed: () 
           {
-            var v = binder['counter'];
-            v.value++;
+            //var v = binder['counter'];
+            //v.value++;
+
+            EventBinder.of(context)['button'].forceEvent();
 
             _counter.value += 1;
             _style.value = ((_counter.value & 1) == 1) ? MyHomePage.style1! : MyHomePage.style2!;
@@ -127,11 +123,13 @@ class EventBinder
 {
   final values = <String, ValueState>{};
 
-  operator [](String name) => values[name];
+  operator [](String name) => values[name]!;
 
-  addValue<T>(String name, T value, {ValuePresenter? presenter}) 
+  ValueState<T> addValue<T>(String name, T value, {ValuePresenter? presenter, VoidCallback? listener}) 
   {
-    values[name] = ValueState<T>(name, value, presenter: presenter);
+    final result = ValueState<T>(name, value, presenter: presenter, listener: listener);
+    values[name] = result;
+    return result;
   }
 
   P read<P>(String name) 
@@ -282,7 +280,13 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
   String name;
   ValuePresenter? presenter;
 
-  ValueState(this.name, this._value, {this.presenter});
+  ValueState(this.name, this._value, {this.presenter, VoidCallback? listener}) 
+  {
+    if (listener != null) 
+    {
+      addListener(listener);
+    }
+  }
 
   P read<P>() 
   {
