@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage>
 
   _MyHomePageState()
   {
-    final cnt = binder.addValue('counter', 1, presenter: <int>(value) => '[$value]');
+    final cnt = binder.addValue('counter', 1, presenter: <int>(value, param) => '[$value]');
     final button = binder.addValue('button', null, listener: () => cnt.value++);
   }
 
@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage>
                 context,
                 widgetBuilder: <String>(context, value, child)
                 {
-                  return Text(value);
+                  return Text(value.readString('aaa'));
                 }
               )
             ],
@@ -116,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
-typedef ValuePresenter = dynamic Function<T>(T value);
+typedef ValuePresenter = dynamic Function<T>(T value, dynamic parameter);
 
 class EventBinder
 {
@@ -287,12 +287,9 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
     }
   }
 
-  P read<P>()
-  {
-    P result;
-    result = presenter == null ? _value as P : presenter!<T>(_value) as P;
-    return result;
-  }
+  P read<P>([dynamic parameter]) => (presenter == null) ? _value as P : presenter!<T>(_value, parameter) as P;
+  String readString([dynamic parameter]) =>
+  (presenter == null) ? _value.toString() : (presenter!<T>(_value, parameter)).toString();
 
   T _value;
 
@@ -320,7 +317,7 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
   }
 
   Widget buildWidget(BuildContext context,
-    {required ValueWidgetBuilder<dynamic> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child})
+    {required ValueStateWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child})
   {
     return ValueStateBuilder<T>
     (
@@ -330,12 +327,14 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
   }
 }
 
+typedef ValueStateWidgetBuilder<T> = Widget Function(BuildContext context, ValueState<T> value, Widget? child);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 class ValueStateBuilder<T> extends StatefulWidget
 {
   final ValueState<T> valueState;
-  final ValueWidgetBuilder<dynamic> builder;
+  final ValueStateWidgetBuilder<T> builder;
   final Widget? child;
 
   const ValueStateBuilder({super.key, required this.valueState, required this.builder, this.child});
@@ -356,7 +355,7 @@ class _ValueStateBuilderState<T> extends State<ValueStateBuilder>
   @override
   Widget build(BuildContext context)
   {
-    return widget.builder(context, widget.valueState.read(), widget.child);
+    return widget.builder(context, widget.valueState, widget.child);
   }
 
   @override
