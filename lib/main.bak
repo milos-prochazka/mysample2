@@ -65,7 +65,6 @@ class _MyHomePageState extends State<MyHomePage>
   {
     final cnt = binder.addValue('counter', 1, presenter: <int>(value) => '[$value]');
     final button = binder.addValue('button', null, listener: () => cnt.value++);
-    var brk = 1;
   }
 
   final Widget goodJob = const Text('Good job!');
