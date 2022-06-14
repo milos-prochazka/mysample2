@@ -53,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage>
   TextStyle? style1, style2;
   final binder = EventBinder();
   bool initialized = false;
+  late TextEditingController _ediorState;
 
   _MyHomePageState()
   {
@@ -68,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage>
   {
     super.initState();
     initialized = false;
+    _ediorState = TextEditingController(text: 'zakladni text');
   }
 
   void initContext(BuildContext context)
@@ -112,7 +114,8 @@ class _MyHomePageState extends State<MyHomePage>
                   final style = EventBinder.of(context)['style'].read<TextStyle?>();
                   return Text(value.readString('aaa'), style: style);
                 }
-              )
+              ),
+              TextField(controller: _ediorState),
             ],
           ),
         ),
