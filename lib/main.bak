@@ -41,14 +41,8 @@ class MyApp extends StatelessWidget
 
 class MyHomePage extends StatefulWidget 
 {
-  static TextStyle? style1, style2;
-
-  MyHomePage({Key? key, required BuildContext context, required this.title}) : super(key: key) 
-  {
-    style1 = Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.red);
-    style2 = Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.green);
-  }
   final String title;
+  MyHomePage({Key? key, required BuildContext context, required this.title}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -56,21 +50,45 @@ class MyHomePage extends StatefulWidget
 
 class _MyHomePageState extends State<MyHomePage> 
 {
-  //final ValueNotifier<int> _counter = ValueNotifier<int,String>(0);
-  final _counter = ValueState<int>('counter', 0);
-  var _style = ValueNotifier<TextStyle>(MyHomePage.style1!);
+  TextStyle? style1, style2;
   final binder = EventBinder();
+  bool initialized = false;
 
   _MyHomePageState() 
   {
     final cnt = binder.addValue('counter', 1, presenter: <int>(value, param) => '[$value]');
+    final style = binder.addValue<TextStyle?>('style', null,
+      presenter: <TextStyle>(value, param) => (cnt.value & 1) == 1 ? style1 : style2);
+
     final button = binder.addValue('button', null, listener: () => cnt.value++);
+  }
+
+  @override
+  void initState() 
+  {
+    super.initState();
+    initialized = false;
+  }
+
+  void initContext(BuildContext context) 
+  {
+    if (initialized) 
+    {
+      return;
+    }
+
+    style1 = Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.red, fontWeight: FontWeight.bold);
+    style2 = Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.green);
+
+    initialized = false;
   }
 
   final Widget goodJob = const Text('Good job!');
   @override
   Widget build(BuildContext context) 
   {
+    initContext(context);
+
     return binder.build
     (
       context: context,
@@ -86,12 +104,13 @@ class _MyHomePageState extends State<MyHomePage>
             [
               const Text('You have pushed the button this many times:'),
               //_counter.buildWidget
-              EventBinder.of(context).values['counter']!.buildWidget
+              EventBinder.of(context)['counter'].buildWidget
               (
                 context,
                 widgetBuilder: <String>(context, value, child) 
                 {
-                  return Text(value.readString('aaa'));
+                  final style = EventBinder.of(context)['style'].read<TextStyle?>();
+                  return Text(value.readString('aaa'), style: style);
                 }
               )
             ],
@@ -106,9 +125,6 @@ class _MyHomePageState extends State<MyHomePage>
             //v.value++;
 
             EventBinder.of(context)['button'].forceEvent();
-
-            _counter.value += 1;
-            _style.value = ((_counter.value & 1) == 1) ? MyHomePage.style1! : MyHomePage.style2!;
           },
         ),
       )
@@ -122,7 +138,7 @@ class EventBinder
 {
   final values = <String, ValueState>{};
 
-  operator [](String name) => values[name]!;
+  ValueState operator [](String name) => values[name]!;
 
   ValueState<T> addValue<T>(String name, T value, {ValuePresenter? presenter, VoidCallback? listener}) 
   {
@@ -140,10 +156,6 @@ class EventBinder
   {
     return EventBinderWidget(key: key, binder: this, child: Builder(builder: builder));
   }
-
-  /*getValueBuilder<T>(String id,
-    {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) {}
-  */
 
   static EventBinder of(BuildContext context) 
   {
