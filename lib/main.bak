@@ -60,6 +60,12 @@ class _MyHomePageState extends State<MyHomePage>
     final cnt = binder.addValue('counter', 1, presenter: <int>(value, param) => '[$value]');
     final style = binder.addValue<TextStyle?>('style', null,
       presenter: <TextStyle>(value, param) => (cnt.value & 1) == 1 ? style1 : style2);
+    final editor = binder.addValue<String>
+    (
+      'editor',
+      'INIT text',
+      initialized: (context, value, state) => (state as TextEditingController).text = 'QaQaQa',
+    );
 
     final button = binder.addValue('button', null, listener: () => cnt.value++);
   }
@@ -108,14 +114,26 @@ class _MyHomePageState extends State<MyHomePage>
               //_counter.buildWidget
               EventBinder.of(context)['counter'].buildWidget
               (
-                context,
-                widgetBuilder: <String>(context, value, child) 
+                context, builder: <String>(context, value, child) 
                 {
-                  final style = EventBinder.of(context)['style'].read<TextStyle?>();
+                  final style = binder['style'].read<TextStyle?>();
                   return Text(value.readString('aaa'), style: style);
                 }
               ),
-              TextField(controller: _ediorState),
+              binder['editor'].buildWidget
+              (
+                context, builder: (context, value, child) 
+                {
+                  return TextField
+                  (
+                    controller: value.setState
+                    (
+                      context: context,
+                      initializer: (context, value) => TextEditingController(text: value.readString())
+                    )
+                  );
+                }
+              )
             ],
           ),
         ),
@@ -143,9 +161,10 @@ class EventBinder
 
   ValueState operator [](String name) => values[name]!;
 
-  ValueState<T> addValue<T>(String name, T value, {ValuePresenter? presenter, VoidCallback? listener}) 
+  ValueState<T> addValue<T>(String name, T value,
+    {ValuePresenter? presenter, VoidCallback? listener, ValueStateInitializedEvent? initialized}) 
   {
-    final result = ValueState<T>(name, value, presenter: presenter, listener: listener);
+    final result = ValueState<T>(name, value, presenter: presenter, listener: listener, initialized: initialized);
     values[name] = result;
     return result;
   }
@@ -179,8 +198,6 @@ class EventBinderWidget extends InheritedWidget
     return true;
   }
 }
-
-typedef EventBinder_ValueBuilder = Function<T>();
 
 /*typedef EventBinder_ValueBuilder = Function<T>();
 
@@ -293,8 +310,10 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
 {
   String name;
   ValuePresenter? presenter;
+  dynamic state;
+  ValueStateInitializedEvent? initialized;
 
-  ValueState(this.name, this._value, {this.presenter, VoidCallback? listener}) 
+  ValueState(this.name, this._value, {this.presenter, VoidCallback? listener, this.initialized}) 
   {
     if (listener != null) 
     {
@@ -320,6 +339,18 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
     }
   }
 
+  S setState<S>({required BuildContext context, required ValueStateInitializer initializer}) 
+  {
+    if (this.state == null) 
+    {
+      final st = initializer(context, this);
+      this.state = st ?? false;
+      this.initialized?.call(context, this, st);
+    }
+
+    return this.state as S;
+  }
+
   forceValue(T newValue) 
   {
     _value = newValue;
@@ -331,18 +362,19 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
     this.notifyListeners();
   }
 
-  Widget buildWidget(BuildContext context,
-    {required ValueStateWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child}) 
+  Widget buildWidget(BuildContext context, {required ValueStateWidgetBuilder<T> builder, Widget? child}) 
   {
     return ValueStateBuilder<T>
     (
       valueState: this,
-      builder: widgetBuilder,
+      builder: builder,
     );
   }
 }
 
 typedef ValueStateWidgetBuilder<T> = Widget Function(BuildContext context, ValueState<T> value, Widget? child);
+typedef ValueStateInitializer = dynamic Function(BuildContext context, ValueState value);
+typedef ValueStateInitializedEvent = Function(BuildContext context, ValueState value, dynamic state);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
