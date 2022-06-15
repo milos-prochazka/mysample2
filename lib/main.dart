@@ -3,6 +3,7 @@
 import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomWidgetData
 {
@@ -53,7 +54,6 @@ class _MyHomePageState extends State<MyHomePage>
   TextStyle? style1, style2;
   final binder = EventBinder();
   bool initialized = false;
-  late TextEditingController _ediorState;
 
   _MyHomePageState()
   {
@@ -75,7 +75,6 @@ class _MyHomePageState extends State<MyHomePage>
   {
     super.initState();
     initialized = false;
-    _ediorState = TextEditingController(text: 'zakladni text');
   }
 
   void initContext(BuildContext context)
@@ -131,7 +130,12 @@ class _MyHomePageState extends State<MyHomePage>
                     (
                       context: context,
                       initializer: (context, value) => TextEditingController(text: value.readString())
-                    )
+                    ),
+                    inputFormatters:
+                    [
+                      FilteringTextInputFormatter.allow(RegExp(r'\d{1,2}\-?\d{0,2}')),
+                      //FilteringTextInputFormatter.deny(RegExp('[abFeG]')),
+                    ],
                   );
                 }
               )
@@ -193,6 +197,8 @@ class EventBinder
     {required String bindValue,
       dynamic bindValueParam,
       //////////////
+      Key? key,
+      //////////////
       TextStyle? style,
       String? bindStyle,
       dynamic bindStyleParam,
@@ -234,6 +240,7 @@ class EventBinder
         return Text
         (
           value.readString(bindValueParam),
+          key: key,
           style: binder.readOrDefault(bindStyle, bindStyleParam, style),
           strutStyle: binder.readOrDefault(bindStrutStyle, bindStrutStyleParam, strutStyle),
           textAlign: textAlign,
