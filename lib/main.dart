@@ -120,6 +120,7 @@ class _MyHomePageState extends State<MyHomePage>
                   return Text(value.readString('aaa'), style: style);
                 }
               ),
+              EventBinder.buildText(context, bindValue: 'counter', bindStyle: 'style'),
               binder['editor'].buildWidget
               (
                 context, builder: (context, value, child)
@@ -184,6 +185,82 @@ class EventBinder
     final ihnerited = context.dependOnInheritedWidgetOfExactType<EventBinderWidget>();
 
     return ihnerited!.binder;
+  }
+
+  static Widget buildText
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      TextStyle? style,
+      String? bindStyle,
+      dynamic bindStyleParam,
+      //////////////
+      StrutStyle? strutStyle,
+      String? bindStrutStyle,
+      dynamic bindStrutStyleParam,
+      //////////////
+      TextAlign? textAlign,
+      //////////////
+      TextDirection? textDirection,
+      String? bindTextDirection,
+      dynamic bindTextDirectionParam,
+      //////////////
+      Locale? locale,
+      String? bindLocale,
+      dynamic bindLocaleParam,
+      //////////////
+      bool? softWrap,
+      TextOverflow? overflow,
+      double? textScaleFactor,
+      int? maxLines,
+      //////////////
+      String? semanticsLabel,
+      String? bindSemanticsLabel,
+      dynamic bindSemanticsLabelParam,
+      //////////////
+      TextWidthBasis? textWidthBasis,
+      TextHeightBehavior? textHeightBehavior}
+  )
+  {
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      builder: <String>(context, value, child)
+      {
+        return Text
+        (
+          value.readString(bindValueParam),
+          style: binder.readOrDefault(bindStyle, bindStyleParam, style),
+          strutStyle: binder.readOrDefault(bindStrutStyle, bindStrutStyleParam, strutStyle),
+          textAlign: textAlign,
+          textDirection: binder.readOrDefault(bindTextDirection, bindTextDirectionParam, textDirection),
+          locale: binder.readOrDefault(bindLocale, bindLocaleParam, locale),
+          softWrap: softWrap,
+          overflow: overflow,
+          textScaleFactor: textScaleFactor,
+          maxLines: maxLines,
+          semanticsLabel: binder.readOrDefault(bindSemanticsLabel, bindSemanticsLabelParam, semanticsLabel),
+          textWidthBasis: textWidthBasis,
+          textHeightBehavior: textHeightBehavior
+        );
+      }
+    );
+  }
+
+  T readOrDefault<T>(String? valueName, dynamic valueParam, T defaultValue)
+  {
+    if (valueName == null)
+    {
+      return defaultValue;
+    }
+    else
+    {
+      return values[valueName]?.read<T>(valueParam) ?? defaultValue;
+    }
   }
 }
 
@@ -428,4 +505,29 @@ class _ValueStateBuilderState<T> extends State<ValueStateBuilder>
   {
     setState(() {});
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+class BindableText extends Text
+{
+  const BindableText
+  (
+    String text,
+    {
+      super.key,
+      super.style,
+      super.strutStyle,
+      super.textAlign,
+      super.textDirection,
+      super.locale,
+      super.softWrap,
+      super.overflow,
+      super.textScaleFactor,
+      super.maxLines,
+      super.semanticsLabel,
+      super.textWidthBasis,
+      super.textHeightBehavior,
+    }
+  ) : super(text);
 }
