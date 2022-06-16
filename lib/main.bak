@@ -64,10 +64,10 @@ class _MyHomePageState extends State<MyHomePage>
     (
       'editor',
       'INIT text',
-      initialized: (context, value, state) => (state as TextEditingController).text = 'QaQaQa',
+      onInitialized: (context, value, state) => (state as TextEditingController).text = 'QaQaQa',
     );
 
-    final button = binder.addValue('button', null, listener: () => cnt.value++);
+    final button = binder.addValue<bool>('button', false, onEvent: <bool>(value, event, parameter) => cnt.value++);
   }
 
   @override
@@ -150,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage>
             //var v = binder['counter'];
             //v.value++;
 
-            EventBinder.of(context)['button'].forceEvent();
+            EventBinder.of(context)['button'].doEvevent();
           },
         ),
       )
@@ -166,10 +166,17 @@ class EventBinder
 
   ValueState operator [](String name) => values[name]!;
 
-  ValueState<T> addValue<T>(String name, T value,
-    {ValuePresenter? presenter, VoidCallback? listener, ValueStateInitializedEvent? initialized}) 
+  ValueState<T> addValue<T>
+  (
+    String name, T value,
+    {ValuePresenter? presenter,
+      VoidCallback? listener,
+      ValueStateInitializedEvent? onInitialized,
+      ValueStateEvent? onEvent}
+  ) 
   {
-    final result = ValueState<T>(name, value, presenter: presenter, listener: listener, initialized: initialized);
+    final result = ValueState<T>(name, value,
+      presenter: presenter, listener: listener, onInitialized: onInitialized, onEvent: onEvent);
     values[name] = result;
     return result;
   }
@@ -395,9 +402,12 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
   String name;
   ValuePresenter? presenter;
   dynamic state;
-  ValueStateInitializedEvent? initialized;
+  ValueStateInitializedEvent? onInitialized;
+  ValueStateEvent? _onEvent;
 
-  ValueState(this.name, this._value, {this.presenter, VoidCallback? listener, this.initialized}) 
+  ValueState(this.name, this._value,
+    {this.presenter, VoidCallback? listener, this.onInitialized, ValueStateEvent? onEvent})
+  : _onEvent = onEvent 
   {
     if (listener != null) 
     {
@@ -429,7 +439,7 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
     {
       final st = initializer(context, this);
       this.state = st ?? false;
-      this.initialized?.call(context, this, st);
+      this.onInitialized?.call(context, this, st);
     }
 
     return this.state as S;
@@ -441,9 +451,14 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
     this.notifyListeners();
   }
 
-  forceEvent() 
+  forceValueNotify() 
   {
     this.notifyListeners();
+  }
+
+  doEvevent({dynamic event, dynamic parameter}) 
+  {
+    this._onEvent?.call(this, event, parameter);
   }
 
   Widget buildWidget(BuildContext context, {required ValueStateWidgetBuilder<T> builder, Widget? child}) 
@@ -459,6 +474,7 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
 typedef ValueStateWidgetBuilder<T> = Widget Function(BuildContext context, ValueState<T> value, Widget? child);
 typedef ValueStateInitializer = dynamic Function(BuildContext context, ValueState value);
 typedef ValueStateInitializedEvent = Function(BuildContext context, ValueState value, dynamic state);
+typedef ValueStateEvent = Function<T>(ValueState<T> value, dynamic event, dynamic parameter);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
