@@ -1,5 +1,4 @@
 // ignore_for_file: unnecessary_this
-
 import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage>
   TextStyle? style1, style2;
   final binder = EventBinder();
   bool initialized = false;
-  bool isChecked = false;
+  bool? isChecked = null;
 
   _MyHomePageState() 
   {
@@ -68,7 +67,15 @@ class _MyHomePageState extends State<MyHomePage>
       onInitialized: (context, value, state) => (state as TextEditingController).text = 'QaQaQa',
     );
 
+    final checkbox = binder.addValue<bool?>('check', false,
+      onEvent: (value, event, parameter) => value.value = !(value.value as bool? ?? false));
+
     final button = binder.addValue<bool>('button', false, onEvent: <bool>(value, event, parameter) => cnt.value++);
+  }
+
+  checkEvent(ValueState value, dynamic event, dynamic parameter) 
+  {
+    value.value = !(value.value as bool? ?? false);
   }
 
   @override
@@ -136,21 +143,21 @@ class _MyHomePageState extends State<MyHomePage>
               //_counter.buildWidget
               Checkbox
               (
-                value: true,
+                value: isChecked,
+                tristate: true,
                 fillColor: MaterialStateProperty.resolveWith(getColor),
-                onChanged:
-                null /*(value) 
+                onChanged: (value) 
                 {
                   setState
                   (
                     () 
                     {
-                      isChecked = value!;
+                      isChecked = !(isChecked ?? false);
                     }
                   );
-                }*/
-                ,
+                },
               ),
+              EventBinderBuilder.buildCheckBox(context, bindValue: 'check'),
               EventBinder.of(context)['counter'].buildWidget
               (
                 context, builder: <String>(context, value, child) 
@@ -447,7 +454,7 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
 typedef ValueStateWidgetBuilder<T> = Widget Function(BuildContext context, ValueState<T> value, Widget? child);
 typedef ValueStateInitializer = dynamic Function(BuildContext context, ValueState value);
 typedef ValueStateInitializedEvent = Function(BuildContext context, ValueState value, dynamic state);
-typedef ValueStateEvent = Function<T>(ValueState<T> value, dynamic event, dynamic parameter);
+typedef ValueStateEvent = Function(ValueState value, dynamic event, dynamic parameter);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -569,6 +576,70 @@ class EventBinderBuilder
           semanticsLabel: binder.readOrDefault(bindSemanticsLabel, bindSemanticsLabelParam, semanticsLabel),
           textWidthBasis: textWidthBasis,
           textHeightBehavior: textHeightBehavior
+        );
+      }
+    );
+  }
+
+  static Widget buildCheckBox
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      bool tristate = false,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      MouseCursor? mouseCursor,
+      String? mouseValue,
+      dynamic mouseValueParam,
+      //////////////
+      Color? activeColor,
+      MaterialStateProperty<Color?>? fillColor,
+      Color? checkColor,
+      Color? focusColor,
+      Color? hoverColor,
+      MaterialStateProperty<Color?>? overlayColor,
+      double? splashRadius,
+      MaterialTapTargetSize? materialTapTargetSize,
+      VisualDensity? visualDensity,
+      FocusNode? focusNode,
+      bool autofocus = false,
+      OutlinedBorder? shape,
+      BorderSide? side}
+  ) 
+  {
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      builder: <bool>(context, value, child) 
+      {
+        return Checkbox
+        (
+          key: key,
+          value: binder.readOrDefault(bindValue, bindValueParam, tristate ? null : false),
+          onChanged: binder.readOrDefault(enabledValue, enabledValueParam, enabled)
+          ? null
+          : (v) => (value.doEvevent(event: null, parameter: v)),
+          mouseCursor: binder.readOrDefault(mouseValue, mouseValueParam, mouseCursor),
+          activeColor: activeColor,
+          fillColor: fillColor,
+          checkColor: checkColor,
+          focusColor: focusColor,
+          hoverColor: hoverColor,
+          overlayColor: overlayColor,
+          splashRadius: splashRadius,
+          materialTapTargetSize: materialTapTargetSize,
+          visualDensity: visualDensity,
+          focusNode: focusNode,
+          shape: shape,
+          side: side,
         );
       }
     );
