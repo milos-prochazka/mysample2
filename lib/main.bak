@@ -1,8 +1,11 @@
 // ignore_for_file: unnecessary_this
 import 'dart:collection';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'event_binder_builder.dart';
 
 class CustomWidgetData 
 {
@@ -54,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage>
   final binder = EventBinder();
   bool initialized = false;
   bool? isChecked = null;
+  bool _lights = false;
 
   _MyHomePageState() 
   {
@@ -104,7 +108,93 @@ class _MyHomePageState extends State<MyHomePage>
   {
     initContext(context);
 
-    Color getColor(Set<MaterialState> states) 
+    return CheckboxTheme
+    (
+      data: getCheckboxTheme(context),
+      child: binder.build
+      (
+        context: context,
+        builder: (BuildContext context) => Scaffold
+        (
+          appBar: AppBar(title: Text(widget.title)),
+          body: Center
+          (
+            child: Column
+            (
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>
+              [
+                const Text('You have pushed the button this many times:'),
+                //_counter.buildWidget
+                Checkbox
+                (
+                  value: isChecked,
+                  tristate: true,
+                  //overlayColor: MaterialStateProperty.resolveWith(getOverlayColor),
+                  onChanged: (value) 
+                  {
+                    setState
+                    (
+                      () 
+                      {
+                        isChecked = !(isChecked ?? false);
+                      }
+                    );
+                  },
+                ),
+                //EventBinderBuilder.buildCheckBox(context, bindValue: 'check', fillColor: MaterialStateProperty.resolveWith(getColor),),
+                EventBinder.of(context)['counter'].buildWidget
+                (
+                  context,
+                  builder: <String>(context, value, child) 
+                  {
+                    final style = binder['style'].read<TextStyle?>();
+                    return Text(value.readString('aaa'), style: style);
+                  }
+                ),
+                EventBinderBuilder.buildText(context, bindValue: 'counter', bindStyle: 'style'),
+                binder['editor'].buildWidget
+                (
+                  context, builder: (context, value, child) 
+                  {
+                    return TextField
+                    (
+                      controller: value.setState
+                      (
+                        context: context,
+                        initializer: (context, value) => TextEditingController(text: value.readString())
+                      ),
+                      inputFormatters: 
+                      [
+                        FilteringTextInputFormatter.allow(RegExp(r'\d{1,2}\-?\d{0,2}')),
+                        //FilteringTextInputFormatter.deny(RegExp('[abFeG]')),
+                      ],
+                      enabled: false,
+                    );
+                  }
+                ),
+              ],
+            ),
+          ),
+          floatingActionButton: FloatingActionButton
+          (
+            child: const Icon(Icons.plus_one),
+            onPressed: () 
+            {
+              //var v = binder['counter'];
+              //v.value++;
+
+              EventBinder.of(context)['button'].doEvevent();
+            },
+          ),
+        )
+      )
+    );
+  }
+
+  CheckboxThemeData getCheckboxTheme(BuildContext context) 
+  {
+    Color fillColor(Set<MaterialState> states) 
     {
       const Set<MaterialState> interactiveStates = <MaterialState>
       {
@@ -126,82 +216,30 @@ class _MyHomePageState extends State<MyHomePage>
       }
     }
 
-    return binder.build
-    (
-      context: context,
-      builder: (BuildContext context) => Scaffold
-      (
-        appBar: AppBar(title: Text(widget.title)),
-        body: Center
-        (
-          child: Column
-          (
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>
-            [
-              const Text('You have pushed the button this many times:'),
-              //_counter.buildWidget
-              Checkbox
-              (
-                value: isChecked,
-                tristate: true,
-                fillColor: MaterialStateProperty.resolveWith(getColor),
-                onChanged: (value) 
-                {
-                  setState
-                  (
-                    () 
-                    {
-                      isChecked = !(isChecked ?? false);
-                    }
-                  );
-                },
-              ),
-              EventBinderBuilder.buildCheckBox(context, bindValue: 'check'),
-              EventBinder.of(context)['counter'].buildWidget
-              (
-                context, builder: <String>(context, value, child) 
-                {
-                  final style = binder['style'].read<TextStyle?>();
-                  return Text(value.readString('aaa'), style: style);
-                }
-              ),
-              EventBinderBuilder.buildText(context, bindValue: 'counter', bindStyle: 'style'),
-              binder['editor'].buildWidget
-              (
-                context, builder: (context, value, child) 
-                {
-                  return TextField
-                  (
-                    controller: value.setState
-                    (
-                      context: context,
-                      initializer: (context, value) => TextEditingController(text: value.readString())
-                    ),
-                    inputFormatters: 
-                    [
-                      FilteringTextInputFormatter.allow(RegExp(r'\d{1,2}\-?\d{0,2}')),
-                      //FilteringTextInputFormatter.deny(RegExp('[abFeG]')),
-                    ],
-                  );
-                }
-              ),
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton
-        (
-          child: const Icon(Icons.plus_one),
-          onPressed: () 
-          {
-            //var v = binder['counter'];
-            //v.value++;
+    Color overlayColor(Set<MaterialState> states) 
+    {
+      if (states.contains(MaterialState.disabled)) 
+      {
+        return Colors.transparent;
+      } 
+      else 
+      {
+        return Colors.blue.withAlpha(20);
+      }
+    }
 
-            EventBinder.of(context)['button'].doEvevent();
-          },
-        ),
-      )
+    Color checkColor(Set<MaterialState> states) 
+    {
+      return Colors.transparent;
+    }
+
+    final result = CheckboxTheme.of(context).copyWith
+    (
+      fillColor: MaterialStateColor.resolveWith(fillColor),
+      overlayColor: MaterialStateColor.resolveWith(overlayColor)
     );
+
+    return result;
   }
 }
 
@@ -511,137 +549,3 @@ class _ValueStateBuilderState<T> extends State<ValueStateBuilder>
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
-
-class EventBinderBuilder 
-{
-  static Widget buildText
-  (
-    BuildContext context,
-    {required String bindValue,
-      dynamic bindValueParam,
-      //////////////
-      Key? key,
-      //////////////
-      TextStyle? style,
-      String? bindStyle,
-      dynamic bindStyleParam,
-      //////////////
-      StrutStyle? strutStyle,
-      String? bindStrutStyle,
-      dynamic bindStrutStyleParam,
-      //////////////
-      TextAlign? textAlign,
-      //////////////
-      TextDirection? textDirection,
-      String? bindTextDirection,
-      dynamic bindTextDirectionParam,
-      //////////////
-      Locale? locale,
-      String? bindLocale,
-      dynamic bindLocaleParam,
-      //////////////
-      bool? softWrap,
-      TextOverflow? overflow,
-      double? textScaleFactor,
-      int? maxLines,
-      //////////////
-      String? semanticsLabel,
-      String? bindSemanticsLabel,
-      dynamic bindSemanticsLabelParam,
-      //////////////
-      TextWidthBasis? textWidthBasis,
-      TextHeightBehavior? textHeightBehavior}
-  ) 
-  {
-    final binder = EventBinder.of(context);
-
-    return binder[bindValue].buildWidget
-    (
-      context, //
-      builder: <String>(context, value, child) 
-      {
-        return Text
-        (
-          value.readString(bindValueParam),
-          key: key,
-          style: binder.readOrDefault(bindStyle, bindStyleParam, style),
-          strutStyle: binder.readOrDefault(bindStrutStyle, bindStrutStyleParam, strutStyle),
-          textAlign: textAlign,
-          textDirection: binder.readOrDefault(bindTextDirection, bindTextDirectionParam, textDirection),
-          locale: binder.readOrDefault(bindLocale, bindLocaleParam, locale),
-          softWrap: softWrap,
-          overflow: overflow,
-          textScaleFactor: textScaleFactor,
-          maxLines: maxLines,
-          semanticsLabel: binder.readOrDefault(bindSemanticsLabel, bindSemanticsLabelParam, semanticsLabel),
-          textWidthBasis: textWidthBasis,
-          textHeightBehavior: textHeightBehavior
-        );
-      }
-    );
-  }
-
-  static Widget buildCheckBox
-  (
-    BuildContext context,
-    {required String bindValue,
-      dynamic bindValueParam,
-      //////////////
-      Key? key,
-      bool tristate = false,
-      //////////////
-      bool enabled = true,
-      String? enabledValue,
-      dynamic enabledValueParam,
-      //////////////
-      MouseCursor? mouseCursor,
-      String? mouseValue,
-      dynamic mouseValueParam,
-      //////////////
-      Color? activeColor,
-      MaterialStateProperty<Color?>? fillColor,
-      Color? checkColor,
-      Color? focusColor,
-      Color? hoverColor,
-      MaterialStateProperty<Color?>? overlayColor,
-      double? splashRadius,
-      MaterialTapTargetSize? materialTapTargetSize,
-      VisualDensity? visualDensity,
-      FocusNode? focusNode,
-      bool autofocus = false,
-      OutlinedBorder? shape,
-      BorderSide? side}
-  ) 
-  {
-    final binder = EventBinder.of(context);
-
-    return binder[bindValue].buildWidget
-    (
-      context, //
-      builder: <bool>(context, value, child) 
-      {
-        return Checkbox
-        (
-          key: key,
-          value: binder.readOrDefault(bindValue, bindValueParam, tristate ? null : false),
-          onChanged: binder.readOrDefault(enabledValue, enabledValueParam, enabled)
-          ? null
-          : (v) => (value.doEvevent(event: null, parameter: v)),
-          mouseCursor: binder.readOrDefault(mouseValue, mouseValueParam, mouseCursor),
-          activeColor: activeColor,
-          fillColor: fillColor,
-          checkColor: checkColor,
-          focusColor: focusColor,
-          hoverColor: hoverColor,
-          overlayColor: overlayColor,
-          splashRadius: splashRadius,
-          materialTapTargetSize: materialTapTargetSize,
-          visualDensity: visualDensity,
-          focusNode: focusNode,
-          shape: shape,
-          side: side,
-        );
-      }
-    );
-  }
-}
