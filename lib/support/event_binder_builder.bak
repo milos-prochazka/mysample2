@@ -58,16 +58,40 @@ class EventBinderBuilder
         (
           value.readString(bindValueParam),
           key: key,
-          style: binder.readOrDefault(bindStyle, style, bindStyleParam, value),
-          strutStyle: binder.readOrDefault(bindStrutStyle, strutStyle, bindStrutStyleParam, value),
+          style: binder.readOrDefault
+          (
+            defaultValue: style, sourceValueName: bindStyle, propertySource: value, keyParameter: bindStyleParam
+          ),
+          strutStyle: binder.readOrDefault
+          (
+            defaultValue: strutStyle,
+            sourceValueName: bindStrutStyle,
+            propertySource: value,
+            keyParameter: bindStrutStyleParam
+          ),
           textAlign: textAlign,
-          textDirection: binder.readOrDefault(bindTextDirection, textDirection, bindTextDirectionParam, value),
-          locale: binder.readOrDefault(bindLocale, locale, bindLocaleParam, value),
+          textDirection: binder.readOrDefault
+          (
+            defaultValue: textDirection,
+            sourceValueName: bindTextDirection,
+            propertySource: value,
+            keyParameter: bindTextDirectionParam
+          ),
+          locale: binder.readOrDefault
+          (
+            defaultValue: locale, sourceValueName: bindLocale, propertySource: value, keyParameter: bindLocaleParam
+          ),
           softWrap: softWrap,
           overflow: overflow,
           textScaleFactor: textScaleFactor,
           maxLines: maxLines,
-          semanticsLabel: binder.readOrDefault(bindSemanticsLabel, semanticsLabel, bindSemanticsLabelParam, value),
+          semanticsLabel: binder.readOrDefault
+          (
+            defaultValue: semanticsLabel,
+            sourceValueName: bindSemanticsLabel,
+            propertySource: value,
+            keyParameter: bindSemanticsLabelParam
+          ),
           textWidthBasis: textWidthBasis,
           textHeightBehavior: textHeightBehavior
         );
@@ -117,11 +141,33 @@ class EventBinderBuilder
         return Checkbox
         (
           key: key,
-          value: binder.readOrDefault(bindValue, tristate ? null : false, bindValueParam, value),
-          onChanged: binder.readOrDefault(enabledValue, enabled, enabledValueParam, value)
+          // value
+          value: binder.readOrDefault
+          (
+            defaultValue: tristate ? null : false,
+            sourceValueName: bindValue,
+            propertySource: value,
+            keyParameter: bindValueParam
+          ),
+          // onChanged event
+          onChanged: binder.readOrDefault
+          (
+            defaultValue: enabled,
+            sourceValueName: enabledValue,
+            propertySource: value,
+            keyParameter: enabledValueParam
+          )
           ? (v) => (value.doEvent(event: null, parameter: v))
           : null,
-          mouseCursor: binder.readOrDefault(mouseValue, mouseCursor, mouseValueParam, value),
+          // mouseCursor
+          mouseCursor: binder.readOrDefault
+          (
+            defaultValue: mouseCursor,
+            sourceValueName: mouseValue,
+            propertySource: value,
+            keyParameter: mouseValueParam
+          ),
+          //
           activeColor: activeColor,
           fillColor: fillColor,
           checkColor: checkColor,

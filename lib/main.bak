@@ -65,14 +65,22 @@ class _MyHomePageState extends State<MyHomePage>
     final cnt = binder.addValue
     (
       'counter', 1,
+      tag: 'qAqA',
       presenter: <int>(value, param) => '[$value]',
-      onInitialized: (context, value, state) => (value.setProperty('style', style1))
+      onValueChanged: (value) => value.setProperty('style', (value.value & 1) == 1 ? style1 : style2)
     );
+    cnt.addValueListener
+    (
+      (value, event, parameter) 
+      {
+        print('${value.value} ${value.tag} $event $parameter');
+      }, event: 'EVENT', parameter: 2.33
+    );
+    //cnt.addValueListener((value,event,param) => value.setProperty('style', (value.value & 1) == 1 ? style1 : style2));
 
-    cnt.addListener(() => cnt.setProperty('style', (cnt.value & 1) == 1 ? style1 : style2));
-
-    final style = binder.addValue<TextStyle?>('style', null,
+    binder.addValue<TextStyle?>('style', style1,
       presenter: <TextStyle>(value, param) => (cnt.value & 1) == 1 ? style1 : style2);
+
     final editor = binder.addValue<String>
     (
       'editor',
@@ -107,8 +115,9 @@ class _MyHomePageState extends State<MyHomePage>
 
     style1 = Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.red, fontWeight: FontWeight.bold);
     style2 = Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.green);
+    binder.forceNotifyAll();
 
-    initialized = false;
+    initialized = true;
   }
 
   final Widget goodJob = const Text('Good job!');

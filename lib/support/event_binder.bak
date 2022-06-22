@@ -19,13 +19,14 @@ class EventBinder
   (
     String name, T value,
     {ValuePresenter? presenter,
-      VoidCallback? listener,
       ValueStateInitializedEvent? onInitialized,
-      ValueStateEvent? onEvent}
+      ValueChangedEvent? onValueChanged,
+      ValueStateEvent? onEvent,
+      dynamic tag}
   ) 
   {
     final result = ValueState<T>(name, value,
-      presenter: presenter, listener: listener, onInitialized: onInitialized, onEvent: onEvent);
+      presenter: presenter, onValueChanged: onValueChanged, onInitialized: onInitialized, onEvent: onEvent, tag: tag);
     values[name] = result;
     return result;
   }
@@ -47,22 +48,33 @@ class EventBinder
     return ihnerited!.binder;
   }
 
-  T readOrDefault<T>(String? valueName, T defaultValue, [dynamic valueParam, ValueState? propertyValue]) 
+  forceNotifyAll() 
   {
-    if (valueName == null) 
+    for (final entry in this.values.entries) 
     {
-      if (valueParam == null || propertyValue == null) 
+      entry.value.forceValueNotify();
+    }
+  }
+
+  T readOrDefault<T>
+  (
+    {required T defaultValue, String? sourceValueName, ValueState? propertySource, dynamic keyParameter}
+  ) 
+  {
+    if (sourceValueName == null) 
+    {
+      if (keyParameter == null || propertySource == null) 
       {
         return defaultValue;
       } 
       else 
       {
-        return propertyValue.getProperty(valueParam) ?? defaultValue;
+        return propertySource.getProperty(keyParameter) ?? defaultValue;
       }
     } 
     else 
     {
-      return values[valueName]?.read<T>(valueParam) ?? defaultValue;
+      return values[sourceValueName]?.read<T>(keyParameter) ?? defaultValue;
     }
   }
 }
@@ -191,27 +203,23 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
   String name;
   ValuePresenter? presenter;
   dynamic state;
-  ValueStateInitializedEvent? onInitialized;
-  ValueStateEvent? _onEvent;
+  final ValueStateInitializedEvent? onInitialized;
+  final ValueStateEvent? onEvent;
+  final ValueChangedEvent? onValueChanged;
   Map<dynamic, dynamic>? _properties;
+  dynamic tag;
 
   ValueState
   (
     this.name, this._value,
     {this.presenter,
-      VoidCallback? listener,
       this.onInitialized,
-      ValueStateEvent? onEvent,
+      this.onEvent,
+      this.onValueChanged,
+      this.tag,
       Map<dynamic, dynamic>? properties}
   )
-  : _onEvent = onEvent,
-  _properties = properties 
-  {
-    if (listener != null) 
-    {
-      addListener(listener);
-    }
-  }
+  : _properties = properties;
 
   P read<P>([dynamic parameter]) => (presenter == null) ? _value as P : presenter!<T>(_value, parameter) as P;
   String readString([dynamic parameter]) =>
@@ -227,7 +235,7 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
     if (_value != newValue) 
     {
       _value = newValue;
-      this.notifyListeners();
+      forceValueNotify();
     }
   }
 
@@ -246,17 +254,48 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
   forceValue(T newValue) 
   {
     _value = newValue;
-    this.notifyListeners();
+    forceValueNotify();
   }
+
+  var _nestedNotification = false;
+  var _delayedNotification = false;
 
   forceValueNotify() 
   {
-    this.notifyListeners();
+    if (_nestedNotification) 
+    {
+      _delayedNotification = true;
+    } 
+    else 
+    {
+      try 
+      {
+        _nestedNotification = true;
+
+        do 
+        {
+          _delayedNotification = false;
+
+          onValueChanged?.call(this);
+          notifyListeners();
+        } 
+        while (_delayedNotification);
+      } 
+      finally 
+      {
+        _nestedNotification = false;
+      }
+    }
+  }
+
+  addValueListener(ValueStateEvent listener, {dynamic event, dynamic parameter}) 
+  {
+    this.addListener(() => listener.call(this, event, parameter));
   }
 
   doEvent({dynamic event, dynamic parameter}) 
   {
-    this._onEvent?.call(this, event, parameter);
+    this.onEvent?.call(this, event, parameter);
   }
 
   Widget buildWidget(BuildContext context, {required ValueStateWidgetBuilder<T> builder, Widget? child}) 
@@ -278,7 +317,7 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
     if (forceNotify || old != value) 
     {
       this._properties![key] = value;
-      this.notifyListeners();
+      this.forceValueNotify();
     }
   }
 }
@@ -287,6 +326,7 @@ typedef ValueStateWidgetBuilder<T> = Widget Function(BuildContext context, Value
 typedef ValueStateInitializer = dynamic Function(BuildContext context, ValueState value);
 typedef ValueStateInitializedEvent = Function(BuildContext context, ValueState value, dynamic state);
 typedef ValueStateEvent = Function(ValueState value, dynamic event, dynamic parameter);
+typedef ValueChangedEvent = Function(ValueState value);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
