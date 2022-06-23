@@ -1,6 +1,8 @@
 import 'dart:collection';
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -181,6 +183,88 @@ class EventBinderBuilder
           shape: shape,
           side: side,
         );
+      }
+    );
+  }
+
+  static Widget buildTextField
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      TextEditingController? controller,
+      FocusNode? focusNode,
+      InputDecoration? decoration = const InputDecoration(),
+      TextInputType? keyboardType,
+      TextInputAction? textInputAction,
+      TextCapitalization textCapitalization = TextCapitalization.none,
+      TextStyle? style,
+      StrutStyle? strutStyle,
+      TextAlign textAlign = TextAlign.start,
+      TextAlignVertical? textAlignVertical,
+      TextDirection? textDirection,
+      bool readOnly = false,
+      ToolbarOptions? toolbarOptions,
+      bool? showCursor,
+      bool autofocus = false,
+      String obscuringCharacter = '•',
+      bool obscureText = false,
+      bool autocorrect = true,
+      SmartDashesType? smartDashesType,
+      SmartQuotesType? smartQuotesType,
+      bool enableSuggestions = true,
+      int? maxLines = 1,
+      int? minLines,
+      bool expands = false,
+      int? maxLength,
+      MaxLengthEnforcement? maxLengthEnforcement,
+      ValueChanged<String>? onChanged,
+      VoidCallback? onEditingComplete,
+      ValueChanged<String>? onSubmitted,
+      AppPrivateCommandCallback? onAppPrivateCommand,
+      List<TextInputFormatter>? inputFormatters,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      double cursorWidth = 2.0,
+      double? cursorHeight,
+      Radius? cursorRadius,
+      Color? cursorColor,
+      BoxHeightStyle selectionHeightStyle = BoxHeightStyle.tight,
+      BoxWidthStyle selectionWidthStyle = BoxWidthStyle.tight,
+      Brightness? keyboardAppearance,
+      EdgeInsets scrollPadding = const EdgeInsets.all(20.0),
+      DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+      bool? enableInteractiveSelection,
+      TextSelectionControls? selectionControls,
+      GestureTapCallback? onTap,
+      //////////////
+      MouseCursor? mouseCursor,
+      String? mouseValue,
+      dynamic mouseValueParam,
+      //////////////
+      InputCounterWidgetBuilder? buildCounter,
+      ScrollController? scrollController,
+      ScrollPhysics? scrollPhysics,
+      Iterable<String>? autofillHints = const <String>[],
+      Clip clipBehavior = Clip.hardEdge,
+      String? restorationId,
+      bool scribbleEnabled = true,
+      bool enableIMEPersonalizedLearning = true}
+  ) 
+  {
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      builder: <String>(context, value, child) 
+      {
+        return Text('ddd');
       }
     );
   }

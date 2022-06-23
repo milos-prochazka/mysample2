@@ -91,113 +91,6 @@ class EventBinderWidget extends InheritedWidget
   }
 }
 
-/*typedef EventBinder_ValueBuilder = Function<T>();
-
-class EventInfo
-{
-  String id;
-  dynamic state;
-  Object? listenable;
-
-  EventInfo(this.id);
-
-  getValueBuilder<T>(BuildContext context,
-    {required ValueWidgetBuilder<T> widgetBuilder, EventBinder_ValueBuilder? valueBuilder, Widget? child})
-  {
-    if (state == null && valueBuilder != null)
-    {
-      state = valueBuilder<T>();
-      listenable = ValueNotifier<T>(state);
-    }
-
-    return ValueListenableBuilder
-    (
-      builder: widgetBuilder, valueListenable: listenable as ValueNotifier<T>, child: child
-    );
-  }
-}
-
-class EventHandler
-{
-  EventHandler? next;
-  EventHandler? prev;
-
-  EventHandler()
-  {
-    next = this;
-    prev = this;
-  }
-
-  void addNext(EventHandler nextEvent)
-  {
-    assert(next != null && prev != null && nextEvent.next != null && nextEvent.prev != null);
-
-    final nextP = nextEvent.prev!;
-    final thisN = this.next;
-
-    this.next = nextEvent;
-    nextEvent.prev = this;
-    nextP.next = thisN;
-  }
-
-  void addPrev(EventHandler prevEvent)
-  {
-    addPrev(this.prev!);
-  }
-
-  void remove()
-  {
-    if (this.next != null && this.prev != null)
-    {
-      this.prev!.next = this.next;
-      this.next!.prev = this.prev;
-      this.next = null;
-      this.prev = null;
-    }
-  }
-
-  void invalidate()
-  {
-    if (this.next != null && this.prev != null)
-    {
-      var event = this;
-
-      do
-      {
-        final nextEvent = event.next!;
-        event.next = null;
-        event.prev = null;
-        event = nextEvent;
-      }
-      while (event != this);
-    }
-  }
-}
-
-class EventValueNotifier<T> extends ValueNotifier<T>
-{
-  EventValueNotifier(super.value);
-
-  forceValue(T newValue)
-  {
-    if (value == newValue)
-    {
-      forceEvent();
-    }
-    else
-    {
-      value = newValue;
-    }
-  }
-
-  forceEvent()
-  {
-    this.notifyListeners();
-  }
-}
-*/
-/////////////////////////////////////////////////////////////////////////////////////////
-
 class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
 {
   String name;
@@ -384,9 +277,13 @@ class _ValueStateBuilderState<T> extends State<ValueStateBuilder>
 
 enum StdValueProperty
 {
-  enabled(1),
-  visible(2),
-  length(3);
+  enabled(0x0001),
+  visible(0x0002),
+  length(0x0003),
+  slected(0x0004),
+  checked(0x0005),
+  click(0x1000),
+  select(0x1001);
 
   final int value;
   const StdValueProperty(this.value);

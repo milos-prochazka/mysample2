@@ -69,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage>
       presenter: <int>(value, param) => '[$value]',
       onValueChanged: (value) => value.setProperty('style', (value.value & 1) == 1 ? style1 : style2)
     );
+
     cnt.addValueListener
     (
       (value, event, parameter)
@@ -83,9 +84,16 @@ class _MyHomePageState extends State<MyHomePage>
 
     final editor = binder.addValue<String>
     (
-      'editor',
-      'INIT text',
-      onInitialized: (context, value, state) => (state as TextEditingController).text = 'QaQaQa',
+      'editor', 'INIT text',
+      //onInitialized: (context, value, state) => (state as TextEditingController).text = 'QaQaQa',
+      onValueChanged: (value)
+      {
+        if (value.state != null)
+        {
+          final te = value.state as TextEditingController;
+          print('Text changed ${te.text}');
+        }
+      }
     );
 
     final checkbox = binder.addValue<bool?>('check', false,
@@ -180,14 +188,25 @@ class _MyHomePageState extends State<MyHomePage>
                       controller: value.setState
                       (
                         context: context,
-                        initializer: (context, value) => TextEditingController(text: value.readString())
+                        initializer: (context, value)
+                        {
+                          final result = TextEditingController(text: value.readString());
+                          result.addListener
+                          (
+                            ()
+                            {
+                              value.value = result.text;
+                            }
+                          );
+                          return result;
+                        }
                       ),
-                      inputFormatters:
+                      /*inputFormatters:
                       [
-                        FilteringTextInputFormatter.allow(RegExp(r'\d{1,2}\-?\d{0,2}')),
+                        FilteringTextInputFormatter.allow(RegExp(r'^\d{0,2}\-?\d{0,2}')),
                         //FilteringTextInputFormatter.deny(RegExp('[abFeG]')),
-                      ],
-                      enabled: false,
+                      ],*/
+                      enabled: true,
                     );
                   }
                 ),
