@@ -96,6 +96,21 @@ class _MyHomePageState extends State<MyHomePage>
       }
     );
 
+    final editor1 = binder.addValue<String>
+    (
+      'editor1', 'INIT 1 text',
+      //onInitialized: (context, value, state) => (state as TextEditingController).text = 'QaQaQa',
+      onValueChanged: (value)
+      {
+        if (value.state != null)
+        {
+          final te = value.state as TextEditingController;
+          print('Text changed ${te.text}');
+        }
+      },
+      onEvent: (value, event, parameter) => print('Event $event $parameter')
+    );
+
     final checkbox = binder.addValue<bool?>('check', false,
       onEvent: (value, event, parameter) => value.value = !(value.value as bool? ?? false));
 
@@ -121,8 +136,10 @@ class _MyHomePageState extends State<MyHomePage>
       return;
     }
 
-    style1 = Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.red, fontWeight: FontWeight.bold);
-    style2 = Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.green);
+    FocusNode fc;
+
+    style1 = Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.red, fontWeight: FontWeight.bold);
+    style2 = Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.green);
     binder.forceNotifyAll();
 
     initialized = true;
@@ -210,6 +227,7 @@ class _MyHomePageState extends State<MyHomePage>
                     );
                   }
                 ),
+                EventBinderBuilder.buildTextField(context, bindValue: 'editor1'),
               ],
             ),
           ),

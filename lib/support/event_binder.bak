@@ -282,8 +282,11 @@ enum StdValueProperty
   length(0x0003),
   slected(0x0004),
   checked(0x0005),
-  click(0x1000),
-  select(0x1001);
+  onClicked(0x1000),
+  onSelect(0x1001),
+  onComplete(0x1002),
+  onSubmited(0x1003),
+  onTap(0x1004);
 
   final int value;
   const StdValueProperty(this.value);
