@@ -136,8 +136,6 @@ class _MyHomePageState extends State<MyHomePage>
       return;
     }
 
-    FocusNode fc;
-
     style1 = Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.red, fontWeight: FontWeight.bold);
     style2 = Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.green);
     binder.forceNotifyAll();
