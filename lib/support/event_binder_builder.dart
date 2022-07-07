@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -159,7 +160,7 @@ class EventBinderBuilder
             propertySource: value,
             keyParameter: enabledValueParam
           )
-          ? (v) => (value.doEvent(event: null, parameter: v))
+          ? (v) => (value.doEvent(event: null, parameter: v)) // TODO Upravit checkbox na value.value = v
           : null,
           // mouseCursor
           mouseCursor: binder.readOrDefault
@@ -183,6 +184,249 @@ class EventBinderBuilder
           shape: shape,
           side: side,
         );
+      }
+    );
+  }
+
+  static Widget buildRadio<T>
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      required T checkedValue,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      MouseCursor? mouseCursor,
+      String? mouseValue,
+      dynamic mouseValueParam,
+      //////////////
+      bool toggleable = false,
+      Color? activeColor,
+      MaterialStateProperty<Color?>? fillColor,
+      Color? focusColor,
+      Color? hoverColor,
+      MaterialStateProperty<Color?>? overlayColor,
+      double? splashRadius,
+      MaterialTapTargetSize? materialTapTargetSize,
+      VisualDensity? visualDensity,
+      FocusNode? focusNode,
+      bool autofocus = false}
+  )
+  {
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      builder: <T>(context, v, child)
+      {
+        final value = v as ValueState<T?>;
+        return Radio<T>
+        (
+          key: key,
+          value: checkedValue as T,
+          groupValue: value.read<T?>(bindValueParam),
+          // onChanged event
+          onChanged: binder.readOrDefault
+          (
+            defaultValue: enabled,
+            sourceValueName: enabledValue,
+            propertySource: value,
+            keyParameter: enabledValueParam
+          )
+          ? (newValue) => value.value = newValue
+          : null,
+          // mouseCursor
+          mouseCursor: binder.readOrDefault
+          (
+            defaultValue: mouseCursor,
+            sourceValueName: mouseValue,
+            propertySource: value,
+            keyParameter: mouseValueParam
+          ),
+          //
+          toggleable: toggleable,
+          activeColor: activeColor,
+          fillColor: fillColor,
+          focusColor: focusColor,
+          hoverColor: hoverColor,
+          overlayColor: overlayColor,
+          splashRadius: splashRadius,
+          materialTapTargetSize: materialTapTargetSize,
+          visualDensity: visualDensity,
+          focusNode: focusNode,
+          autofocus: autofocus
+        );
+      }
+    );
+  }
+
+  static Widget buildRadioListTile<T>
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      required T checkedValue,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      bool toggleable = false,
+      Color? activeColor,
+      Widget? title,
+      Widget? subtitle,
+      bool isThreeLine = false,
+      bool? dense,
+      Widget? secondary,
+      bool selected = false,
+      ListTileControlAffinity controlAffinity = ListTileControlAffinity.platform,
+      bool autofocus = false,
+      EdgeInsetsGeometry? contentPadding,
+      ShapeBorder? shape,
+      Color? tileColor,
+      Color? selectedTileColor,
+      VisualDensity? visualDensity,
+      FocusNode? focusNode,
+      bool? enableFeedback}
+  )
+  {
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      builder: <T>(context, v, child)
+      {
+        final value = v as ValueState<T?>;
+        return RadioListTile<T>
+        (
+          key: key,
+          value: checkedValue as T,
+          groupValue: value.read<T?>(bindValueParam),
+          // onChanged event
+          onChanged: binder.readOrDefault
+          (
+            defaultValue: enabled,
+            sourceValueName: enabledValue,
+            propertySource: value,
+            keyParameter: enabledValueParam
+          )
+          ? (newValue) => value.value = newValue
+          : null,
+          //
+          toggleable: toggleable,
+          activeColor: activeColor,
+          title: title,
+          subtitle: subtitle,
+          isThreeLine: isThreeLine,
+          dense: dense,
+          secondary: secondary,
+          selected: selected,
+          controlAffinity: controlAffinity,
+          autofocus: autofocus,
+          contentPadding: contentPadding,
+          shape: shape,
+          tileColor: tileColor,
+          visualDensity: visualDensity,
+          focusNode: focusNode,
+          enableFeedback: enableFeedback
+        );
+      }
+    );
+  }
+
+  static Widget buildBasicRadioColumn<T>
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      required List<T> checkedValues,
+      List<Widget>? titleWidgets,
+      List<String>? titleTexts,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      bool toggleable = false,
+      Color? activeColor,
+      bool isThreeLine = false,
+      bool? dense,
+      Widget? secondary,
+      bool selected = false,
+      ListTileControlAffinity controlAffinity = ListTileControlAffinity.platform,
+      bool autofocus = false,
+      EdgeInsetsGeometry? contentPadding,
+      ShapeBorder? shape,
+      Color? tileColor,
+      Color? selectedTileColor,
+      VisualDensity? visualDensity,
+      FocusNode? focusNode,
+      bool? enableFeedback}
+  )
+  {
+    int count = math.max(titleWidgets?.length ?? 0, titleTexts?.length ?? 0);
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      builder: <T>(context, v, child)
+      {
+        final value = v as ValueState<T?>;
+        final children = <Widget>[];
+
+        for (int i = 0; i < count; i++)
+        {
+          final title = i < (titleWidgets?.length ?? 0) ? titleWidgets![i] : Text(titleTexts![i]);
+          children.add
+          (
+            RadioListTile<T>
+            (
+              key: key,
+              value: checkedValues[i] as T,
+              groupValue: value.read<T?>(bindValueParam),
+              // onChanged event
+              onChanged: binder.readOrDefault
+              (
+                defaultValue: enabled,
+                sourceValueName: enabledValue,
+                propertySource: value,
+                keyParameter: enabledValueParam
+              )
+              ? (newValue) => value.value = newValue
+              : null,
+              //
+              toggleable: toggleable,
+              activeColor: activeColor,
+              title: title,
+              isThreeLine: isThreeLine,
+              dense: dense,
+              secondary: secondary,
+              selected: selected,
+              controlAffinity: controlAffinity,
+              autofocus: autofocus,
+              contentPadding: contentPadding,
+              shape: shape,
+              tileColor: tileColor,
+              visualDensity: visualDensity,
+              focusNode: focusNode,
+              enableFeedback: enableFeedback
+            )
+          );
+        }
+
+        return Column(children: children);
       }
     );
   }

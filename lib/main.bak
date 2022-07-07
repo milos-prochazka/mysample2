@@ -111,8 +111,12 @@ class _MyHomePageState extends State<MyHomePage>
       onEvent: (value, event, parameter) => print('Event $event $parameter')
     );
 
+    // TODO Upravit checkbox
     final checkbox = binder.addValue<bool?>('check', false,
       onEvent: (value, event, parameter) => value.value = !(value.value as bool? ?? false));
+
+    final radio = binder.addValue<RadioValues?>('radio', RadioValues.second,
+      onValueChanged: (value) => print(value.value.toString()));
 
     final button = binder.addValue<bool>('button', false, onEvent: <bool>(value, event, parameter) => cnt.value++);
   }
@@ -158,76 +162,80 @@ class _MyHomePageState extends State<MyHomePage>
         builder: (BuildContext context) => Scaffold
         (
           appBar: AppBar(title: Text(widget.title)),
-          body: Center
+          body: SingleChildScrollView
           (
-            child: Column
+            child: Center
             (
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>
-              [
-                const Text('You have pushed the button this many times:'),
-                //_counter.buildWidget
-                Checkbox
-                (
-                  value: isChecked,
-                  tristate: true,
-                  //overlayColor: MaterialStateProperty.resolveWith(getOverlayColor),
-                  onChanged: (value) 
-                  {
-                    setState
-                    (
-                      () 
-                      {
-                        isChecked = !(isChecked ?? false);
-                      }
-                    );
-                  },
-                ),
-                //EventBinderBuilder.buildCheckBox(context, bindValue: 'check', fillColor: MaterialStateProperty.resolveWith(getColor),),
-                EventBinder.of(context)['counter'].buildWidget
-                (
-                  context,
-                  builder: <String>(context, value, child) 
-                  {
-                    final style = binder['style'].read<TextStyle?>();
-                    return Text(value.readString('aaa'), style: style);
-                  }
-                ),
-                EventBinderBuilder.buildText(context, bindValue: 'counter', bindStyleParam: 'style'),
-                binder['editor'].buildWidget
-                (
-                  context, builder: (context, value, child) 
-                  {
-                    return TextField
-                    (
-                      controller: value.setState
+              child: Column
+              (
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>
+                [
+                  const Text('You have pushed the button this many times:'),
+                  //_counter.buildWidget
+                  Checkbox
+                  (
+                    value: isChecked,
+                    tristate: true,
+                    //overlayColor: MaterialStateProperty.resolveWith(getOverlayColor),
+                    onChanged: (value) 
+                    {
+                      setState
                       (
-                        context: context,
-                        initializer: (context, value) 
+                        () 
                         {
-                          final result = TextEditingController(text: value.readString());
-                          result.addListener
-                          (
-                            () 
-                            {
-                              value.value = result.text;
-                            }
-                          );
-                          return result;
+                          isChecked = !(isChecked ?? false);
                         }
-                      ),
-                      /*inputFormatters:
+                      );
+                    },
+                  ),
+                  //EventBinderBuilder.buildCheckBox(context, bindValue: 'check', fillColor: MaterialStateProperty.resolveWith(getColor),),
+                  EventBinder.of(context)['counter'].buildWidget
+                  (
+                    context,
+                    builder: <String>(context, value, child) 
+                    {
+                      final style = binder['style'].read<TextStyle?>();
+                      return Text(value.readString('aaa'), style: style);
+                    }
+                  ),
+                  EventBinderBuilder.buildText(context, bindValue: 'counter', bindStyleParam: 'style'),
+                  binder['editor'].buildWidget
+                  (
+                    context, builder: (context, value, child) 
+                    {
+                      return TextField
+                      (
+                        controller: value.setState
+                        (
+                          context: context,
+                          initializer: (context, value) 
+                          {
+                            final result = TextEditingController(text: value.readString());
+                            result.addListener
+                            (
+                              () 
+                              {
+                                value.value = result.text;
+                              }
+                            );
+                            return result;
+                          }
+                        ),
+                        /*inputFormatters:
                       [
                         FilteringTextInputFormatter.allow(RegExp(r'^\d{0,2}\-?\d{0,2}')),
                         //FilteringTextInputFormatter.deny(RegExp('[abFeG]')),
                       ],*/
-                      enabled: true,
-                    );
-                  }
-                ),
-                EventBinderBuilder.buildTextField(context, bindValue: 'editor1'),
-              ],
-            ),
+                        enabled: true,
+                      );
+                    }
+                  ),
+                  EventBinderBuilder.buildTextField(context, bindValue: 'editor1'),
+                  buildRadio(context, 'radio')
+                ],
+              ),
+            )
           ),
           floatingActionButton: FloatingActionButton
           (
@@ -243,6 +251,35 @@ class _MyHomePageState extends State<MyHomePage>
         )
       )
     );
+  }
+
+  Widget buildRadio(BuildContext context, String bindValue) 
+  {
+    return EventBinderBuilder.buildBasicRadioColumn<RadioValues>
+    (
+      context,
+      bindValue: bindValue,
+      checkedValues: [RadioValues.first, RadioValues.second, RadioValues.three],
+      titleTexts: ['prvni', 'druhy', 'treti'],
+      titleWidgets: [const Text('prvni widget')]
+    );
+    /*return Column(children: 
+    <Widget>[
+      /////////////////////
+      ListTile( 
+        title: Text('prvni'),
+        enabled: false,
+        leading: EventBinderBuilder.buildRadio<RadioValues>(context,bindValue: bindValue,checkedValue: RadioValues.first, enabled: false),
+      ),
+      ////////////////////
+      ListTile( 
+        title: Text('druhy'),
+        leading: EventBinderBuilder.buildRadio<RadioValues>(context,bindValue: bindValue,checkedValue: RadioValues.second
+        ),
+      ),
+      ////////////////////
+      EventBinderBuilder.buildRadioListTile<RadioValues>(context,bindValue: bindValue,  title: Text('treti'), checkedValue: RadioValues.three),
+    ],);*/
   }
 
   CheckboxThemeData getCheckboxTheme(BuildContext context) 
@@ -296,4 +333,5 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
+enum RadioValues { first, second, three }
 ///////////////////////////////////////////////////////////////////////////////////////
