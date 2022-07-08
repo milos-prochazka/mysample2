@@ -197,6 +197,7 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
     (
       valueState: this,
       builder: builder,
+      child: child,
     );
   }
 
@@ -286,7 +287,11 @@ enum StdValueProperty
   onSelect(0x1001),
   onComplete(0x1002),
   onSubmited(0x1003),
-  onTap(0x1004);
+  onTap(0x1004),
+  onPressed(0x1005),
+  onLongPress(0x1006),
+  onHover(0x1007),
+  onFocusChanged(0x1008);
 
   final int value;
   const StdValueProperty(this.value);

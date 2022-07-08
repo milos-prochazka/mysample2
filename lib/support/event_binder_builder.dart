@@ -102,6 +102,114 @@ class EventBinderBuilder
     );
   }
 
+  static Widget buildElevatedButton
+  (
+    BuildContext context,
+    {required String bindValue,
+      Key? key,
+      //////////////
+      ButtonStyle? style,
+      String? bindStyle,
+      dynamic bindStyleParam,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      FocusNode? focusNode,
+      bool autofocus = false,
+      Clip clipBehavior = Clip.none,
+      required Widget? child}
+  )
+  {
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      child: child, builder: (context, value, child)
+      {
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return ElevatedButton
+        (
+          key: key,
+          onPressed: enableEvent ? (() => value.onEvent?.call(value, StdValueProperty.onPressed, null)) : null,
+          onLongPress: enableEvent ? (() => value.onEvent?.call(value, StdValueProperty.onLongPress, null)) : null,
+          onHover: enableEvent ? ((param) => value.onEvent?.call(value, StdValueProperty.onHover, param)) : null,
+          onFocusChange:
+          enableEvent ? ((param) => value.onEvent?.call(value, StdValueProperty.onFocusChanged, param)) : null,
+          style: binder.readOrDefault
+          (
+            defaultValue: style, sourceValueName: bindStyle, propertySource: value, keyParameter: bindStyleParam
+          ),
+          focusNode: focusNode,
+          autofocus: autofocus,
+          clipBehavior: clipBehavior,
+          child: child,
+        );
+      }
+    );
+  }
+
+  static Widget buildElevatedButtonIcon
+  (
+    BuildContext context,
+    {required String bindValue,
+      Key? key,
+      //////////////
+      ButtonStyle? style,
+      String? bindStyle,
+      dynamic bindStyleParam,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      FocusNode? focusNode,
+      bool autofocus = false,
+      Clip clipBehavior = Clip.none,
+      required Widget label,
+      required Widget icon}
+  )
+  {
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      child: label, builder: (context, value, label)
+      {
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return ElevatedButton.icon
+        (
+          key: key,
+          onPressed: enableEvent ? (() => value.onEvent?.call(value, StdValueProperty.onPressed, null)) : null,
+          onLongPress: enableEvent ? (() => value.onEvent?.call(value, StdValueProperty.onLongPress, null)) : null,
+          onHover: enableEvent ? ((param) => value.onEvent?.call(value, StdValueProperty.onHover, param)) : null,
+          onFocusChange:
+          enableEvent ? ((param) => value.onEvent?.call(value, StdValueProperty.onFocusChanged, param)) : null,
+          style: binder.readOrDefault
+          (
+            defaultValue: style, sourceValueName: bindStyle, propertySource: value, keyParameter: bindStyleParam
+          ),
+          focusNode: focusNode,
+          autofocus: autofocus,
+          clipBehavior: clipBehavior,
+          label: label!,
+          icon: icon,
+        );
+      }
+    );
+  }
+
   static Widget buildCheckBox
   (
     BuildContext context,

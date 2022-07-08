@@ -119,6 +119,9 @@ class _MyHomePageState extends State<MyHomePage>
       onValueChanged: (value) => print(value.value.toString()));
 
     final button = binder.addValue<bool>('button', false, onEvent: <bool>(value, event, parameter) => cnt.value++);
+
+    binder.addValue<bool>('button1', false,
+      onEvent: (value, event, parameter) => print("button1 ${value.name} $event $parameter"));
   }
 
   checkEvent(ValueState value, dynamic event, dynamic parameter) 
@@ -232,7 +235,14 @@ class _MyHomePageState extends State<MyHomePage>
                     }
                   ),
                   EventBinderBuilder.buildTextField(context, bindValue: 'editor1'),
-                  buildRadio(context, 'radio')
+                  buildRadio(context, 'radio'),
+                  EventBinderBuilder.buildElevatedButtonIcon
+                  (
+                    context,
+                    bindValue: 'button1',
+                    label: const Text('BUTTON1', style: TextStyle(fontSize: 20.0, color: Colors.white)),
+                    icon: Text('icon')
+                  ),
                 ],
               ),
             )
@@ -263,16 +273,16 @@ class _MyHomePageState extends State<MyHomePage>
       titleTexts: ['prvni', 'druhy', 'treti'],
       titleWidgets: [const Text('prvni widget')]
     );
-    /*return Column(children: 
+    /*return Column(children:
     <Widget>[
       /////////////////////
-      ListTile( 
+      ListTile(
         title: Text('prvni'),
         enabled: false,
         leading: EventBinderBuilder.buildRadio<RadioValues>(context,bindValue: bindValue,checkedValue: RadioValues.first, enabled: false),
       ),
       ////////////////////
-      ListTile( 
+      ListTile(
         title: Text('druhy'),
         leading: EventBinderBuilder.buildRadio<RadioValues>(context,bindValue: bindValue,checkedValue: RadioValues.second
         ),
@@ -298,7 +308,7 @@ class _MyHomePageState extends State<MyHomePage>
       } 
       else if (states.any(interactiveStates.contains)) 
       {
-        return Colors.blue;
+        return Colors.lightBlue;
       } 
       else 
       {
