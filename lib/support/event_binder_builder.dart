@@ -20,8 +20,8 @@ class EventBinderBuilder
       Key? key,
       //////////////
       TextStyle? style,
-      String? bindStyle,
-      dynamic bindStyleParam,
+      String? styleValue,
+      dynamic styleParam,
       //////////////
       StrutStyle? strutStyle,
       String? bindStrutStyle,
@@ -63,7 +63,7 @@ class EventBinderBuilder
           key: key,
           style: binder.readOrDefault
           (
-            defaultValue: style, sourceValueName: bindStyle, propertySource: value, keyParameter: bindStyleParam
+            defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
           ),
           strutStyle: binder.readOrDefault
           (
@@ -109,8 +109,8 @@ class EventBinderBuilder
       Key? key,
       //////////////
       ButtonStyle? style,
-      String? bindStyle,
-      dynamic bindStyleParam,
+      String? styleValue,
+      dynamic styleParam,
       //////////////
       bool enabled = true,
       String? enabledValue,
@@ -144,7 +144,7 @@ class EventBinderBuilder
           enableEvent ? ((param) => value.onEvent?.call(value, StdValueProperty.onFocusChanged, param)) : null,
           style: binder.readOrDefault
           (
-            defaultValue: style, sourceValueName: bindStyle, propertySource: value, keyParameter: bindStyleParam
+            defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
           ),
           focusNode: focusNode,
           autofocus: autofocus,
@@ -162,8 +162,8 @@ class EventBinderBuilder
       Key? key,
       //////////////
       ButtonStyle? style,
-      String? bindStyle,
-      dynamic bindStyleParam,
+      String? styleValue,
+      dynamic styleParam,
       //////////////
       bool enabled = true,
       String? enabledValue,
@@ -198,13 +198,330 @@ class EventBinderBuilder
           enableEvent ? ((param) => value.onEvent?.call(value, StdValueProperty.onFocusChanged, param)) : null,
           style: binder.readOrDefault
           (
-            defaultValue: style, sourceValueName: bindStyle, propertySource: value, keyParameter: bindStyleParam
+            defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
           ),
           focusNode: focusNode,
           autofocus: autofocus,
           clipBehavior: clipBehavior,
           label: label!,
           icon: icon,
+        );
+      }
+    );
+  }
+
+  static Widget buildTextButton
+  (
+    BuildContext context,
+    {required String bindValue,
+      Key? key,
+      //////////////
+      ButtonStyle? style,
+      String? styleValue,
+      dynamic styleParam,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      FocusNode? focusNode,
+      bool autofocus = false,
+      Clip clipBehavior = Clip.none,
+      required Widget child}
+  )
+  {
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      child: child, //
+      builder: (context, value, child)
+      {
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return TextButton
+        (
+          key: key,
+          onPressed: enableEvent ? (() => value.onEvent?.call(value, StdValueProperty.onPressed, null)) : null,
+          onLongPress: enableEvent ? (() => value.onEvent?.call(value, StdValueProperty.onLongPress, null)) : null,
+          onHover: enableEvent ? ((param) => value.onEvent?.call(value, StdValueProperty.onHover, param)) : null,
+          onFocusChange:
+          enableEvent ? ((param) => value.onEvent?.call(value, StdValueProperty.onFocusChanged, param)) : null,
+          style: binder.readOrDefault
+          (
+            defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
+          ),
+          focusNode: focusNode,
+          autofocus: autofocus,
+          clipBehavior: clipBehavior,
+          child: child!,
+        );
+      }
+    );
+  }
+
+  static Widget buildTextButtonIcon
+  (
+    BuildContext context,
+    {required String bindValue,
+      Key? key,
+      //////////////
+      ButtonStyle? style,
+      String? styleValue,
+      dynamic styleParam,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      FocusNode? focusNode,
+      bool autofocus = false,
+      Clip clipBehavior = Clip.none,
+      required Widget icon,
+      required Widget label}
+  )
+  {
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      child: label, //
+      builder: (context, value, label)
+      {
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return TextButton.icon
+        (
+          key: key,
+          onPressed: enableEvent ? (() => value.onEvent?.call(value, StdValueProperty.onPressed, null)) : null,
+          onLongPress: enableEvent ? (() => value.onEvent?.call(value, StdValueProperty.onLongPress, null)) : null,
+          onHover: enableEvent ? ((param) => value.onEvent?.call(value, StdValueProperty.onHover, param)) : null,
+          onFocusChange:
+          enableEvent ? ((param) => value.onEvent?.call(value, StdValueProperty.onFocusChanged, param)) : null,
+          style: binder.readOrDefault
+          (
+            defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
+          ),
+          focusNode: focusNode,
+          autofocus: autofocus,
+          clipBehavior: clipBehavior,
+          label: label!,
+          icon: icon
+        );
+      }
+    );
+  }
+
+  static Widget buildOutlinedButton
+  (
+    BuildContext context,
+    {required String bindValue,
+      Key? key,
+      //////////////
+      ButtonStyle? style,
+      String? styleValue,
+      dynamic styleParam,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      FocusNode? focusNode,
+      bool autofocus = false,
+      Clip clipBehavior = Clip.none,
+      required Widget child}
+  )
+  {
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      child: child, //
+      builder: (context, value, child)
+      {
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return OutlinedButton
+        (
+          key: key,
+          onPressed: enableEvent ? (() => value.onEvent?.call(value, StdValueProperty.onPressed, null)) : null,
+          onLongPress: enableEvent ? (() => value.onEvent?.call(value, StdValueProperty.onLongPress, null)) : null,
+          onHover: enableEvent ? ((param) => value.onEvent?.call(value, StdValueProperty.onHover, param)) : null,
+          onFocusChange:
+          enableEvent ? ((param) => value.onEvent?.call(value, StdValueProperty.onFocusChanged, param)) : null,
+          style: binder.readOrDefault
+          (
+            defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
+          ),
+          focusNode: focusNode,
+          autofocus: autofocus,
+          clipBehavior: clipBehavior,
+          child: child!,
+        );
+      }
+    );
+  }
+
+  static Widget buildOutlinedButtonIcon
+  (
+    BuildContext context,
+    {required String bindValue,
+      Key? key,
+      //////////////
+      ButtonStyle? style,
+      String? styleValue,
+      dynamic styleParam,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      FocusNode? focusNode,
+      bool autofocus = false,
+      Clip clipBehavior = Clip.none,
+      required Widget icon,
+      required Widget label}
+  )
+  {
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      child: label, //
+      builder: (context, value, label)
+      {
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return OutlinedButton.icon
+        (
+          key: key,
+          onPressed: enableEvent ? (() => value.onEvent?.call(value, StdValueProperty.onPressed, null)) : null,
+          onLongPress: enableEvent ? (() => value.onEvent?.call(value, StdValueProperty.onLongPress, null)) : null,
+          style: binder.readOrDefault
+          (
+            defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
+          ),
+          focusNode: focusNode,
+          autofocus: autofocus,
+          clipBehavior: clipBehavior,
+          label: label!,
+          icon: icon
+        );
+      }
+    );
+  }
+
+  static Widget buildIconButton
+  (
+    BuildContext context,
+    {required String bindValue,
+      Key? key,
+      //////////////
+      IconButtonStyle? style,
+      String? styleValue,
+      dynamic styleParam,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      double? iconSize,
+      VisualDensity? visualDensity,
+      EdgeInsetsGeometry? padding,
+      AlignmentGeometry? alignment,
+      double? splashRadius,
+      Color? color,
+      Color? focusColor,
+      Color? hoverColor,
+      Color? highlightColor,
+      Color? splashColor,
+      Color? disabledColor,
+      //////////////
+      MouseCursor? mouseCursor,
+      String? mouseValue,
+      dynamic mouseValueParam,
+      //////////////
+      FocusNode? focusNode,
+      bool autofocus = false,
+      //////////////
+      String? tooltip,
+      String? tooltipValue,
+      dynamic tooltipValueParam,
+      //////////////
+      bool enableFeedback = true,
+      BoxConstraints? constraints,
+      required Widget icon}
+  )
+  {
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      child: icon, //
+      builder: (context, value, icon)
+      {
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        final btnStyle = binder.readOrDefault
+        (
+          defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
+        );
+
+        return IconButton
+        (
+          key: key,
+          onPressed: enableEvent ? (() => value.onEvent?.call(value, StdValueProperty.onPressed, null)) : null,
+          iconSize: iconSize ?? btnStyle?.iconSize,
+          padding: padding ?? btnStyle?.padding ?? const EdgeInsets.all(8.0),
+          alignment: alignment ?? btnStyle?.alignment ?? Alignment.center,
+          splashRadius: splashRadius ?? btnStyle?.splashRadius,
+          color: color ?? btnStyle?.color,
+          focusColor: focusColor ?? btnStyle?.focusColor,
+          hoverColor: hoverColor ?? btnStyle?.hoverColor,
+          highlightColor: highlightColor ?? btnStyle?.highlightColor,
+          splashColor: splashColor ?? btnStyle?.splashColor,
+          disabledColor: disabledColor ?? btnStyle?.disabledColor,
+          // mouseCursor
+          mouseCursor: binder.readOrDefault
+          (
+            defaultValue: mouseCursor,
+            sourceValueName: mouseValue,
+            propertySource: value,
+            keyParameter: mouseValueParam
+          ),
+          focusNode: focusNode,
+          autofocus: autofocus,
+          // mouseCursor
+          tooltip: binder.readOrDefault
+          (
+            defaultValue: tooltip,
+            sourceValueName: tooltipValue,
+            propertySource: value,
+            keyParameter: tooltipValueParam
+          ),
+          enableFeedback: enableFeedback,
+          constraints: constraints,
+          icon: icon!
         );
       }
     );
@@ -553,8 +870,8 @@ class EventBinderBuilder
       TextCapitalization textCapitalization = TextCapitalization.none,
       //////////////
       TextStyle? style,
-      String? bindStyle,
-      dynamic bindStyleParam,
+      String? styleValue,
+      dynamic styleParam,
       //////////////
       StrutStyle? strutStyle,
       String? bindStrutStyle,
@@ -639,7 +956,7 @@ class EventBinderBuilder
           textCapitalization: textCapitalization,
           style: binder.readOrDefault
           (
-            defaultValue: style, sourceValueName: bindStyle, propertySource: value, keyParameter: bindStyleParam
+            defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
           ),
           strutStyle: binder.readOrDefault
           (
@@ -710,6 +1027,66 @@ class EventBinderBuilder
           enableIMEPersonalizedLearning: enableIMEPersonalizedLearning,
         );
       }
+    );
+  }
+}
+
+class IconButtonStyle
+{
+  double? iconSize;
+  VisualDensity? visualDensity;
+  EdgeInsetsGeometry? padding;
+  AlignmentGeometry? alignment;
+  double? splashRadius;
+  Color? color;
+  Color? focusColor;
+  Color? hoverColor;
+  Color? highlightColor;
+  Color? splashColor;
+  Color? disabledColor;
+
+  IconButtonStyle
+  (
+    {this.iconSize,
+      this.visualDensity,
+      this.padding,
+      this.alignment,
+      this.splashRadius,
+      this.color,
+      this.focusColor,
+      this.hoverColor,
+      this.highlightColor,
+      this.splashColor,
+      this.disabledColor}
+  );
+
+  IconButtonStyle copyWith
+  (
+    {double? iconSize,
+      VisualDensity? visualDensity,
+      EdgeInsetsGeometry? padding,
+      AlignmentGeometry? alignment,
+      double? splashRadius,
+      Color? color,
+      Color? focusColor,
+      Color? hoverColor,
+      Color? highlightColor,
+      Color? splashColor,
+      Color? disabledColor}
+  )
+  {
+    return IconButtonStyle
+    (
+      iconSize: iconSize ?? this.iconSize,
+      visualDensity: visualDensity ?? this.visualDensity,
+      padding: padding ?? this.padding,
+      alignment: alignment ?? this.alignment,
+      splashRadius: splashRadius ?? this.splashRadius,
+      color: color ?? this.color,
+      focusColor: focusColor ?? this.focusColor,
+      hoverColor: hoverColor ?? this.hoverColor,
+      splashColor: splashColor ?? this.splashColor,
+      disabledColor: disabledColor ?? this.disabledColor
     );
   }
 }
