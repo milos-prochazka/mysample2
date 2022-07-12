@@ -118,6 +118,8 @@ class _MyHomePageState extends State<MyHomePage>
     final radio = binder.addValue<RadioValues?>('radio', RadioValues.second,
       onValueChanged: (value) => print(value.value.toString()));
 
+    binder.addValue<String?>('drop_down', 'Free');
+
     final button = binder.addValue<bool>('button', false, onEvent: <bool>(value, event, parameter) => cnt.value++);
 
     binder.addValue<bool>('button1', false,
@@ -202,7 +204,7 @@ class _MyHomePageState extends State<MyHomePage>
                       return Text(value.readString('aaa'), style: style);
                     }
                   ),
-                  EventBinderBuilder.buildText(context, bindValue: 'counter', bindStyleParam: 'style'),
+                  EventBinderBuilder.buildText(context, bindValue: 'counter', styleParam: 'style'),
                   binder['editor'].buildWidget
                   (
                     context, builder: (context, value, child) 
@@ -242,6 +244,22 @@ class _MyHomePageState extends State<MyHomePage>
                     bindValue: 'button1',
                     label: const Text('BUTTON1', style: TextStyle(fontSize: 20.0, color: Colors.white)),
                     icon: Text('icon')
+                  ),
+                  EventBinderBuilder.buildDropdownButton
+                  (
+                    context,
+                    bindValue: 'drop_down',
+                    items: <String>['One', 'Two', 'Free', 'Four'].map<DropdownMenuItem<String>>
+                    (
+                      (String value) 
+                      {
+                        return DropdownMenuItem<String>
+                        (
+                          value: value,
+                          child: Text(value),
+                        );
+                      }
+                    ).toList()
                   ),
                 ],
               ),

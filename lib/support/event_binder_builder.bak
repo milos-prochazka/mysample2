@@ -527,6 +527,99 @@ class EventBinderBuilder
     );
   }
 
+  static Widget buildDropdownButton<T>
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      required List<DropdownMenuItem<T>>? items,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      TextStyle? style,
+      String? styleValue,
+      dynamic styleParam,
+      //////////////
+      DropdownButtonBuilder? selectedItemBuilder,
+      Widget? hint,
+      Widget? disabledHint,
+      int elevation = 8,
+      Widget? underline,
+      Widget? icon,
+      Color? iconDisabledColor,
+      Color? iconEnabledColor,
+      double iconSize = 24.0,
+      bool isDense = false,
+      bool isExpanded = false,
+      double? itemHeight = kMinInteractiveDimension,
+      Color? focusColor,
+      FocusNode? focusNode,
+      bool autofocus = false,
+      Color? dropdownColor,
+      double? menuMaxHeight,
+      bool? enableFeedback,
+      AlignmentGeometry alignment = AlignmentDirectional.centerStart,
+      BorderRadius? borderRadius}
+  ) 
+  {
+    final binder = EventBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      builder: (context, value, label) 
+      {
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return DropdownButton<T>
+        (
+          key: key,
+          // style
+          style: binder.readOrDefault
+          (
+            defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
+          ),
+          // items
+          items: items,
+          // value
+          value: binder.readOrDefault
+          (
+            defaultValue: null, sourceValueName: bindValue, propertySource: value, keyParameter: bindValueParam
+          ),
+          selectedItemBuilder: selectedItemBuilder,
+          hint: hint,
+          disabledHint: disabledHint,
+          onChanged: (newValue) => enableEvent ? value.value = newValue : null,
+          onTap: () => enableEvent ? value.onEvent?.call(value, StdValueProperty.onClicked, null) : null,
+          elevation: elevation,
+          underline: underline,
+          icon: icon,
+          iconDisabledColor: iconDisabledColor,
+          iconEnabledColor: iconEnabledColor,
+          iconSize: iconSize,
+          isDense: isDense,
+          isExpanded: isExpanded,
+          itemHeight: itemHeight,
+          focusColor: focusColor,
+          focusNode: focusNode,
+          autofocus: autofocus,
+          dropdownColor: dropdownColor,
+          menuMaxHeight: menuMaxHeight,
+          enableFeedback: enableFeedback,
+          alignment: alignment,
+          borderRadius: borderRadius
+        );
+      }
+    );
+  }
+
   static Widget buildCheckBox
   (
     BuildContext context,
