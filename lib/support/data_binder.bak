@@ -5,11 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'event_binder_builder.dart';
+import 'data_binder_builder.dart';
 
 typedef ValuePresenter = dynamic Function<T>(T value, dynamic parameter);
 
-class EventBinder
+class DataBinder 
 {
   final values = <String, ValueState>{};
 
@@ -23,7 +23,7 @@ class EventBinder
       ValueChangedEvent? onValueChanged,
       ValueStateEvent? onEvent,
       dynamic tag}
-  )
+  ) 
   {
     final result = ValueState<T>(name, value,
       presenter: presenter, onValueChanged: onValueChanged, onInitialized: onInitialized, onEvent: onEvent, tag: tag);
@@ -31,26 +31,26 @@ class EventBinder
     return result;
   }
 
-  P read<P>(String name)
+  P read<P>(String name) 
   {
     return values[name]!.read<P>();
   }
 
-  Widget build({Key? key, required BuildContext context, required WidgetBuilder builder})
+  Widget build({Key? key, required BuildContext context, required WidgetBuilder builder}) 
   {
-    return EventBinderWidget(key: key, binder: this, child: Builder(builder: builder));
+    return DataBinderWidget(key: key, binder: this, child: Builder(builder: builder));
   }
 
-  static EventBinder of(BuildContext context)
+  static DataBinder of(BuildContext context) 
   {
-    final ihnerited = context.dependOnInheritedWidgetOfExactType<EventBinderWidget>();
+    final ihnerited = context.dependOnInheritedWidgetOfExactType<DataBinderWidget>();
 
     return ihnerited!.binder;
   }
 
-  forceNotifyAll()
+  forceNotifyAll() 
   {
-    for (final entry in this.values.entries)
+    for (final entry in this.values.entries) 
     {
       entry.value.forceValueNotify();
     }
@@ -59,39 +59,39 @@ class EventBinder
   T readOrDefault<T>
   (
     {required T defaultValue, String? sourceValueName, ValueState? propertySource, dynamic keyParameter}
-  )
+  ) 
   {
-    if (sourceValueName == null)
+    if (sourceValueName == null) 
     {
-      if (keyParameter == null || propertySource == null)
+      if (keyParameter == null || propertySource == null) 
       {
         return defaultValue;
-      }
-      else
+      } 
+      else 
       {
         return propertySource.getProperty(keyParameter) ?? defaultValue;
       }
-    }
-    else
+    } 
+    else 
     {
       return values[sourceValueName]?.read<T>(keyParameter) ?? defaultValue;
     }
   }
 }
 
-class EventBinderWidget extends InheritedWidget
+class DataBinderWidget extends InheritedWidget 
 {
-  final EventBinder binder;
-  const EventBinderWidget({super.key, required super.child, required this.binder});
+  final DataBinder binder;
+  const DataBinderWidget({super.key, required super.child, required this.binder});
 
   @override
-  bool updateShouldNotify(covariant InheritedWidget oldWidget)
+  bool updateShouldNotify(covariant InheritedWidget oldWidget) 
   {
     return true;
   }
 }
 
-class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
+class ValueState<T> extends ChangeNotifier implements ValueListenable<T> 
 {
   String name;
   ValuePresenter? presenter;
@@ -123,18 +123,18 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
   @override
   T get value => _value;
 
-  set value(T newValue)
+  set value(T newValue) 
   {
-    if (_value != newValue)
+    if (_value != newValue) 
     {
       _value = newValue;
       forceValueNotify();
     }
   }
 
-  S setState<S>({required BuildContext context, required ValueStateInitializer initializer})
+  S setState<S>({required BuildContext context, required ValueStateInitializer initializer}) 
   {
-    if (this.state == null)
+    if (this.state == null) 
     {
       final st = initializer(context, this);
       this.state = st ?? false;
@@ -144,7 +144,7 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
     return this.state as S;
   }
 
-  forceValue(T newValue)
+  forceValue(T newValue) 
   {
     _value = newValue;
     forceValueNotify();
@@ -153,45 +153,45 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
   var _nestedNotification = false;
   var _delayedNotification = false;
 
-  forceValueNotify()
+  forceValueNotify() 
   {
-    if (_nestedNotification)
+    if (_nestedNotification) 
     {
       _delayedNotification = true;
-    }
-    else
+    } 
+    else 
     {
-      try
+      try 
       {
         _nestedNotification = true;
 
-        do
+        do 
         {
           _delayedNotification = false;
 
           onValueChanged?.call(this);
           notifyListeners();
-        }
+        } 
         while (_delayedNotification);
-      }
-      finally
+      } 
+      finally 
       {
         _nestedNotification = false;
       }
     }
   }
 
-  addValueListener(ValueStateEvent listener, {dynamic event, dynamic parameter})
+  addValueListener(ValueStateEvent listener, {dynamic event, dynamic parameter}) 
   {
     this.addListener(() => listener.call(this, event, parameter));
   }
 
-  doEvent({dynamic event, dynamic parameter})
+  doEvent({dynamic event, dynamic parameter}) 
   {
     this.onEvent?.call(this, event, parameter);
   }
 
-  Widget buildWidget(BuildContext context, {required ValueStateWidgetBuilder<T> builder, Widget? child})
+  Widget buildWidget(BuildContext context, {required ValueStateWidgetBuilder<T> builder, Widget? child}) 
   {
     return ValueStateBuilder<T>
     (
@@ -203,12 +203,12 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
 
   dynamic getProperty(dynamic key) => this._properties?[key];
 
-  void setProperty(dynamic key, dynamic value, [bool forceNotify = false])
+  void setProperty(dynamic key, dynamic value, [bool forceNotify = false]) 
   {
     this._properties ??= <dynamic, dynamic>{};
     final old = this._properties![key];
 
-    if (forceNotify || old != value)
+    if (forceNotify || old != value) 
     {
       this._properties![key] = value;
       this.forceValueNotify();
@@ -224,7 +224,7 @@ typedef ValueChangedEvent = Function(ValueState value);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-class ValueStateBuilder<T> extends StatefulWidget
+class ValueStateBuilder<T> extends StatefulWidget 
 {
   final ValueState<T> valueState;
   final ValueStateWidgetBuilder<T> builder;
@@ -236,27 +236,27 @@ class ValueStateBuilder<T> extends StatefulWidget
   State<ValueStateBuilder> createState() => _ValueStateBuilderState<T>();
 }
 
-class _ValueStateBuilderState<T> extends State<ValueStateBuilder>
+class _ValueStateBuilderState<T> extends State<ValueStateBuilder> 
 {
   @override
-  void initState()
+  void initState() 
   {
     super.initState();
     widget.valueState.addListener(_valueChanged);
   }
 
   @override
-  Widget build(BuildContext context)
+  Widget build(BuildContext context) 
   {
     return widget.builder(context, widget.valueState, widget.child);
   }
 
   @override
-  void didUpdateWidget(ValueStateBuilder<T> oldWidget)
+  void didUpdateWidget(ValueStateBuilder<T> oldWidget) 
   {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.valueState != widget.valueState)
+    if (oldWidget.valueState != widget.valueState) 
     {
       oldWidget.valueState.removeListener(_valueChanged);
       widget.valueState.addListener(_valueChanged);
@@ -264,19 +264,19 @@ class _ValueStateBuilderState<T> extends State<ValueStateBuilder>
   }
 
   @override
-  void dispose()
+  void dispose() 
   {
     widget.valueState.removeListener(_valueChanged);
     super.dispose();
   }
 
-  void _valueChanged()
+  void _valueChanged() 
   {
     setState(() {});
   }
 }
 
-enum StdValueProperty
+enum StdValueProperty 
 {
   enabled(0x0001),
   visible(0x0002),
@@ -291,7 +291,10 @@ enum StdValueProperty
   onPressed(0x1005),
   onLongPress(0x1006),
   onHover(0x1007),
-  onFocusChanged(0x1008);
+  onFocusChanged(0x1008),
+  onChanged(0x1009),
+  onChangeStart(0x100A),
+  onChangeEnd(0x100B);
 
   final int value;
   const StdValueProperty(this.value);

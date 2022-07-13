@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'support/event_binder.dart';
-import 'support/event_binder_builder.dart';
+import 'support/data_binder.dart';
+import 'support/data_binder_builder.dart';
 
 class CustomWidgetData
 {
@@ -55,7 +55,7 @@ class MyHomePage extends StatefulWidget
 class _MyHomePageState extends State<MyHomePage>
 {
   TextStyle? style1, style2;
-  final binder = EventBinder();
+  final binder = DataBinder();
   bool initialized = false;
   bool? isChecked = null;
   bool _lights = false;
@@ -110,6 +110,8 @@ class _MyHomePageState extends State<MyHomePage>
       },
       onEvent: (value, event, parameter) => print('Event $event $parameter')
     );
+
+    binder.addValue<double>('slider', 0.5);
 
     // TODO Upravit checkbox
     final checkbox = binder.addValue<bool?>('check', false,
@@ -195,7 +197,7 @@ class _MyHomePageState extends State<MyHomePage>
                     },
                   ),
                   //EventBinderBuilder.buildCheckBox(context, bindValue: 'check', fillColor: MaterialStateProperty.resolveWith(getColor),),
-                  EventBinder.of(context)['counter'].buildWidget
+                  DataBinder.of(context)['counter'].buildWidget
                   (
                     context,
                     builder: <String>(context, value, child)
@@ -204,7 +206,7 @@ class _MyHomePageState extends State<MyHomePage>
                       return Text(value.readString('aaa'), style: style);
                     }
                   ),
-                  EventBinderBuilder.buildText(context, bindValue: 'counter', styleParam: 'style'),
+                  DataBinderBuilder.buildText(context, bindValue: 'counter', styleParam: 'style'),
                   binder['editor'].buildWidget
                   (
                     context, builder: (context, value, child)
@@ -236,16 +238,16 @@ class _MyHomePageState extends State<MyHomePage>
                       );
                     }
                   ),
-                  EventBinderBuilder.buildTextField(context, bindValue: 'editor1'),
+                  DataBinderBuilder.buildTextField(context, bindValue: 'editor1'),
                   buildRadio(context, 'radio'),
-                  EventBinderBuilder.buildElevatedButtonIcon
+                  DataBinderBuilder.buildElevatedButtonIcon
                   (
                     context,
                     bindValue: 'button1',
                     label: const Text('BUTTON1', style: TextStyle(fontSize: 20.0, color: Colors.white)),
                     icon: Text('icon')
                   ),
-                  EventBinderBuilder.buildDropdownButton
+                  DataBinderBuilder.buildDropdownButton
                   (
                     context,
                     bindValue: 'drop_down',
@@ -261,6 +263,8 @@ class _MyHomePageState extends State<MyHomePage>
                       }
                     ).toList()
                   ),
+                  DataBinderBuilder.buildSlider(context,
+                    bindValue: 'slider', labelBuilder: (sliderValue) => sliderValue.toStringAsFixed(3))
                 ],
               ),
             )
@@ -273,7 +277,7 @@ class _MyHomePageState extends State<MyHomePage>
               //var v = binder['counter'];
               //v.value++;
 
-              EventBinder.of(context)['button'].doEvent();
+              DataBinder.of(context)['button'].doEvent();
             },
           ),
         )
@@ -283,7 +287,7 @@ class _MyHomePageState extends State<MyHomePage>
 
   Widget buildRadio(BuildContext context, String bindValue)
   {
-    return EventBinderBuilder.buildBasicRadioColumn<RadioValues>
+    return DataBinderBuilder.buildBasicRadioColumn<RadioValues>
     (
       context,
       bindValue: bindValue,
