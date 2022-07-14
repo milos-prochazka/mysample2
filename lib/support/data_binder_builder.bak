@@ -1188,10 +1188,12 @@ class DataBinderBuilder
       builder: (context, v, child) 
       {
         final value = v as ValueState<double>;
+
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
         );
+
         return Slider
         (
           key: key,
@@ -1237,6 +1239,362 @@ class DataBinderBuilder
           semanticFormatterCallback: semanticFormatterCallback,
           focusNode: focusNode,
           autofocus: autofocus,
+        );
+      }
+    );
+  }
+
+  static Widget buildSliderAdaptive
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      bool setValueAfterOnChanged = true,
+      double min = 0.0,
+      double max = 1.0,
+      int? divisions,
+      SliderLabelBuilder? labelBuilder,
+      Color? activeColor,
+      Color? inactiveColor,
+      Color? thumbColor,
+      //////////////
+      MouseCursor? mouseCursor,
+      String? bindMouseCursor,
+      dynamic bindMouseCursorParam,
+      //////////////
+      SemanticFormatterCallback? semanticFormatterCallback,
+      FocusNode? focusNode,
+      bool autofocus = false}
+  ) 
+  {
+    final binder = DataBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      builder: (context, v, child) 
+      {
+        final value = v as ValueState<double>;
+
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return Slider.adaptive
+        (
+          key: key,
+          value: value.read<double>(bindValueParam),
+          // onChanged event
+          onChanged: 
+          (
+            enableEvent
+            ? 
+            (
+              setValueAfterOnChanged
+              ? (newValue) => value.value = newValue
+              : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+            )
+            : null
+          ),
+          onChangeStart: 
+          (
+            enableEvent
+            ? (newValue) => value.doEvent(event: StdValueProperty.onChangeStart, parameter: (newValue))
+            : null
+          ),
+          onChangeEnd: 
+          (
+            enableEvent
+            ? (newValue) => value.doEvent(event: StdValueProperty.onChangeEnd, parameter: (newValue))
+            : null
+          ),
+          min: min,
+          max: max,
+          divisions: divisions,
+          label: labelBuilder != null ? labelBuilder(value.read<double>(bindValueParam)) : null,
+          activeColor: activeColor,
+          inactiveColor: inactiveColor,
+          thumbColor: thumbColor,
+          mouseCursor: binder.readOrDefault
+          (
+            defaultValue: mouseCursor,
+            sourceValueName: bindMouseCursor,
+            propertySource: value,
+            keyParameter: bindMouseCursorParam
+          ),
+          semanticFormatterCallback: semanticFormatterCallback,
+          focusNode: focusNode,
+          autofocus: autofocus,
+        );
+      }
+    );
+  }
+
+  static Widget buildSwitch
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      bool setValueAfterOnChanged = true,
+      Color? activeColor,
+      Color? activeTrackColor,
+      Color? inactiveThumbColor,
+      Color? inactiveTrackColor,
+      ImageProvider<Object>? activeThumbImage,
+      ImageErrorListener? onActiveThumbImageError,
+      ImageProvider<Object>? inactiveThumbImage,
+      ImageErrorListener? onInactiveThumbImageError,
+      MaterialStateProperty<Color?>? thumbColor,
+      MaterialStateProperty<Color?>? trackColor,
+      MaterialTapTargetSize? materialTapTargetSize,
+      DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+      //////////////
+      MouseCursor? mouseCursor,
+      String? bindMouseCursor,
+      dynamic bindMouseCursorParam,
+      //////////////
+      Color? focusColor,
+      Color? hoverColor,
+      MaterialStateProperty<Color?>? overlayColor,
+      double? splashRadius,
+      FocusNode? focusNode,
+      bool autofocus = false}
+  ) 
+  {
+    final binder = DataBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      builder: (context, v, child) 
+      {
+        final value = v as ValueState<bool>;
+
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return Switch
+        (
+          key: key,
+          value: value.read<bool>(bindValueParam),
+          // onChanged event
+          onChanged: 
+          (
+            enableEvent
+            ? 
+            (
+              setValueAfterOnChanged
+              ? (newValue) => value.value = newValue
+              : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+            )
+            : null
+          ),
+          activeColor: activeColor,
+          activeTrackColor: activeTrackColor,
+          inactiveThumbColor: inactiveThumbColor,
+          inactiveTrackColor: inactiveTrackColor,
+          activeThumbImage: activeThumbImage,
+          onActiveThumbImageError: onActiveThumbImageError,
+          inactiveThumbImage: inactiveThumbImage,
+          onInactiveThumbImageError: onInactiveThumbImageError,
+          thumbColor: thumbColor,
+          trackColor: trackColor,
+          materialTapTargetSize: materialTapTargetSize,
+          dragStartBehavior: dragStartBehavior,
+          mouseCursor: binder.readOrDefault
+          (
+            defaultValue: mouseCursor,
+            sourceValueName: bindMouseCursor,
+            propertySource: value,
+            keyParameter: bindMouseCursorParam
+          ),
+          focusColor: focusColor,
+          hoverColor: hoverColor,
+          overlayColor: overlayColor,
+          splashRadius: splashRadius,
+          focusNode: focusNode,
+          autofocus: autofocus,
+        );
+      }
+    );
+  }
+
+  static Widget buildSwitchAdaptive
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      bool setValueAfterOnChanged = true,
+      Color? activeColor,
+      Color? activeTrackColor,
+      Color? inactiveThumbColor,
+      Color? inactiveTrackColor,
+      ImageProvider<Object>? activeThumbImage,
+      ImageErrorListener? onActiveThumbImageError,
+      ImageProvider<Object>? inactiveThumbImage,
+      ImageErrorListener? onInactiveThumbImageError,
+      MaterialStateProperty<Color?>? thumbColor,
+      MaterialStateProperty<Color?>? trackColor,
+      MaterialTapTargetSize? materialTapTargetSize,
+      DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+      //////////////
+      MouseCursor? mouseCursor,
+      String? bindMouseCursor,
+      dynamic bindMouseCursorParam,
+      //////////////
+      Color? focusColor,
+      Color? hoverColor,
+      MaterialStateProperty<Color?>? overlayColor,
+      double? splashRadius,
+      FocusNode? focusNode,
+      bool autofocus = false}
+  ) 
+  {
+    final binder = DataBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      builder: (context, v, child) 
+      {
+        final value = v as ValueState<bool>;
+
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return Switch.adaptive
+        (
+          key: key,
+          value: value.read<bool>(bindValueParam),
+          // onChanged event
+          onChanged: 
+          (
+            enableEvent
+            ? 
+            (
+              setValueAfterOnChanged
+              ? (newValue) => value.value = newValue
+              : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+            )
+            : null
+          ),
+          activeColor: activeColor,
+          activeTrackColor: activeTrackColor,
+          inactiveThumbColor: inactiveThumbColor,
+          inactiveTrackColor: inactiveTrackColor,
+          activeThumbImage: activeThumbImage,
+          onActiveThumbImageError: onActiveThumbImageError,
+          inactiveThumbImage: inactiveThumbImage,
+          onInactiveThumbImageError: onInactiveThumbImageError,
+          thumbColor: thumbColor,
+          trackColor: trackColor,
+          materialTapTargetSize: materialTapTargetSize,
+          dragStartBehavior: dragStartBehavior,
+          mouseCursor: binder.readOrDefault
+          (
+            defaultValue: mouseCursor,
+            sourceValueName: bindMouseCursor,
+            propertySource: value,
+            keyParameter: bindMouseCursorParam
+          ),
+          focusColor: focusColor,
+          hoverColor: hoverColor,
+          overlayColor: overlayColor,
+          splashRadius: splashRadius,
+          focusNode: focusNode,
+          autofocus: autofocus,
+        );
+      }
+    );
+  }
+
+  static Widget buildPopupMenuButton<T>
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      required PopupMenuItemBuilder<T> itemBuilder,
+      String? tooltip,
+      double? elevation,
+      EdgeInsetsGeometry padding = const EdgeInsets.all(8.0),
+      Widget? child,
+      double? splashRadius,
+      Widget? icon,
+      double? iconSize,
+      Offset offset = Offset.zero,
+      ShapeBorder? shape,
+      Color? color,
+      bool? enableFeedback,
+      BoxConstraints? constraints,
+      PopupMenuPosition position = PopupMenuPosition.over}
+  ) 
+  {
+    final binder = DataBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      builder: (context, value, child) 
+      {
+        return PopupMenuButton<T>
+        (
+          key: key,
+          onSelected: (newValue) => value.doEvent(event: StdValueProperty.onSelect, parameter: newValue),
+          onCanceled: () => value.doEvent(event: StdValueProperty.onCanceled),
+          enabled: binder.readOrDefault
+          (
+            defaultValue: enabled,
+            sourceValueName: enabledValue,
+            propertySource: value,
+            keyParameter: enabledValueParam
+          ),
+          itemBuilder: itemBuilder,
+          initialValue: value.read<T?>(bindValueParam),
+          tooltip: tooltip,
+          elevation: elevation,
+          padding: padding,
+          splashRadius: splashRadius,
+          icon: icon,
+          iconSize: iconSize,
+          offset: offset,
+          shape: shape,
+          color: color,
+          enableFeedback: enableFeedback,
+          constraints: constraints,
+          position: position
         );
       }
     );

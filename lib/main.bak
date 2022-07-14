@@ -111,7 +111,12 @@ class _MyHomePageState extends State<MyHomePage>
       onEvent: (value, event, parameter) => print('Event $event $parameter')
     );
 
-    binder.addValue<double>('slider', 0.5);
+    binder.addValue<double>
+    (
+      'slider',
+      0.5,
+      onValueChanged: (value) => print("slider: ${value.value}"),
+    );
 
     // TODO Upravit checkbox
     final checkbox = binder.addValue<bool?>('check', false,
@@ -121,6 +126,13 @@ class _MyHomePageState extends State<MyHomePage>
       onValueChanged: (value) => print(value.value.toString()));
 
     binder.addValue<String?>('drop_down', 'Free');
+
+    binder.addValue<bool>
+    (
+      'switch',
+      true,
+      onValueChanged: (value) => print("switch changed: ${value.value}"),
+    );
 
     final button = binder.addValue<bool>('button', false, onEvent: <bool>(value, event, parameter) => cnt.value++);
 
@@ -180,23 +192,24 @@ class _MyHomePageState extends State<MyHomePage>
                 [
                   const Text('You have pushed the button this many times:'),
                   //_counter.buildWidget
-                  Checkbox
+                  /*Checkbox
                   (
                     value: isChecked,
                     tristate: true,
                     //overlayColor: MaterialStateProperty.resolveWith(getOverlayColor),
-                    onChanged: (value) 
+                    onChanged: (value)
                     {
                       setState
                       (
-                        () 
+                        ()
                         {
                           isChecked = !(isChecked ?? false);
                         }
                       );
                     },
-                  ),
-                  //EventBinderBuilder.buildCheckBox(context, bindValue: 'check', fillColor: MaterialStateProperty.resolveWith(getColor),),
+                  ),*/
+                  DataBinderBuilder.buildCheckBox(context,
+                    bindValue: 'check'), // fillColor: MaterialStateProperty.resolveWith(getColor),),
                   DataBinder.of(context)['counter'].buildWidget
                   (
                     context,
@@ -263,8 +276,16 @@ class _MyHomePageState extends State<MyHomePage>
                       }
                     ).toList()
                   ),
-                  DataBinderBuilder.buildSlider(context,
-                    bindValue: 'slider', labelBuilder: (sliderValue) => sliderValue.toStringAsFixed(3))
+                  DataBinderBuilder.buildSlider
+                  (
+                    context,
+                    bindValue: 'slider',
+                    labelBuilder: (sliderValue) => sliderValue.toStringAsFixed(3),
+                    divisions: 10,
+                    min: 0,
+                    max: 100
+                  ),
+                  DataBinderBuilder.buildSwitch(context, bindValue: 'switch')
                 ],
               ),
             )
