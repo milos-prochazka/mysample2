@@ -29,16 +29,41 @@ void main()
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget 
+class MyApp extends StatefulWidget 
 {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> 
+{
+  final appBinder = DataBinder();
 
   @override
   Widget build(BuildContext context) 
   {
     return MaterialApp
     (
-      home: MyHomePage(context: context, title: 'title'),
+      home: appBinder.build(context: context, builder: (context) => MyHomePage(context: context, title: 'title')),
+    );
+  }
+
+  @override
+  void initState() 
+  {
+    super.initState();
+    appBinder.addValue<bool>('check', false);
+    final checkbox = appBinder.addValue<bool?>
+    (
+      'check', false, onEvent: (value, event, parameter) 
+      {
+        value.value = !(value.value as bool? ?? false);
+      }, onInitialized: (context, value, state) 
+      {
+        print('onInitialized');
+      }
     );
   }
 }
@@ -118,13 +143,13 @@ class _MyHomePageState extends State<MyHomePage>
       onValueChanged: (value) => print("slider: ${value.value}"),
     );
 
-    final checkbox = binder.addValue<bool?>
+    /*final checkbox = binder.addValue<bool?>
     (
-      'check', false, onEvent: (value, event, parameter) 
+      'check', false, onEvent: (value, event, parameter)
       {
         value.value = !(value.value as bool? ?? false);
       }
-    );
+    );*/
 
     final radio = binder.addValue<RadioValues?>('radio', RadioValues.second,
       onValueChanged: (value) => print(value.value.toString()));
@@ -216,7 +241,7 @@ class _MyHomePageState extends State<MyHomePage>
                   (
                     context,
                     bindValue: 'check',
-                    setValueAfterOnChanged: true
+                    setValueAfterOnChanged: false
                   ), // fillColor: MaterialStateProperty.resolveWith(getColor),),
                   DataBinder.of(context)['counter'].buildWidget
                   (

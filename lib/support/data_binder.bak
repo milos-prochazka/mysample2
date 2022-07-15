@@ -12,47 +12,57 @@ typedef ValuePresenter = dynamic Function(dynamic value, dynamic parameter);
 class DataBinder 
 {
   bool autoCreateValue;
-  final values = <String, ValueState>{};
+  DataBinder? parent;
+  final _values = <String, ValueState>{};
 
   DataBinder({this.autoCreateValue = false});
 
-  ValueState operator [](String name) => values[name]!;
+  ValueState? _getValueInternal(String name) 
+  {
+    return _values[name] ?? parent?._getValueInternal(name);
+  }
+
+  ValueState operator [](String name) => _getValueInternal(name)!;
 
   ValueState getValue<T>(String name, {dynamic defValue}) 
   {
     if (!this.autoCreateValue) 
     {
-      return values[name]!;
+      return _getValueInternal(name)!;
     } 
     else 
     {
-      return (values[name] ?? addValue<T>(name, defValue));
+      return _getValueInternal(name) ?? addValue<T>(name, defValue);
     }
   }
 
-  ValueState addValue<T>
-  (
-    String name, T value,
+  ValueState addValue<T> // TODO Asi zrusit <T>
+  (String name, T value,
     {ValuePresenter? presenter,
       ValueStateInitializedEvent? onInitialized,
       ValueChangedEvent? onValueChanged,
       ValueStateEvent? onEvent,
-      dynamic tag}
-  ) 
+      dynamic tag}) 
   {
     final result = ValueState(name, value,
       presenter: presenter, onValueChanged: onValueChanged, onInitialized: onInitialized, onEvent: onEvent, tag: tag);
-    values[name] = result;
+    _values[name] = result;
     return result;
   }
 
   P read<P>(String name) 
   {
-    return values[name]!.read<P>();
+    return _getValueInternal(name)!.read<P>();
   }
 
   Widget build({Key? key, required BuildContext context, required WidgetBuilder builder}) 
   {
+    final ihnerited = context.dependOnInheritedWidgetOfExactType<DataBinderWidget>();
+    if (ihnerited != null) 
+    {
+      parent = ihnerited.binder;
+    }
+
     return DataBinderWidget(key: key, binder: this, child: Builder(builder: builder));
   }
 
@@ -65,10 +75,11 @@ class DataBinder
 
   forceNotifyAll() 
   {
-    for (final entry in this.values.entries) 
+    for (final entry in this._values.entries) 
     {
       entry.value.forceValueNotify();
     }
+    parent?.forceNotifyAll();
   }
 
   T readOrDefault<T>
@@ -89,7 +100,7 @@ class DataBinder
     } 
     else 
     {
-      return values[sourceValueName]?.read<T>(keyParameter) ?? defaultValue;
+      return _getValueInternal(sourceValueName)?.read<T>(keyParameter) ?? defaultValue;
     }
   }
 }
