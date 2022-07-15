@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 
 import 'data_binder_builder.dart';
 
-typedef ValuePresenter = dynamic Function<T>(T value, dynamic parameter);
+typedef ValuePresenter = dynamic Function(dynamic value, dynamic parameter);
 
 class DataBinder
 {
@@ -18,19 +18,19 @@ class DataBinder
 
   ValueState operator [](String name) => values[name]!;
 
-  ValueState<T> getValue<T>(String name, {dynamic defValue})
+  ValueState getValue<T>(String name, {dynamic defValue})
   {
     if (!this.autoCreateValue)
     {
-      return values[name]! as ValueState<T>;
+      return values[name]!;
     }
     else
     {
-      return (values[name] ?? addValue<T>(name, defValue)) as ValueState<T>;
+      return (values[name] ?? addValue<T>(name, defValue));
     }
   }
 
-  ValueState<T> addValue<T>
+  ValueState addValue<T>
   (
     String name, T value,
     {ValuePresenter? presenter,
@@ -40,7 +40,7 @@ class DataBinder
       dynamic tag}
   )
   {
-    final result = ValueState<T>(name, value,
+    final result = ValueState(name, value,
       presenter: presenter, onValueChanged: onValueChanged, onInitialized: onInitialized, onEvent: onEvent, tag: tag);
     values[name] = result;
     return result;
@@ -106,7 +106,7 @@ class DataBinderWidget extends InheritedWidget
   }
 }
 
-class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
+class ValueState extends ChangeNotifier implements ValueListenable<dynamic>
 {
   String name;
   ValuePresenter? presenter;
@@ -129,16 +129,16 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
   )
   : _properties = properties;
 
-  P read<P>([dynamic parameter]) => (presenter == null) ? _value as P : presenter!<T>(_value, parameter) as P;
+  P read<P>([dynamic parameter]) => (presenter == null) ? _value as P : presenter!(_value, parameter) as P;
   String readString([dynamic parameter]) =>
-  (presenter == null) ? _value.toString() : (presenter!<T>(_value, parameter)).toString();
+  (presenter == null) ? _value.toString() : (presenter!(_value, parameter)).toString();
 
-  T _value;
+  dynamic _value;
 
   @override
-  T get value => _value;
+  dynamic get value => _value;
 
-  set value(T newValue)
+  set value(dynamic newValue)
   {
     if (_value != newValue)
     {
@@ -159,7 +159,7 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
     return this.state as S;
   }
 
-  forceValue(T newValue)
+  forceValue(dynamic newValue)
   {
     _value = newValue;
     forceValueNotify();
@@ -208,7 +208,6 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
 
   Widget buildWidget(BuildContext context, {required ValueStateWidgetBuilder builder, Widget? child})
   {
-    print("buildWidget $T");
     return ValueStateBuilder
     (
       valueState: this,
@@ -232,7 +231,7 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
   }
 }
 
-typedef ValueStateWidgetBuilder<T> = Widget Function(BuildContext context, ValueState<T> value, Widget? child);
+typedef ValueStateWidgetBuilder = Widget Function(BuildContext context, ValueState value, Widget? child);
 typedef ValueStateInitializer = dynamic Function(BuildContext context, ValueState value);
 typedef ValueStateInitializedEvent = Function(BuildContext context, ValueState value, dynamic state);
 typedef ValueStateEvent = Function(ValueState value, dynamic event, dynamic parameter);

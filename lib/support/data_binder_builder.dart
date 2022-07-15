@@ -750,9 +750,8 @@ class DataBinderBuilder
     return binder.getValue(bindValue).buildWidget
     (
       context, //
-      builder: <T>(context, v, child)
+      builder: <T>(context, value, child)
       {
-        final value = v as ValueState<T?>;
         return Radio<T>
         (
           key: key,
@@ -836,9 +835,8 @@ class DataBinderBuilder
     return binder.getValue(bindValue).buildWidget
     (
       context, //
-      builder: <T>(context, v, child)
+      builder: <T>(context, value, child)
       {
-        final value = v as ValueState<T?>;
         return RadioListTile<T>
         (
           key: key,
@@ -920,9 +918,8 @@ class DataBinderBuilder
     return binder.getValue(bindValue).buildWidget
     (
       context, //
-      builder: <T>(context, v, child)
+      builder: <T>(context, value, child)
       {
-        final value = v as ValueState<T?>;
         final children = <Widget>[];
 
         for (int i = 0; i < count; i++)
@@ -1277,10 +1274,8 @@ class DataBinderBuilder
     return binder[bindValue].buildWidget
     (
       context, //
-      builder: (context, v, child)
+      builder: <double>(context, value, child)
       {
-        final value = v as ValueState<double>;
-
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
@@ -1379,10 +1374,8 @@ class DataBinderBuilder
     return binder.getValue<bool>(bindValue, defValue: false).buildWidget
     (
       context, //
-      builder: (context, v, child)
+      builder: <bool>(context, value, child)
       {
-        final value = v as ValueState<bool>;
-
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
@@ -1477,10 +1470,8 @@ class DataBinderBuilder
     return binder[bindValue].buildWidget
     (
       context, //
-      builder: (context, v, child)
+      builder: <bool>(context, value, child)
       {
-        final value = v as ValueState<bool>;
-
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam

@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage>
 
     final editor = binder.addValue<String>
     (
-      'editorXX', 'INIT text',
+      'editor', 'INIT text',
       //onInitialized: (context, value, state) => (state as TextEditingController).text = 'QaQaQa',
       onValueChanged: (value)
       {
@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage>
 
     final editor1 = binder.addValue<String>
     (
-      'editor1XX', 'INIT 1 text',
+      'editor1', 'INIT 1 text',
       //onInitialized: (context, value, state) => (state as TextEditingController).text = 'QaQaQa',
       onValueChanged: (value)
       {
@@ -113,29 +113,34 @@ class _MyHomePageState extends State<MyHomePage>
 
     binder.addValue<double>
     (
-      'sliderXX',
+      'slider',
       0.5,
       onValueChanged: (value) => print("slider: ${value.value}"),
     );
 
-    final checkbox = binder.addValue<bool?>('checkXX', false,
-      onEvent: (value, event, parameter) => value.value = !(value.value as bool? ?? false));
+    final checkbox = binder.addValue<bool?>
+    (
+      'check', false, onEvent: (value, event, parameter)
+      {
+        value.value = !(value.value as bool? ?? false);
+      }
+    );
 
-    final radio = binder.addValue<RadioValues?>('radioXX', RadioValues.second,
+    final radio = binder.addValue<RadioValues?>('radio', RadioValues.second,
       onValueChanged: (value) => print(value.value.toString()));
 
-    binder.addValue<String?>('drop_downXXX', 'Free');
+    binder.addValue<String?>('drop_down', 'Free');
 
     binder.addValue<bool>
     (
-      'switchXX',
+      'switch',
       true,
       onValueChanged: (value) => print("switch changed: ${value.value}"),
     );
 
-    final button = binder.addValue<bool>('buttonXXX', false, onEvent: <bool>(value, event, parameter) => cnt.value++);
+    final button = binder.addValue<bool>('button', false, onEvent: <bool>(value, event, parameter) => cnt.value++);
 
-    binder.addValue<bool>('button1XX', false,
+    binder.addValue<bool>('button1', false,
       onEvent: (value, event, parameter) => print("button1 ${value.name} $event $parameter"));
   }
 
@@ -207,8 +212,12 @@ class _MyHomePageState extends State<MyHomePage>
                       );
                     },
                   ),*/
-                  DataBinderBuilder.buildCheckBox(context,
-                    bindValue: 'check'), // fillColor: MaterialStateProperty.resolveWith(getColor),),
+                  DataBinderBuilder.buildCheckBox
+                  (
+                    context,
+                    bindValue: 'check',
+                    setValueAfterOnChanged: true
+                  ), // fillColor: MaterialStateProperty.resolveWith(getColor),),
                   DataBinder.of(context)['counter'].buildWidget
                   (
                     context,
