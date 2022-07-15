@@ -52,7 +52,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue(bindValue, defValue: '').buildWidget
     (
       context, //
       builder: <String>(context, value, child) 
@@ -124,7 +124,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
     (
       context, //
       child: child, builder: (context, value, child) 
@@ -177,7 +177,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
     (
       context, //
       child: label, builder: (context, value, label) 
@@ -231,7 +231,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
     (
       context, //
       child: child, //
@@ -286,7 +286,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
     (
       context, //
       child: label, //
@@ -341,7 +341,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
     (
       context, //
       child: child, //
@@ -396,7 +396,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
     (
       context, //
       child: label, //
@@ -470,7 +470,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
     (
       context, //
       child: icon, //
@@ -567,7 +567,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue(bindValue).buildWidget
     (
       context, //
       builder: (context, value, label) 
@@ -654,7 +654,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
     (
       context, //
       builder: (context, value, child) 
@@ -747,7 +747,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue(bindValue).buildWidget
     (
       context, //
       builder: <T>(context, v, child) 
@@ -833,7 +833,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue(bindValue).buildWidget
     (
       context, //
       builder: <T>(context, v, child) 
@@ -917,7 +917,7 @@ class DataBinderBuilder
     int count = math.max(titleWidgets?.length ?? 0, titleTexts?.length ?? 0);
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue(bindValue).buildWidget
     (
       context, //
       builder: <T>(context, v, child) 
@@ -1053,12 +1053,12 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue(bindValue, defValue: '').buildWidget
     (
       context, //
-      builder: <String>(context, v, child) 
+      builder: (context, value, child) 
       {
-        final value = v as ValueState<String>;
+        //final value = v as ValueState<String>;
         final controller = value.setState
         (
           context: context,
@@ -1182,13 +1182,11 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue<double>(bindValue, defValue: min).buildWidget
     (
       context, //
-      builder: (context, v, child) 
+      builder: (context, value, child) 
       {
-        final value = v as ValueState<double>;
-
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
@@ -1378,7 +1376,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
     (
       context, //
       builder: (context, v, child) 

@@ -11,9 +11,24 @@ typedef ValuePresenter = dynamic Function<T>(T value, dynamic parameter);
 
 class DataBinder
 {
+  bool autoCreateValue;
   final values = <String, ValueState>{};
 
+  DataBinder({this.autoCreateValue = false});
+
   ValueState operator [](String name) => values[name]!;
+
+  ValueState<T> getValue<T>(String name, {dynamic defValue})
+  {
+    if (!this.autoCreateValue)
+    {
+      return values[name]! as ValueState<T>;
+    }
+    else
+    {
+      return (values[name] ?? addValue<T>(name, defValue)) as ValueState<T>;
+    }
+  }
 
   ValueState<T> addValue<T>
   (
@@ -191,9 +206,10 @@ class ValueState<T> extends ChangeNotifier implements ValueListenable<T>
     this.onEvent?.call(this, event, parameter);
   }
 
-  Widget buildWidget(BuildContext context, {required ValueStateWidgetBuilder<T> builder, Widget? child})
+  Widget buildWidget(BuildContext context, {required ValueStateWidgetBuilder builder, Widget? child})
   {
-    return ValueStateBuilder<T>
+    print("buildWidget $T");
+    return ValueStateBuilder
     (
       valueState: this,
       builder: builder,
@@ -224,19 +240,19 @@ typedef ValueChangedEvent = Function(ValueState value);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-class ValueStateBuilder<T> extends StatefulWidget
+class ValueStateBuilder extends StatefulWidget
 {
-  final ValueState<T> valueState;
-  final ValueStateWidgetBuilder<T> builder;
+  final ValueState valueState;
+  final ValueStateWidgetBuilder builder;
   final Widget? child;
 
-  const ValueStateBuilder({super.key, required this.valueState, required this.builder, this.child});
+  ValueStateBuilder({super.key, required this.valueState, required this.builder, this.child});
 
   @override
-  State<ValueStateBuilder> createState() => _ValueStateBuilderState<T>();
+  State<ValueStateBuilder> createState() => _ValueStateBuilderState();
 }
 
-class _ValueStateBuilderState<T> extends State<ValueStateBuilder>
+class _ValueStateBuilderState extends State<ValueStateBuilder>
 {
   @override
   void initState()
@@ -252,7 +268,7 @@ class _ValueStateBuilderState<T> extends State<ValueStateBuilder>
   }
 
   @override
-  void didUpdateWidget(ValueStateBuilder<T> oldWidget)
+  void didUpdateWidget(ValueStateBuilder oldWidget)
   {
     super.didUpdateWidget(oldWidget);
 
@@ -294,7 +310,8 @@ enum StdValueProperty
   onFocusChanged(0x1008),
   onChanged(0x1009),
   onChangeStart(0x100A),
-  onChangeEnd(0x100B);
+  onChangeEnd(0x100B),
+  onCanceled(0x100C);
 
   final int value;
   const StdValueProperty(this.value);

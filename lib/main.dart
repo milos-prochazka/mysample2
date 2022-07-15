@@ -55,14 +55,14 @@ class MyHomePage extends StatefulWidget
 class _MyHomePageState extends State<MyHomePage>
 {
   TextStyle? style1, style2;
-  final binder = DataBinder();
+  final binder = DataBinder(autoCreateValue: true);
   bool initialized = false;
   bool? isChecked = null;
   bool _lights = false;
 
   _MyHomePageState()
   {
-    final cnt = binder.addValue
+    final cnt = binder.addValue<int>
     (
       'counter', 1,
       tag: 'qAqA',
@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage>
 
     final editor = binder.addValue<String>
     (
-      'editor', 'INIT text',
+      'editorXX', 'INIT text',
       //onInitialized: (context, value, state) => (state as TextEditingController).text = 'QaQaQa',
       onValueChanged: (value)
       {
@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage>
 
     final editor1 = binder.addValue<String>
     (
-      'editor1', 'INIT 1 text',
+      'editor1XX', 'INIT 1 text',
       //onInitialized: (context, value, state) => (state as TextEditingController).text = 'QaQaQa',
       onValueChanged: (value)
       {
@@ -113,30 +113,29 @@ class _MyHomePageState extends State<MyHomePage>
 
     binder.addValue<double>
     (
-      'slider',
+      'sliderXX',
       0.5,
       onValueChanged: (value) => print("slider: ${value.value}"),
     );
 
-    // TODO Upravit checkbox
-    final checkbox = binder.addValue<bool?>('check', false,
+    final checkbox = binder.addValue<bool?>('checkXX', false,
       onEvent: (value, event, parameter) => value.value = !(value.value as bool? ?? false));
 
-    final radio = binder.addValue<RadioValues?>('radio', RadioValues.second,
+    final radio = binder.addValue<RadioValues?>('radioXX', RadioValues.second,
       onValueChanged: (value) => print(value.value.toString()));
 
-    binder.addValue<String?>('drop_down', 'Free');
+    binder.addValue<String?>('drop_downXXX', 'Free');
 
     binder.addValue<bool>
     (
-      'switch',
+      'switchXX',
       true,
       onValueChanged: (value) => print("switch changed: ${value.value}"),
     );
 
-    final button = binder.addValue<bool>('button', false, onEvent: <bool>(value, event, parameter) => cnt.value++);
+    final button = binder.addValue<bool>('buttonXXX', false, onEvent: <bool>(value, event, parameter) => cnt.value++);
 
-    binder.addValue<bool>('button1', false,
+    binder.addValue<bool>('button1XX', false,
       onEvent: (value, event, parameter) => print("button1 ${value.name} $event $parameter"));
   }
 
@@ -220,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage>
                     }
                   ),
                   DataBinderBuilder.buildText(context, bindValue: 'counter', styleParam: 'style'),
-                  binder['editor'].buildWidget
+                  binder.getValue('editor').buildWidget
                   (
                     context, builder: (context, value, child)
                     {
@@ -298,7 +297,7 @@ class _MyHomePageState extends State<MyHomePage>
               //var v = binder['counter'];
               //v.value++;
 
-              DataBinder.of(context)['button'].doEvent();
+              DataBinder.of(context).getValue('button').doEvent();
             },
           ),
         )
