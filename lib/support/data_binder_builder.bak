@@ -52,7 +52,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue(bindValue, defValue: '').buildWidget
+    return binder.getValue(bindValue, defaultValue: '').buildWidget
     (
       context, //
       builder: <String>(context, value, child) 
@@ -124,7 +124,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
+    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: child, builder: (context, value, child) 
@@ -154,6 +154,100 @@ class DataBinderBuilder
     );
   }
 
+  static Widget buildCupertinoButton
+  (
+    BuildContext context,
+    {required String bindValue,
+      Key? key,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      required Widget child,
+      EdgeInsetsGeometry? padding,
+      Color? color,
+      Color disabledColor = CupertinoColors.quaternarySystemFill,
+      double? minSize = kMinInteractiveDimensionCupertino,
+      double? pressedOpacity = 0.4,
+      BorderRadius? borderRadius = const BorderRadius.all(Radius.circular(8.0)),
+      AlignmentGeometry alignment = Alignment.center}
+  ) 
+  {
+    final binder = DataBinder.of(context);
+
+    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
+    (
+      context, //
+      child: child, builder: (context, value, child) 
+      {
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return CupertinoButton
+        (
+          key: key,
+          onPressed: enableEvent ? (() => value.doEvent(event: StdValueProperty.onPressed)) : null,
+          padding: padding,
+          color: color,
+          minSize: minSize,
+          pressedOpacity: pressedOpacity,
+          borderRadius: borderRadius,
+          alignment: alignment,
+          child: child!
+        );
+      }
+    );
+  }
+
+  static Widget buildCupertinoButtonFilled
+  (
+    BuildContext context,
+    {required String bindValue,
+      Key? key,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      required Widget child,
+      EdgeInsetsGeometry? padding,
+      Color disabledColor = CupertinoColors.quaternarySystemFill,
+      double? minSize = kMinInteractiveDimensionCupertino,
+      double? pressedOpacity = 0.4,
+      BorderRadius? borderRadius = const BorderRadius.all(Radius.circular(8.0)),
+      AlignmentGeometry alignment = Alignment.center}
+  ) 
+  {
+    final binder = DataBinder.of(context);
+
+    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
+    (
+      context, //
+      child: child, builder: (context, value, child) 
+      {
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return CupertinoButton.filled
+        (
+          key: key,
+          onPressed: enableEvent ? (() => value.doEvent(event: StdValueProperty.onPressed)) : null,
+          padding: padding,
+          minSize: minSize,
+          pressedOpacity: pressedOpacity,
+          borderRadius: borderRadius,
+          alignment: alignment,
+          child: child!
+        );
+      }
+    );
+  }
+
   static Widget buildElevatedButtonIcon
   (
     BuildContext context,
@@ -177,7 +271,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
+    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: label, builder: (context, value, label) 
@@ -231,7 +325,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
+    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: child, //
@@ -286,7 +380,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
+    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: label, //
@@ -341,7 +435,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
+    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: child, //
@@ -396,7 +490,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
+    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: label, //
@@ -470,7 +564,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
+    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: icon, //
@@ -654,7 +748,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
+    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
     (
       context, //
       builder: (context, value, child) 
@@ -1050,7 +1144,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue(bindValue, defValue: '').buildWidget
+    return binder.getValue(bindValue, defaultValue: '').buildWidget
     (
       context, //
       builder: (context, value, child) 
@@ -1179,7 +1273,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<double>(bindValue, defValue: min).buildWidget
+    return binder.getValue<double>(bindValue, defaultValue: min).buildWidget
     (
       context, //
       builder: (context, value, child) 
@@ -1371,7 +1465,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defValue: false).buildWidget
+    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
     (
       context, //
       builder: <bool>(context, value, child) 

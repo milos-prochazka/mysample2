@@ -39,7 +39,7 @@ class MyApp extends StatefulWidget
 
 class _MyAppState extends State<MyApp> 
 {
-  final appBinder = DataBinder();
+  final appBinder = DataBinder(autoCreateValue: true);
 
   @override
   Widget build(BuildContext context) 
@@ -192,6 +192,8 @@ class _MyHomePageState extends State<MyHomePage>
     style2 = Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.green);
     binder.forceNotifyAll();
 
+    var v = ValueState.readOf<double>(context, 'sosol', defaultValue: 2.34);
+
     initialized = true;
   }
 
@@ -210,18 +212,21 @@ class _MyHomePageState extends State<MyHomePage>
         builder: (BuildContext context) => Scaffold
         (
           appBar: AppBar(title: Text(widget.title)),
-          body: SingleChildScrollView
+          body: Scrollbar
           (
-            child: Center
+            thumbVisibility: true,
+            child: SingleChildScrollView
             (
-              child: Column
+              child: Center
               (
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>
-                [
-                  const Text('You have pushed the button this many times:'),
-                  //_counter.buildWidget
-                  /*Checkbox
+                child: Column
+                (
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>
+                  [
+                    const Text('You have pushed the button this many times:'),
+                    //_counter.buildWidget
+                    /*Checkbox
                   (
                     value: isChecked,
                     tristate: true,
@@ -237,90 +242,95 @@ class _MyHomePageState extends State<MyHomePage>
                       );
                     },
                   ),*/
-                  DataBinderBuilder.buildCheckBox
-                  (
-                    context,
-                    bindValue: 'check',
-                    setValueAfterOnChanged: false
-                  ), // fillColor: MaterialStateProperty.resolveWith(getColor),),
-                  DataBinder.of(context)['counter'].buildWidget
-                  (
-                    context,
-                    builder: <String>(context, value, child) 
-                    {
-                      final style = binder['style'].read<TextStyle?>();
-                      return Text(value.readString('aaa'), style: style);
-                    }
-                  ),
-                  DataBinderBuilder.buildText(context, bindValue: 'counter', styleParam: 'style'),
-                  binder.getValue('editor').buildWidget
-                  (
-                    context, builder: (context, value, child) 
-                    {
-                      return TextField
-                      (
-                        controller: value.setState
+                    DataBinderBuilder.buildCheckBox
+                    (
+                      context,
+                      bindValue: 'check',
+                      setValueAfterOnChanged:
+                      false
+                    ), // fillColor: MaterialStateProperty.resolveWith(getColor),),
+                    DataBinder.of(context)['counter'].buildWidget
+                    (
+                      context,
+                      builder: <String>(context, value, child) 
+                      {
+                        final style = binder['style'].read<TextStyle?>();
+                        return Text(value.readString('aaa'), style: style);
+                      }
+                    ),
+                    DataBinderBuilder.buildText(context, bindValue: 'counter', styleParam: 'style'),
+                    binder.getValue('editor').buildWidget
+                    (
+                      context, builder: (context, value, child) 
+                      {
+                        return TextField
                         (
-                          context: context,
-                          initializer: (context, value) 
-                          {
-                            final result = TextEditingController(text: value.readString());
-                            result.addListener
-                            (
-                              () 
-                              {
-                                value.value = result.text;
-                              }
-                            );
-                            return result;
-                          }
-                        ),
-                        /*inputFormatters:
+                          controller: value.setState
+                          (
+                            context: context,
+                            initializer: (context, value) 
+                            {
+                              final result = TextEditingController(text: value.readString());
+                              result.addListener
+                              (
+                                () 
+                                {
+                                  value.value = result.text;
+                                }
+                              );
+                              return result;
+                            }
+                          ),
+                          /*inputFormatters:
                       [
                         FilteringTextInputFormatter.allow(RegExp(r'^\d{0,2}\-?\d{0,2}')),
                         //FilteringTextInputFormatter.deny(RegExp('[abFeG]')),
                       ],*/
-                        enabled: true,
-                      );
-                    }
-                  ),
-                  DataBinderBuilder.buildTextField(context, bindValue: 'editor1'),
-                  buildRadio(context, 'radio'),
-                  DataBinderBuilder.buildElevatedButtonIcon
-                  (
-                    context,
-                    bindValue: 'button1',
-                    label: const Text('BUTTON1', style: TextStyle(fontSize: 20.0, color: Colors.white)),
-                    icon: Text('icon')
-                  ),
-                  DataBinderBuilder.buildDropdownButton
-                  (
-                    context,
-                    bindValue: 'drop_down',
-                    items: <String>['One', 'Two', 'Free', 'Four'].map<DropdownMenuItem<String>>
-                    (
-                      (String value) 
-                      {
-                        return DropdownMenuItem<String>
-                        (
-                          value: value,
-                          child: Text(value),
+                          enabled: true,
                         );
                       }
-                    ).toList()
-                  ),
-                  DataBinderBuilder.buildSlider
-                  (
-                    context,
-                    bindValue: 'slider',
-                    labelBuilder: (sliderValue) => sliderValue.toStringAsFixed(3),
-                    divisions: 10,
-                    min: 0,
-                    max: 100
-                  ),
-                  DataBinderBuilder.buildSwitch(context, bindValue: 'switch')
-                ],
-              ),
+                    ),
+                    DataBinderBuilder.buildTextField(context, bindValue: 'editor1'),
+                    buildRadio(context, 'radio'),
+                    DataBinderBuilder.buildElevatedButtonIcon
+                    (
+                      context,
+                      bindValue: 'button1',
+                      label: const Text('BUTTON1', style: TextStyle(fontSize: 20.0, color: Colors.white)),
+                      icon: Text('icon')
+                    ),
+                    DataBinderBuilder.buildDropdownButton
+                    (
+                      context,
+                      bindValue: 'drop_down',
+                      items: <String>['One', 'Two', 'Free', 'Four']
+                      .map<DropdownMenuItem<String>>
+                      (
+                        (String value) 
+                        {
+                          return DropdownMenuItem<String>
+                          (
+                            value: value,
+                            child: Text(value),
+                          );
+                        }
+                      ).toList()
+                    ),
+                    DataBinderBuilder.buildSlider
+                    (
+                      context,
+                      bindValue: 'slider',
+                      labelBuilder: (sliderValue) => sliderValue.toStringAsFixed(3),
+                      divisions: 10,
+                      min: 0,
+                      max: 100
+                    ),
+                    DataBinderBuilder.buildSwitch(context, bindValue: 'switch'),
+                    DataBinderBuilder.buildCupertinoButtonFilled(context,
+                      bindValue: 'button2', child: Text('Cupertino Tlacitko'), enabled: false),
+                  ],
+                ),
+              )
             )
           ),
           floatingActionButton: FloatingActionButton

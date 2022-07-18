@@ -24,7 +24,7 @@ class DataBinder
 
   ValueState operator [](String name) => _getValueInternal(name)!;
 
-  ValueState getValue<T>(String name, {dynamic defValue})
+  ValueState getValue<T>(String name, {dynamic defaultValue})
   {
     if (!this.autoCreateValue)
     {
@@ -32,7 +32,7 @@ class DataBinder
     }
     else
     {
-      return _getValueInternal(name) ?? addValue<T>(name, defValue);
+      return _getValueInternal(name) ?? addValue<T>(name, defaultValue);
     }
   }
 
@@ -50,9 +50,9 @@ class DataBinder
     return result;
   }
 
-  P read<P>(String name)
+  T read<T>(String name)
   {
-    return _getValueInternal(name)!.read<P>();
+    return _getValueInternal(name)!.read<T>();
   }
 
   Widget build({Key? key, required BuildContext context, required WidgetBuilder builder})
@@ -239,6 +239,20 @@ class ValueState extends ChangeNotifier implements ValueListenable<dynamic>
       this._properties![key] = value;
       this.forceValueNotify();
     }
+  }
+
+  static ValueState of(BuildContext context, String name, {dynamic defaultValue})
+  {
+    final ihnerited = context.dependOnInheritedWidgetOfExactType<DataBinderWidget>();
+
+    return ihnerited!.binder.getValue(name, defaultValue: defaultValue);
+  }
+
+  static T readOf<T>(BuildContext context, String name, {dynamic defaultValue})
+  {
+    final value = ValueState.of(context, name, defaultValue: defaultValue);
+
+    return value.read<T>() ?? defaultValue;
   }
 }
 
