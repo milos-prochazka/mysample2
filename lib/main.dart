@@ -167,6 +167,15 @@ class _MyHomePageState extends State<MyHomePage>
 
     binder.addValue<bool>('button1', false,
       onEvent: (value, event, parameter) => print("button1 ${value.name} $event $parameter"));
+
+    binder.addValue
+    (
+      'action_sheet_click', false, onEvent: (value, event, parameter)
+      {
+        print("action_sheet_click");
+        Navigator.pop(parameter as BuildContext);
+      }
+    );
   }
 
   checkEvent(ValueState value, dynamic event, dynamic parameter)
@@ -325,9 +334,16 @@ class _MyHomePageState extends State<MyHomePage>
                       min: 0,
                       max: 100
                     ),
+                    DataBinderBuilder.buildCupertinoSlider(context, bindValue: 'slider', min: 0, max: 100),
                     DataBinderBuilder.buildSwitch(context, bindValue: 'switch'),
+                    DataBinderBuilder.buildCupertinoSwitch(context, bindValue: 'switch'),
                     DataBinderBuilder.buildCupertinoButtonFilled(context,
                       bindValue: 'button2', child: Text('Cupertino Tlacitko'), enabled: false),
+                    CupertinoButton.filled
+                    (
+                      child: Text('Cupertino ActionSheet'),
+                      onPressed: () => _showActionSheet(context),
+                    ),
                   ],
                 ),
               )
@@ -346,6 +362,65 @@ class _MyHomePageState extends State<MyHomePage>
           ),
         )
       )
+    );
+  }
+
+  void _showActionSheet(BuildContext context)
+  {
+    showCupertinoModalPopup<void>
+    (
+      context: context,
+      builder: (popupContext)
+      {
+        return DataBinderBuilder.buildCupertinoActionSheet
+        (
+          context,
+          bindValue: 'action-event',
+          title: const Text('Title'),
+          message: const Text('Message'),
+          actions: <CupertinoActionSheetAction>
+          [
+            CupertinoActionSheetAction
+            (
+              /// This parameter indicates the action would be a default
+              /// defualt behavior, turns the action's text to bold text.
+              isDefaultAction: true,
+              onPressed: ()
+              {
+                Navigator.pop(popupContext);
+              },
+              child: const Text('Default Action'),
+            ),
+            CupertinoActionSheetAction
+            (
+              onPressed: ()
+              {
+                Navigator.pop(popupContext);
+              },
+              child: const Text('Action'),
+            ),
+            CupertinoActionSheetAction
+            (
+              /// This parameter indicates the action would perform
+              /// a destructive action such as delete or exit and turns
+              /// the action's text color to red.
+              isDestructiveAction: true,
+              onPressed: ()
+              {
+                Navigator.pop(popupContext);
+              },
+              child: const Text('Destructive Action'),
+            ),
+            DataBinderBuilder.buildCupertinoActionSheetAction
+            (
+              context,
+              popupContext: popupContext, //
+              bindValue: 'action_sheet_click', //
+              child: const Text('Bind action')
+            )
+          ],
+        );
+      }
     );
   }
 

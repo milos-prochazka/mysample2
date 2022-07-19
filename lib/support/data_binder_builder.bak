@@ -1333,6 +1333,76 @@ class DataBinderBuilder
     );
   }
 
+  static Widget buildCupertinoSlider
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      bool setValueAfterOnChanged = true,
+      double min = 0.0,
+      double max = 1.0,
+      int? divisions,
+      Color? activeColor,
+      Color thumbColor = CupertinoColors.white}
+  ) 
+  {
+    final binder = DataBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      builder: <double>(context, value, child) 
+      {
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return CupertinoSlider
+        (
+          key: key,
+          value: value.read<double>(bindValueParam),
+          // onChanged event
+          onChanged: 
+          (
+            enableEvent
+            ? 
+            (
+              setValueAfterOnChanged
+              ? (newValue) => value.value = newValue
+              : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+            )
+            : null
+          ),
+          onChangeStart: 
+          (
+            enableEvent
+            ? (newValue) => value.doEvent(event: StdValueProperty.onChangeStart, parameter: (newValue))
+            : null
+          ),
+          onChangeEnd: 
+          (
+            enableEvent
+            ? (newValue) => value.doEvent(event: StdValueProperty.onChangeEnd, parameter: (newValue))
+            : null
+          ),
+          min: min,
+          max: max,
+          divisions: divisions,
+          activeColor: activeColor,
+          thumbColor: thumbColor,
+        );
+      }
+    );
+  }
+
   static Widget buildSliderAdaptive
   (
     BuildContext context,
@@ -1521,6 +1591,62 @@ class DataBinderBuilder
     );
   }
 
+  static Widget buildCupertinoSwitch
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      //////////////
+      bool enabled = true,
+      String? enabledValue,
+      dynamic enabledValueParam,
+      //////////////
+      bool setValueAfterOnChanged = true,
+      Color? activeColor,
+      Color? trackColor,
+      Color? thumbColor,
+      DragStartBehavior dragStartBehavior = DragStartBehavior.start}
+  ) 
+  {
+    final binder = DataBinder.of(context);
+
+    return binder[bindValue].buildWidget
+    (
+      context, //
+      builder: <bool>(context, value, child) 
+      {
+        final enableEvent = binder.readOrDefault
+        (
+          defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
+        );
+
+        return CupertinoSwitch
+        (
+          key: key,
+          value: value.read<bool>(bindValueParam),
+          // onChanged event
+          onChanged: 
+          (
+            enableEvent
+            ? 
+            (
+              setValueAfterOnChanged
+              ? (newValue) => value.value = newValue
+              : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+            )
+            : null
+          ),
+          activeColor: activeColor,
+          thumbColor: thumbColor,
+          trackColor: trackColor,
+          dragStartBehavior: dragStartBehavior,
+        );
+      }
+    );
+  }
+
   static Widget buildSwitchAdaptive
   (
     BuildContext context,
@@ -1647,7 +1773,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder[bindValue].buildWidget
+    return binder.getValue(bindValue).buildWidget
     (
       context, //
       builder: (context, value, child) 
@@ -1680,6 +1806,83 @@ class DataBinderBuilder
           position: position
         );
       }
+    );
+  }
+
+  static Widget buildCupertinoActionSheet
+  (
+    BuildContext context,
+    {required String bindValue,
+      //////////////
+      Key? key,
+      Widget? title,
+      Widget? message,
+      List<Widget>? actions,
+      double? messageInitialOffset,
+      bool keepMessageOffset = true,
+      double? actionInitialOffset,
+      bool keepActionOffset = true,
+      Widget? cancelButton}
+  ) 
+  {
+    final binder = DataBinder.of(context);
+
+    return binder.getValue(bindValue).buildWidget
+    (
+      context, //
+      builder: (context, value, child) 
+      {
+        CupertinoActionSheetState? state;
+
+        if (messageInitialOffset != null || actionInitialOffset != null) 
+        {
+          state = CupertinoActionSheetState
+          (
+            messageInitialOffset != null
+            ? ScrollController(initialScrollOffset: messageInitialOffset, keepScrollOffset: keepMessageOffset)
+            : null,
+            actionInitialOffset != null
+            ? ScrollController(initialScrollOffset: actionInitialOffset, keepScrollOffset: keepActionOffset)
+            : null
+          );
+
+          value.setState(context: context, initializer: (context, value) => state);
+        }
+
+        return CupertinoActionSheet
+        (
+          key: key,
+          title: title,
+          message: message,
+          actions: actions,
+          messageScrollController: state?.messageScrollController,
+          actionScrollController: state?.actionScrollController,
+          cancelButton: cancelButton,
+        );
+      }
+    );
+  }
+
+  static CupertinoActionSheetAction buildCupertinoActionSheetAction
+  (
+    BuildContext context,
+    {required String bindValue,
+      required BuildContext popupContext,
+      Key? key,
+      bool isDefaultAction = false,
+      bool isDestructiveAction = false,
+      required Widget child}
+  ) 
+  {
+    final value = ValueState.of(context, bindValue);
+
+    return CupertinoActionSheetAction
+    (
+      key: key,
+      onPressed: () => value.doEvent(event: StdValueProperty.onPressed, parameter: popupContext),
+      isDefaultAction: isDefaultAction,
+      isDestructiveAction: isDestructiveAction,
+      child: child,
     );
   }
 }
@@ -1744,4 +1947,12 @@ class IconButtonStyle
       disabledColor: disabledColor ?? this.disabledColor
     );
   }
+}
+
+class CupertinoActionSheetState 
+{
+  final ScrollController? messageScrollController;
+  final ScrollController? actionScrollController;
+
+  CupertinoActionSheetState(this.messageScrollController, this.actionScrollController);
 }
