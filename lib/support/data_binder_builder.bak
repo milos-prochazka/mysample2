@@ -116,6 +116,7 @@ class DataBinderBuilder
       String? enabledValue,
       dynamic enabledValueParam,
       //////////////
+      dynamic eventParameter,
       FocusNode? focusNode,
       bool autofocus = false,
       Clip clipBehavior = Clip.none,
@@ -137,10 +138,17 @@ class DataBinderBuilder
         return ElevatedButton
         (
           key: key,
-          onPressed: enableEvent ? (() => value.doEvent(event: StdValueProperty.onPressed)) : null,
-          onLongPress: enableEvent ? (() => value.doEvent(event: StdValueProperty.onLongPress)) : null,
-          onHover: enableEvent ? ((param) => value.doEvent(event: StdValueProperty.onHover)) : null,
-          onFocusChange: enableEvent ? ((param) => value.doEvent(event: StdValueProperty.onFocusChanged)) : null,
+          onPressed: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
+          : null,
+          onLongPress: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onLongPress, parameter: eventParameter))
+          : null,
+          onHover: enableEvent
+          ? ((param) => value.doEvent(context: context, event: StdValueProperty.onHover, parameter: eventParameter))
+          : null,
+          onFocusChange:
+          enableEvent ? ((param) => value.doEvent(context: context, event: StdValueProperty.onFocusChanged)) : null,
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
@@ -164,6 +172,7 @@ class DataBinderBuilder
       String? enabledValue,
       dynamic enabledValueParam,
       //////////////
+      dynamic eventParameter,
       required Widget child,
       EdgeInsetsGeometry? padding,
       Color? color,
@@ -189,7 +198,9 @@ class DataBinderBuilder
         return CupertinoButton
         (
           key: key,
-          onPressed: enableEvent ? (() => value.doEvent(event: StdValueProperty.onPressed)) : null,
+          onPressed: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
+          : null,
           padding: padding,
           color: color,
           minSize: minSize,
@@ -212,6 +223,7 @@ class DataBinderBuilder
       String? enabledValue,
       dynamic enabledValueParam,
       //////////////
+      dynamic eventParameter,
       required Widget child,
       EdgeInsetsGeometry? padding,
       Color disabledColor = CupertinoColors.quaternarySystemFill,
@@ -236,7 +248,9 @@ class DataBinderBuilder
         return CupertinoButton.filled
         (
           key: key,
-          onPressed: enableEvent ? (() => value.doEvent(event: StdValueProperty.onPressed)) : null,
+          onPressed: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
+          : null,
           padding: padding,
           minSize: minSize,
           pressedOpacity: pressedOpacity,
@@ -262,6 +276,7 @@ class DataBinderBuilder
       String? enabledValue,
       dynamic enabledValueParam,
       //////////////
+      dynamic eventParameter,
       FocusNode? focusNode,
       bool autofocus = false,
       Clip clipBehavior = Clip.none,
@@ -284,11 +299,18 @@ class DataBinderBuilder
         return ElevatedButton.icon
         (
           key: key,
-          onPressed: enableEvent ? (() => value.doEvent(event: StdValueProperty.onPressed, parameter: null)) : null,
-          onLongPress: enableEvent ? (() => value.doEvent(event: StdValueProperty.onLongPress, parameter: null)) : null,
-          onHover: enableEvent ? ((param) => value.doEvent(event: StdValueProperty.onHover, parameter: null)) : null,
-          onFocusChange:
-          enableEvent ? ((param) => value.doEvent(event: StdValueProperty.onFocusChanged, parameter: null)) : null,
+          onPressed: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
+          : null,
+          onLongPress: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onLongPress, parameter: eventParameter))
+          : null,
+          onHover: enableEvent
+          ? ((param) => value.doEvent(context: context, event: StdValueProperty.onHover, parameter: param))
+          : null,
+          onFocusChange: enableEvent
+          ? ((param) => value.doEvent(context: context, event: StdValueProperty.onFocusChanged, parameter: param))
+          : null,
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
@@ -317,6 +339,7 @@ class DataBinderBuilder
       String? enabledValue,
       dynamic enabledValueParam,
       //////////////
+      dynamic eventParameter,
       FocusNode? focusNode,
       bool autofocus = false,
       Clip clipBehavior = Clip.none,
@@ -339,11 +362,18 @@ class DataBinderBuilder
         return TextButton
         (
           key: key,
-          onPressed: enableEvent ? (() => value.doEvent(event: StdValueProperty.onPressed, parameter: null)) : null,
-          onLongPress: enableEvent ? (() => value.doEvent(event: StdValueProperty.onLongPress, parameter: null)) : null,
-          onHover: enableEvent ? ((param) => value.doEvent(event: StdValueProperty.onHover, parameter: null)) : null,
-          onFocusChange:
-          enableEvent ? ((param) => value.doEvent(event: StdValueProperty.onFocusChanged, parameter: null)) : null,
+          onPressed: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
+          : null,
+          onLongPress: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onLongPress, parameter: eventParameter))
+          : null,
+          onHover: enableEvent
+          ? ((param) => value.doEvent(context: context, event: StdValueProperty.onHover, parameter: param))
+          : null,
+          onFocusChange: enableEvent
+          ? ((param) => value.doEvent(context: context, event: StdValueProperty.onFocusChanged, parameter: param))
+          : null,
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
@@ -371,6 +401,7 @@ class DataBinderBuilder
       String? enabledValue,
       dynamic enabledValueParam,
       //////////////
+      dynamic eventParameter,
       FocusNode? focusNode,
       bool autofocus = false,
       Clip clipBehavior = Clip.none,
@@ -394,11 +425,18 @@ class DataBinderBuilder
         return TextButton.icon
         (
           key: key,
-          onPressed: enableEvent ? (() => value.doEvent(event: StdValueProperty.onPressed)) : null,
-          onLongPress: enableEvent ? (() => value.doEvent(event: StdValueProperty.onLongPress)) : null,
-          onHover: enableEvent ? ((param) => value.doEvent(event: StdValueProperty.onHover, parameter: param)) : null,
-          onFocusChange:
-          enableEvent ? ((param) => value.doEvent(event: StdValueProperty.onFocusChanged, parameter: param)) : null,
+          onPressed: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
+          : null,
+          onLongPress: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onLongPress, parameter: eventParameter))
+          : null,
+          onHover: enableEvent
+          ? ((param) => value.doEvent(context: context, event: StdValueProperty.onHover, parameter: param))
+          : null,
+          onFocusChange: enableEvent
+          ? ((param) => value.doEvent(context: context, event: StdValueProperty.onFocusChanged, parameter: param))
+          : null,
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
@@ -427,6 +465,7 @@ class DataBinderBuilder
       String? enabledValue,
       dynamic enabledValueParam,
       //////////////
+      dynamic eventParameter,
       FocusNode? focusNode,
       bool autofocus = false,
       Clip clipBehavior = Clip.none,
@@ -449,11 +488,18 @@ class DataBinderBuilder
         return OutlinedButton
         (
           key: key,
-          onPressed: enableEvent ? (() => value.doEvent(event: StdValueProperty.onPressed)) : null,
-          onLongPress: enableEvent ? (() => value.doEvent(event: StdValueProperty.onLongPress)) : null,
-          onHover: enableEvent ? ((param) => value.doEvent(event: StdValueProperty.onHover, parameter: param)) : null,
-          onFocusChange:
-          enableEvent ? ((param) => value.doEvent(event: StdValueProperty.onFocusChanged, parameter: param)) : null,
+          onPressed: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
+          : null,
+          onLongPress: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onLongPress, parameter: eventParameter))
+          : null,
+          onHover: enableEvent
+          ? ((param) => value.doEvent(context: context, event: StdValueProperty.onHover, parameter: param))
+          : null,
+          onFocusChange: enableEvent
+          ? ((param) => value.doEvent(context: context, event: StdValueProperty.onFocusChanged, parameter: param))
+          : null,
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
@@ -481,6 +527,7 @@ class DataBinderBuilder
       String? enabledValue,
       dynamic enabledValueParam,
       //////////////
+      dynamic eventParameter,
       FocusNode? focusNode,
       bool autofocus = false,
       Clip clipBehavior = Clip.none,
@@ -504,8 +551,12 @@ class DataBinderBuilder
         return OutlinedButton.icon
         (
           key: key,
-          onPressed: enableEvent ? (() => value.doEvent(event: StdValueProperty.onPressed)) : null,
-          onLongPress: enableEvent ? (() => value.doEvent(event: StdValueProperty.onLongPress)) : null,
+          onPressed: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
+          : null,
+          onLongPress: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onLongPress, parameter: eventParameter))
+          : null,
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
@@ -534,6 +585,7 @@ class DataBinderBuilder
       String? enabledValue,
       dynamic enabledValueParam,
       //////////////
+      dynamic eventParameter,
       double? iconSize,
       VisualDensity? visualDensity,
       EdgeInsetsGeometry? padding,
@@ -583,7 +635,9 @@ class DataBinderBuilder
         return IconButton
         (
           key: key,
-          onPressed: enableEvent ? (() => value.doEvent(event: StdValueProperty.onPressed)) : null,
+          onPressed: enableEvent
+          ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
+          : null,
           iconSize: iconSize ?? btnStyle?.iconSize,
           padding: padding ?? btnStyle?.padding ?? const EdgeInsets.all(8.0),
           alignment: alignment ?? btnStyle?.alignment ?? Alignment.center,
@@ -637,6 +691,7 @@ class DataBinderBuilder
       String? styleValue,
       dynamic styleParam,
       //////////////
+      bool setValueAfterOnChanged = true,
       DropdownButtonBuilder? selectedItemBuilder,
       Widget? hint,
       Widget? disabledHint,
@@ -689,8 +744,20 @@ class DataBinderBuilder
           selectedItemBuilder: selectedItemBuilder,
           hint: hint,
           disabledHint: disabledHint,
-          onChanged: (newValue) => enableEvent ? value.value = newValue : null,
-          onTap: () => enableEvent ? value.doEvent(event: StdValueProperty.onClicked) : null,
+          // onChanged event
+          onChanged: 
+          (
+            enableEvent
+            ? 
+            (
+              setValueAfterOnChanged
+              ? (newValue) => value.value = newValue
+              : (newValue) =>
+              (value.doEvent(context: context, event: StdValueProperty.onChanged, parameter: newValue))
+            )
+            : null
+          ),
+          onTap: () => enableEvent ? value.doEvent(context: context, event: StdValueProperty.onClicked) : null,
           elevation: elevation,
           underline: underline,
           icon: icon,
@@ -778,7 +845,8 @@ class DataBinderBuilder
             (
               setValueAfterOnChanged
               ? (newValue) => value.value = newValue
-              : (newValue) => (value.doEvent(event: null, parameter: newValue))
+              : (newValue) =>
+              (value.doEvent(context: context, event: StdValueProperty.onChanged, parameter: newValue))
             )
             : null
           ),
@@ -863,7 +931,8 @@ class DataBinderBuilder
           (
             setValueAfterOnChanged
             ? (newValue) => value.value = newValue
-            : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+            : (newValue) =>
+            value.doEvent(context: context, event: StdValueProperty.onChanged, parameter: newValue)
           )
           : null,
           // mouseCursor
@@ -948,7 +1017,8 @@ class DataBinderBuilder
           (
             setValueAfterOnChanged
             ? (newValue) => value.value = newValue
-            : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+            : (newValue) =>
+            value.doEvent(context: context, event: StdValueProperty.onChanged, parameter: newValue)
           )
           : null,
           //
@@ -1038,7 +1108,8 @@ class DataBinderBuilder
               (
                 setValueAfterOnChanged
                 ? (newValue) => value.value = newValue
-                : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+                : (newValue) =>
+                value.doEvent(context: context, event: StdValueProperty.onChanged, parameter: newValue)
               )
               : null,
               //
@@ -1201,8 +1272,8 @@ class DataBinderBuilder
           maxLength: maxLength,
           maxLengthEnforcement: maxLengthEnforcement,
           onChanged: (data) => value.value = data as String,
-          onEditingComplete: () => value.doEvent(event: StdValueProperty.onComplete),
-          onSubmitted: (data) => value.doEvent(event: StdValueProperty.onSubmited, parameter: data),
+          onEditingComplete: () => value.doEvent(context: context, event: StdValueProperty.onComplete),
+          onSubmitted: (data) => value.doEvent(context: context, event: StdValueProperty.onSubmited, parameter: data),
           onAppPrivateCommand: onAppPrivateCommand,
           inputFormatters: inputFormatters,
           enabled: binder.readOrDefault
@@ -1220,7 +1291,7 @@ class DataBinderBuilder
           dragStartBehavior: dragStartBehavior,
           enableInteractiveSelection: enableInteractiveSelection,
           selectionControls: selectionControls,
-          onTap: value.doEvent(event: StdValueProperty.onTap),
+          onTap: value.doEvent(context: context, event: StdValueProperty.onTap),
           mouseCursor: binder.readOrDefault
           (
             defaultValue: mouseCursor,
@@ -1295,20 +1366,21 @@ class DataBinderBuilder
             (
               setValueAfterOnChanged
               ? (newValue) => value.value = newValue
-              : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+              : (newValue) => value.doEvent(context: context, event: StdValueProperty.onChanged, parameter: newValue)
             )
             : null
           ),
           onChangeStart: 
           (
             enableEvent
-            ? (newValue) => value.doEvent(event: StdValueProperty.onChangeStart, parameter: (newValue))
+            ? (newValue) =>
+            value.doEvent(context: context, event: StdValueProperty.onChangeStart, parameter: (newValue))
             : null
           ),
           onChangeEnd: 
           (
             enableEvent
-            ? (newValue) => value.doEvent(event: StdValueProperty.onChangeEnd, parameter: (newValue))
+            ? (newValue) => value.doEvent(context: context, event: StdValueProperty.onChangeEnd, parameter: (newValue))
             : null
           ),
           min: min,
@@ -1377,20 +1449,21 @@ class DataBinderBuilder
             (
               setValueAfterOnChanged
               ? (newValue) => value.value = newValue
-              : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+              : (newValue) => value.doEvent(context: context, event: StdValueProperty.onChanged, parameter: newValue)
             )
             : null
           ),
           onChangeStart: 
           (
             enableEvent
-            ? (newValue) => value.doEvent(event: StdValueProperty.onChangeStart, parameter: (newValue))
+            ? (newValue) =>
+            value.doEvent(context: context, event: StdValueProperty.onChangeStart, parameter: (newValue))
             : null
           ),
           onChangeEnd: 
           (
             enableEvent
-            ? (newValue) => value.doEvent(event: StdValueProperty.onChangeEnd, parameter: (newValue))
+            ? (newValue) => value.doEvent(context: context, event: StdValueProperty.onChangeEnd, parameter: (newValue))
             : null
           ),
           min: min,
@@ -1457,20 +1530,21 @@ class DataBinderBuilder
             (
               setValueAfterOnChanged
               ? (newValue) => value.value = newValue
-              : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+              : (newValue) => value.doEvent(context: context, event: StdValueProperty.onChanged, parameter: newValue)
             )
             : null
           ),
           onChangeStart: 
           (
             enableEvent
-            ? (newValue) => value.doEvent(event: StdValueProperty.onChangeStart, parameter: (newValue))
+            ? (newValue) =>
+            value.doEvent(context: context, event: StdValueProperty.onChangeStart, parameter: (newValue))
             : null
           ),
           onChangeEnd: 
           (
             enableEvent
-            ? (newValue) => value.doEvent(event: StdValueProperty.onChangeEnd, parameter: (newValue))
+            ? (newValue) => value.doEvent(context: context, event: StdValueProperty.onChangeEnd, parameter: (newValue))
             : null
           ),
           min: min,
@@ -1557,7 +1631,7 @@ class DataBinderBuilder
             (
               setValueAfterOnChanged
               ? (newValue) => value.value = newValue
-              : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+              : (newValue) => value.doEvent(context: context, event: StdValueProperty.onChanged, parameter: newValue)
             )
             : null
           ),
@@ -1634,7 +1708,7 @@ class DataBinderBuilder
             (
               setValueAfterOnChanged
               ? (newValue) => value.value = newValue
-              : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+              : (newValue) => value.doEvent(context: context, event: StdValueProperty.onChanged, parameter: newValue)
             )
             : null
           ),
@@ -1709,7 +1783,7 @@ class DataBinderBuilder
             (
               setValueAfterOnChanged
               ? (newValue) => value.value = newValue
-              : (newValue) => value.doEvent(event: StdValueProperty.onChanged, parameter: newValue)
+              : (newValue) => value.doEvent(context: context, event: StdValueProperty.onChanged, parameter: newValue)
             )
             : null
           ),
@@ -1781,8 +1855,9 @@ class DataBinderBuilder
         return PopupMenuButton<T>
         (
           key: key,
-          onSelected: (newValue) => value.doEvent(event: StdValueProperty.onSelect, parameter: newValue),
-          onCanceled: () => value.doEvent(event: StdValueProperty.onCanceled),
+          onSelected: (newValue) =>
+          value.doEvent(context: context, event: StdValueProperty.onSelect, parameter: newValue),
+          onCanceled: () => value.doEvent(context: context, event: StdValueProperty.onCanceled),
           enabled: binder.readOrDefault
           (
             defaultValue: enabled,
@@ -1869,6 +1944,7 @@ class DataBinderBuilder
     {required String bindValue,
       required BuildContext popupContext,
       Key? key,
+      dynamic eventParameter,
       bool isDefaultAction = false,
       bool isDestructiveAction = false,
       required Widget child}
@@ -1879,9 +1955,46 @@ class DataBinderBuilder
     return CupertinoActionSheetAction
     (
       key: key,
-      onPressed: () => value.doEvent(event: StdValueProperty.onPressed, parameter: popupContext),
+      onPressed: () =>
+      value.doEvent(context: popupContext, event: StdValueProperty.onPressed, parameter: eventParameter),
       isDefaultAction: isDefaultAction,
       isDestructiveAction: isDestructiveAction,
+      child: child,
+    );
+  }
+
+  static CupertinoDialogAction buildCupertinoDialogAction
+  (
+    BuildContext context,
+    {required String bindValue,
+      required BuildContext popupContext,
+      Key? key,
+      //////////////
+      TextStyle? style,
+      String? styleValue,
+      dynamic styleParam,
+      //////////////
+      dynamic eventParameter,
+      bool isDefaultAction = false,
+      bool isDestructiveAction = false,
+      TextStyle? textStyle,
+      required Widget child}
+  ) 
+  {
+    final binder = DataBinder.of(context);
+    final value = binder.getValue(bindValue);
+
+    return CupertinoDialogAction
+    (
+      key: key,
+      onPressed: () =>
+      value.doEvent(context: popupContext, event: StdValueProperty.onPressed, parameter: eventParameter),
+      isDefaultAction: isDefaultAction,
+      isDestructiveAction: isDestructiveAction,
+      textStyle: binder.readOrDefault
+      (
+        defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
+      ),
       child: child,
     );
   }

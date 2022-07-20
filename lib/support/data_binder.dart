@@ -1,4 +1,5 @@
 // ignore_for_file: unnecessary_this
+import 'dart:async';
 import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -207,14 +208,14 @@ class ValueState extends ChangeNotifier implements ValueListenable<dynamic>
     }
   }
 
-  addValueListener(ValueStateEvent listener, {dynamic event, dynamic parameter})
+  addValueListener(ValueStateEvent listener, {BuildContext? context, dynamic event, dynamic parameter})
   {
-    this.addListener(() => listener.call(this, event, parameter));
+    this.addListener(() => listener.call(this, context, event, parameter));
   }
 
-  doEvent({dynamic event, dynamic parameter})
+  doEvent({BuildContext? context, dynamic event, dynamic parameter})
   {
-    this.onEvent?.call(this, event, parameter);
+    this.onEvent?.call(this, context, event, parameter);
   }
 
   Widget buildWidget(BuildContext context, {required ValueStateWidgetBuilder builder, Widget? child})
@@ -259,7 +260,7 @@ class ValueState extends ChangeNotifier implements ValueListenable<dynamic>
 typedef ValueStateWidgetBuilder = Widget Function(BuildContext context, ValueState value, Widget? child);
 typedef ValueStateInitializer = dynamic Function(BuildContext context, ValueState value);
 typedef ValueStateInitializedEvent = Function(BuildContext context, ValueState value, dynamic state);
-typedef ValueStateEvent = Function(ValueState value, dynamic event, dynamic parameter);
+typedef ValueStateEvent = Function(ValueState value, BuildContext? context, dynamic event, dynamic parameter);
 typedef ValueChangedEvent = Function(ValueState value);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,7 +271,7 @@ class ValueStateBuilder extends StatefulWidget
   final ValueStateWidgetBuilder builder;
   final Widget? child;
 
-  ValueStateBuilder({super.key, required this.valueState, required this.builder, this.child});
+  const ValueStateBuilder({super.key, required this.valueState, required this.builder, this.child});
 
   @override
   State<ValueStateBuilder> createState() => _ValueStateBuilderState();

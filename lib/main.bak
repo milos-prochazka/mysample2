@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp>
     appBinder.addValue<bool>('check', false);
     final checkbox = appBinder.addValue<bool?>
     (
-      'check', false, onEvent: (value, event, parameter) 
+      'check', false, onEvent: (value, context, event, parameter) 
       {
         value.value = !(value.value as bool? ?? false);
       }, onInitialized: (context, value, state) 
@@ -81,7 +81,6 @@ class _MyHomePageState extends State<MyHomePage>
 {
   TextStyle? style1, style2;
   final binder = DataBinder(autoCreateValue: true);
-  bool initialized = false;
   bool? isChecked = null;
   bool _lights = false;
 
@@ -97,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage>
 
     cnt.addValueListener
     (
-      (value, event, parameter) 
+      (value, context, event, parameter) 
       {
         print('${value.value} ${value.tag} $event $parameter');
       }, event: 'EVENT', parameter: 2.33
@@ -133,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage>
           print('Text changed ${te.text}');
         }
       },
-      onEvent: (value, event, parameter) => print('Event $event $parameter')
+      onEvent: (value, context, event, parameter) => print('Event $event $parameter')
     );
 
     binder.addValue<double>
@@ -163,19 +162,22 @@ class _MyHomePageState extends State<MyHomePage>
       onValueChanged: (value) => print("switch changed: ${value.value}"),
     );
 
-    final button = binder.addValue<bool>('button', false, onEvent: <bool>(value, event, parameter) => cnt.value++);
+    final button =
+    binder.addValue<bool>('button', false, onEvent: <bool>(value, context, event, parameter) => cnt.value++);
 
     binder.addValue<bool>('button1', false,
-      onEvent: (value, event, parameter) => print("button1 ${value.name} $event $parameter"));
+      onEvent: (value, context, event, parameter) => print("button1 ${value.name} $event $parameter"));
 
     binder.addValue
     (
-      'action_sheet_click', false, onEvent: (value, event, parameter) 
+      'action_sheet_click', false, onEvent: (value, context, event, parameter) 
       {
         print("action_sheet_click");
         Navigator.pop(parameter as BuildContext);
       }
     );
+
+    binder.addValue<double>('sosol', 12.56);
   }
 
   checkEvent(ValueState value, dynamic event, dynamic parameter) 
@@ -187,31 +189,24 @@ class _MyHomePageState extends State<MyHomePage>
   void initState() 
   {
     super.initState();
-    initialized = false;
   }
 
-  void initContext(BuildContext context) 
+  @override
+  void didChangeDependencies() 
   {
-    if (initialized) 
-    {
-      return;
-    }
+    super.didChangeDependencies();
 
     style1 = Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.red, fontWeight: FontWeight.bold);
     style2 = Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.green);
     binder.forceNotifyAll();
 
     var v = ValueState.readOf<double>(context, 'sosol', defaultValue: 2.34);
-
-    initialized = true;
   }
 
   final Widget goodJob = const Text('Good job!');
   @override
   Widget build(BuildContext context) 
   {
-    initContext(context);
-
     return CheckboxTheme
     (
       data: getCheckboxTheme(context),
