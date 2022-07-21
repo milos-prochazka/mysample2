@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_this
+// ignore_for_file: unnecessary_this, avoid_print
 import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -7,22 +7,6 @@ import 'package:flutter/services.dart';
 
 import 'support/data_binder.dart';
 import 'support/data_binder_builder.dart';
-
-/*class CustomWidgetData
-{
-  final Color backgroundColor;
-  final int width;
-  final int height;
-
-  CustomWidgetData
-  (
-    {
-      required this.backgroundColor,
-      required this.width,
-      required this.height,
-    }
-  );
-}*/
 
 void main()
 {
@@ -54,8 +38,8 @@ class _MyAppState extends State<MyApp>
   void initState()
   {
     super.initState();
-    appBinder.addValue<bool>('check', false);
-    final checkbox = appBinder.addValue<bool?>
+    appBinder.addValue('check', false);
+    final checkbox = appBinder.addValue
     (
       'check', false, onEvent: (value, context, event, parameter)
       {
@@ -86,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage>
 
   _MyHomePageState()
   {
-    final cnt = binder.addValue<int>
+    final cnt = binder.addValue
     (
       'counter', 1,
       tag: 'qAqA',
@@ -107,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage>
     );
     //cnt.addValueListener((value,event,param) => value.setProperty('style', (value.value & 1) == 1 ? style1 : style2));
 
-    binder.addValue<TextStyle?>
+    binder.addValue
     (
       'style', style1, presenter: (value, param, type)
       {
@@ -115,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage>
       }
     );
 
-    final editor = binder.addValue<String>
+    final editor = binder.addValue
     (
       'editor', 'INIT text',
       //onInitialized: (context, value, state) => (state as TextEditingController).text = 'QaQaQa',
@@ -129,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage>
       }
     );
 
-    final editor1 = binder.addValue<String>
+    final editor1 = binder.addValue
     (
       'editor1', 'INIT 1 text',
       //onInitialized: (context, value, state) => (state as TextEditingController).text = 'QaQaQa',
@@ -144,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage>
       onEvent: (value, context, event, parameter) => print('Event $event $parameter')
     );
 
-    binder.addValue<double>
+    binder.addValue
     (
       'slider',
       0.5,
@@ -159,22 +143,21 @@ class _MyHomePageState extends State<MyHomePage>
       }
     );*/
 
-    final radio = binder.addValue<RadioValues?>('radio', RadioValues.second,
-      onValueChanged: (value) => print(value.value.toString()));
+    final radio =
+    binder.addValue('radio', RadioValues.second, onValueChanged: (value) => print(value.value.toString()));
 
-    binder.addValue<String?>('drop_down', 'Free');
+    binder.addValue('drop_down', 'Free');
 
-    binder.addValue<bool>
+    binder.addValue
     (
       'switch',
       true,
       onValueChanged: (value) => print("switch changed: ${value.value}"),
     );
 
-    final button =
-    binder.addValue<bool>('button', false, onEvent: <bool>(value, context, event, parameter) => cnt.value++);
+    final button = binder.addValue('button', false, onEvent: <bool>(value, context, event, parameter) => cnt.value++);
 
-    binder.addValue<bool>('button1', false,
+    binder.addValue('button1', false,
       onEvent: (value, context, event, parameter) => print("button1 ${value.name} $event $parameter"));
 
     binder.addValue
@@ -186,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage>
       }
     );
 
-    binder.addValue<double>('sosol', 12.56);
+    binder.addValue('sosol', 12.56);
   }
 
   checkEvent(ValueState value, dynamic event, dynamic parameter)

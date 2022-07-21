@@ -1,12 +1,9 @@
-import 'dart:collection';
 import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:io' show Platform;
 
 import 'data_binder.dart';
 
@@ -126,7 +123,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
+    return binder.getValue(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: child, builder: (context, value, child) 
@@ -186,7 +183,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
+    return binder.getValue(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: child, builder: (context, value, child) 
@@ -236,7 +233,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
+    return binder.getValue(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: child, builder: (context, value, child) 
@@ -287,7 +284,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
+    return binder.getValue(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: label, builder: (context, value, label) 
@@ -349,7 +346,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
+    return binder.getValue(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: child, //
@@ -412,7 +409,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
+    return binder.getValue(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: label, //
@@ -475,7 +472,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
+    return binder.getValue(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: child, //
@@ -538,7 +535,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
+    return binder.getValue(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: label, //
@@ -617,7 +614,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
+    return binder.getValue(bindValue, defaultValue: false).buildWidget
     (
       context, //
       child: icon, //
@@ -816,7 +813,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
+    return binder.getValue(bindValue, defaultValue: false).buildWidget
     (
       context, //
       builder: (context, value, child) 
@@ -1272,7 +1269,7 @@ class DataBinderBuilder
           expands: expands,
           maxLength: maxLength,
           maxLengthEnforcement: maxLengthEnforcement,
-          onChanged: (data) => value.value = data as String,
+          onChanged: (data) => value.value = data,
           onEditingComplete: () => value.doEvent(context: context, event: StdValueProperty.onComplete),
           onSubmitted: (data) => value.doEvent(context: context, event: StdValueProperty.onSubmited, parameter: data),
           onAppPrivateCommand: onAppPrivateCommand,
@@ -1345,7 +1342,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<double>(bindValue, defaultValue: min).buildWidget
+    return binder.getValue(bindValue, defaultValue: min).buildWidget
     (
       context, //
       builder: (context, value, child) 
@@ -1610,7 +1607,7 @@ class DataBinderBuilder
   {
     final binder = DataBinder.of(context);
 
-    return binder.getValue<bool>(bindValue, defaultValue: false).buildWidget
+    return binder.getValue(bindValue, defaultValue: false).buildWidget
     (
       context, //
       builder: <bool>(context, value, child) 

@@ -1,12 +1,7 @@
 // ignore_for_file: unnecessary_this
-import 'dart:async';
-import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'data_binder_builder.dart';
 
 typedef ValuePresenter = dynamic Function(dynamic value, dynamic parameter, Type type);
 
@@ -25,7 +20,7 @@ class DataBinder
 
   ValueState operator [](String name) => _getValueInternal(name)!;
 
-  ValueState getValue<T>(String name, {dynamic defaultValue}) 
+  ValueState getValue(String name, {dynamic defaultValue}) 
   {
     if (!this.autoCreateValue) 
     {
@@ -33,17 +28,19 @@ class DataBinder
     } 
     else 
     {
-      return _getValueInternal(name) ?? addValue<T>(name, defaultValue);
+      return _getValueInternal(name) ?? addValue(name, defaultValue);
     }
   }
 
-  ValueState addValue<T> // TODO Asi zrusit <T>
-  (String name, T value,
+  ValueState addValue
+  (
+    String name, dynamic value,
     {ValuePresenter? presenter,
       ValueStateInitializedEvent? onInitialized,
       ValueChangedEvent? onValueChanged,
       ValueStateEvent? onEvent,
-      dynamic tag}) 
+      dynamic tag}
+  ) 
   {
     final result = ValueState(name, value,
       presenter: presenter, onValueChanged: onValueChanged, onInitialized: onInitialized, onEvent: onEvent, tag: tag);
