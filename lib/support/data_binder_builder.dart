@@ -7,8 +7,11 @@ import 'package:flutter/services.dart';
 
 import 'data_binder.dart';
 
+// TODO promyslet jak to bude s key (jestli nedavat do buildWidget)
 class DataBinderBuilder
 {
+  static const voidWidget = SizedBox.shrink(); // TODO zavest pouzivani voidWidget vsude kde je treba
+
   static Widget buildText
   (
     BuildContext context,
@@ -2173,6 +2176,60 @@ class DataBinderBuilder
             keyParameter: semanticsValueParam
           ),
         );
+      }
+    );
+  }
+
+  static Widget buildVisibility
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      Key? key,
+      Widget? child,
+      ValueStateWidgetBuilder? builder,
+      Widget replacement = voidWidget,
+      bool maintainState = false,
+      bool maintainAnimation = false,
+      bool maintainSize = false,
+      bool maintainSemantics = false,
+      bool maintainInteractivity = false}
+  )
+  {
+    final value = ValueState.of(context, bindValue, defaultValue: true);
+
+    return value.buildWidget
+    (
+      context, builder: (context, value, child)
+      {
+        final visible = value.read<bool>(bindValueParam);
+
+        if (!visible && !maintainState)
+        {
+          return replacement;
+        }
+        else
+        {
+          if (builder != null)
+          {
+            child = builder.call(context, value, child);
+          }
+          return
+          (
+            Visibility
+            (
+              key: key,
+              visible: visible,
+              replacement: replacement,
+              maintainState: maintainState,
+              maintainAnimation: maintainAnimation,
+              maintainSize: maintainSize,
+              maintainSemantics: maintainSemantics,
+              maintainInteractivity: maintainInteractivity,
+              child: child ?? replacement
+            )
+          );
+        }
       }
     );
   }

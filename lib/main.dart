@@ -74,10 +74,21 @@ class _MyHomePageState extends State<MyHomePage>
     (
       'counter', 1,
       tag: 'qAqA',
-      presenter: (value, param, type)
+      presenter: (v, param, type)
       {
-        final result = (type == ValueState.runtimeTypeDouble) ? 0.1 * (value as int).toDouble() : '[$value]';
-        return result;
+        final value = v as int;
+        if (type == ValueState.runtimeTypeDouble)
+        {
+          return 0.1 * value.toDouble();
+        }
+        else if (type == ValueState.runtimeTypeBool)
+        {
+          return (value & 1) == 1;
+        }
+        else
+        {
+          return '[$value]';
+        }
       },
       onValueChanged: (value) => value.setProperty('style', (value.value & 1) == 1 ? style1 : style2)
     );
@@ -342,6 +353,15 @@ class _MyHomePageState extends State<MyHomePage>
                       padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
                       child: DataBinderBuilder.buildLinearProgressIndicator(context, bindValue: 'counter'),
                     ),
+                    DataBinderBuilder.buildVisibility
+                    (
+                      context,
+                      bindValue: 'counter',
+                      builder: (context, value, child) => const Text("VISIBLE!"),
+                      maintainState: true,
+                      maintainAnimation: true,
+                      maintainSize: true
+                    )
                   ],
                 ),
               )
