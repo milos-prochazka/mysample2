@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:io' show Platform;
 
 import 'data_binder.dart';
 
@@ -1996,6 +1997,186 @@ class DataBinderBuilder
         defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
       ),
       child: child,
+    );
+  }
+
+  static Widget buildCircularProgressIndicator
+  (
+    BuildContext context,
+    {
+      required String bindValue,
+      dynamic bindValueParam,
+      Key? key,
+      Color? backgroundColor,
+      Color? color,
+      Animation<Color?>? valueColor,
+      double strokeWidth = 4.0,
+      //////
+      String? semanticsLabel,
+      String? semanticsLabelValue,
+      dynamic semanticsLabelParam,
+      //////
+      String? semanticsValue,
+      String? semanticsValueValue,
+      dynamic semanticsValueParam,
+    }
+  )
+  {
+    final binder = DataBinder.of(context);
+    return binder.getValue(bindValue, defaultValue: 0.0).buildWidget
+    (
+      //
+      context, //
+      builder: (context, value, child)
+      {
+        return CircularProgressIndicator
+        (
+          key: key,
+          value: value.read<double>(bindValueParam),
+          backgroundColor: backgroundColor,
+          valueColor: valueColor,
+          strokeWidth: strokeWidth,
+          semanticsLabel: binder.readOrDefault
+          (
+            defaultValue: semanticsLabel,
+            sourceValueName: semanticsLabelValue,
+            propertySource: value,
+            keyParameter: semanticsLabelParam
+          ),
+          semanticsValue: binder.readOrDefault
+          (
+            defaultValue: semanticsValue,
+            sourceValueName: semanticsValueValue,
+            propertySource: value,
+            keyParameter: semanticsValueParam
+          ),
+        );
+      }
+    );
+  }
+
+  static Widget buildCircularProgressIndicatorAdaptive
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      Key? key,
+      Color? backgroundColor,
+      Color? color,
+      Animation<Color?>? valueColor,
+      double strokeWidth = 4.0,
+      //////
+      String? semanticsLabel,
+      String? semanticsLabelValue,
+      dynamic semanticsLabelParam,
+      //////
+      String? semanticsValue,
+      String? semanticsValueValue,
+      dynamic semanticsValueParam,
+      //////
+      double? radius}
+  )
+  {
+    final binder = DataBinder.of(context);
+    return binder.getValue(bindValue, defaultValue: 0.0).buildWidget
+    (
+      //
+      context, //
+      builder: (context, value, child)
+      {
+        final progress = math.max(0.0, math.min(1.0, value.read<double>(bindValueParam)));
+        switch (Theme.of(context).platform)
+        {
+          case TargetPlatform.iOS:
+          case TargetPlatform.macOS:
+          return CupertinoActivityIndicator.partiallyRevealed
+          (
+            key: key, color: backgroundColor, progress: progress, radius: radius ?? 10.0
+          );
+
+          default:
+          final indicator = CircularProgressIndicator
+          (
+            key: key,
+            value: progress,
+            backgroundColor: backgroundColor,
+            valueColor: valueColor,
+            strokeWidth: strokeWidth,
+            semanticsLabel: binder.readOrDefault
+            (
+              defaultValue: semanticsLabel,
+              sourceValueName: semanticsLabelValue,
+              propertySource: value,
+              keyParameter: semanticsLabelParam
+            ),
+            semanticsValue: binder.readOrDefault
+            (
+              defaultValue: semanticsValue,
+              sourceValueName: semanticsValueValue,
+              propertySource: value,
+              keyParameter: semanticsValueParam
+            ),
+          );
+          return (radius == null) ? indicator : SizedBox(width: radius, height: radius, child: indicator);
+        }
+      }
+    );
+  }
+
+  static Widget buildLinearProgressIndicator
+  (
+    BuildContext context,
+    {
+      required String bindValue,
+      dynamic bindValueParam,
+      Key? key,
+      Color? backgroundColor,
+      Color? color,
+      Animation<Color?>? valueColor,
+      double? minHeight,
+      //////
+      String? semanticsLabel,
+      String? semanticsLabelValue,
+      dynamic semanticsLabelParam,
+      //////
+      String? semanticsValue,
+      String? semanticsValueValue,
+      dynamic semanticsValueParam,
+      //////
+    }
+  )
+  {
+    final binder = DataBinder.of(context);
+    return binder.getValue(bindValue, defaultValue: 0.0).buildWidget
+    (
+      //
+      context, //
+      builder: (context, value, child)
+      {
+        final progress = math.max(0.0, math.min(1.0, value.read<double>(bindValueParam)));
+        return LinearProgressIndicator
+        (
+          key: key,
+          value: progress,
+          backgroundColor: backgroundColor,
+          valueColor: valueColor,
+          minHeight: minHeight,
+          semanticsLabel: binder.readOrDefault
+          (
+            defaultValue: semanticsLabel,
+            sourceValueName: semanticsLabelValue,
+            propertySource: value,
+            keyParameter: semanticsLabelParam
+          ),
+          semanticsValue: binder.readOrDefault
+          (
+            defaultValue: semanticsValue,
+            sourceValueName: semanticsValueValue,
+            propertySource: value,
+            keyParameter: semanticsValueParam
+          ),
+        );
+      }
     );
   }
 }

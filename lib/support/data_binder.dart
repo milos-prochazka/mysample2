@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 
 import 'data_binder_builder.dart';
 
-typedef ValuePresenter = dynamic Function(dynamic value, dynamic parameter);
+typedef ValuePresenter = dynamic Function(dynamic value, dynamic parameter, Type type);
 
 class DataBinder
 {
@@ -129,6 +129,11 @@ class ValueState extends ChangeNotifier implements ValueListenable<dynamic>
   Map<dynamic, dynamic>? _properties;
   dynamic tag;
 
+  static final runtimeTypeDouble = (0.0).runtimeType;
+  static final runtimeTypeInt = (0).runtimeType;
+  static final runtimeTypeBool = (false).runtimeType;
+  static final runtimeTypeString = ('').runtimeType;
+
   ValueState
   (
     this.name, this._value,
@@ -141,9 +146,10 @@ class ValueState extends ChangeNotifier implements ValueListenable<dynamic>
   )
   : _properties = properties;
 
-  P read<P>([dynamic parameter]) => (presenter == null) ? _value as P : presenter!(_value, parameter) as P;
+  T read<T>([dynamic parameter]) => (presenter == null) ? _value as T : presenter!(_value, parameter, T) as T;
+
   String readString([dynamic parameter]) =>
-  (presenter == null) ? _value.toString() : (presenter!(_value, parameter)).toString();
+  (presenter == null) ? _value.toString() : (presenter!(_value, parameter, String)).toString();
 
   dynamic _value;
 

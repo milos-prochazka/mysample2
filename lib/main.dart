@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'support/data_binder.dart';
 import 'support/data_binder_builder.dart';
 
-class CustomWidgetData
+/*class CustomWidgetData
 {
   final Color backgroundColor;
   final int width;
@@ -22,7 +22,7 @@ class CustomWidgetData
       required this.height,
     }
   );
-}
+}*/
 
 void main()
 {
@@ -90,7 +90,11 @@ class _MyHomePageState extends State<MyHomePage>
     (
       'counter', 1,
       tag: 'qAqA',
-      presenter: <int>(value, param) => '[$value]',
+      presenter: (value, param, type)
+      {
+        final result = (type == ValueState.runtimeTypeDouble) ? 0.1 * (value as int).toDouble() : '[$value]';
+        return result;
+      },
       onValueChanged: (value) => value.setProperty('style', (value.value & 1) == 1 ? style1 : style2)
     );
 
@@ -103,8 +107,13 @@ class _MyHomePageState extends State<MyHomePage>
     );
     //cnt.addValueListener((value,event,param) => value.setProperty('style', (value.value & 1) == 1 ? style1 : style2));
 
-    binder.addValue<TextStyle?>('style', style1,
-      presenter: <TextStyle>(value, param) => (cnt.value & 1) == 1 ? style1 : style2);
+    binder.addValue<TextStyle?>
+    (
+      'style', style1, presenter: (value, param, type)
+      {
+        return (cnt.value & 1) == 1 ? style1 : style2;
+      }
+    );
 
     final editor = binder.addValue<String>
     (
@@ -339,6 +348,17 @@ class _MyHomePageState extends State<MyHomePage>
                       child: Text('Cupertino ActionSheet'),
                       onPressed: () => _showActionSheet(context),
                     ),
+                    Padding
+                    (
+                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      child: DataBinderBuilder.buildCircularProgressIndicatorAdaptive(context,
+                        bindValue: 'counter')
+                    ),
+                    Padding
+                    (
+                      padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                      child: DataBinderBuilder.buildLinearProgressIndicator(context, bindValue: 'counter'),
+                    ),
                   ],
                 ),
               )
@@ -347,13 +367,15 @@ class _MyHomePageState extends State<MyHomePage>
           floatingActionButton: FloatingActionButton
           (
             child: const Icon(Icons.plus_one),
-            onPressed: ()
+            /*onPressed: ()
             {
               //var v = binder['counter'];
               //v.value++;
 
               DataBinder.of(context).getValue('button').doEvent();
-            },
+            },*/
+            onPressed: () => ValueState.of(context, 'button')
+            .doEvent(context: context, event: StdValueProperty.onPressed, parameter: 'AAA'),
           ),
         )
       )
