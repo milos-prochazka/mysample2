@@ -163,9 +163,20 @@ class ValueState extends ChangeNotifier implements ValueListenable<dynamic>
     }
   }
 
-  final Key? _key;
+  Key? _key;
   Key? get key => _key;
+
   GlobalKey? get globalKey => (_key != null && _key is GlobalKey) ? _key as GlobalKey : null;
+
+  Key? setKey(Key? key)
+  {
+    if (key != _key)
+    {
+      _key = key;
+    }
+
+    return _key;
+  }
 
   S setState<S>({required BuildContext context, required ValueStateInitializer initializer})
   {
@@ -344,7 +355,8 @@ enum StdValueProperty
   onChanged(0x1009),
   onChangeStart(0x100A),
   onChangeEnd(0x100B),
-  onCanceled(0x100C);
+  onCanceled(0x100C),
+  onEnd(0x100D);
 
   final int value;
   const StdValueProperty(this.value);
