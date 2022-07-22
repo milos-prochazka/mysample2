@@ -177,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage>
       'action_sheet_click', false, onEvent: (value, context, event, parameter)
       {
         print("action_sheet_click");
-        Navigator.pop(parameter as BuildContext);
+        Navigator.pop(context!);
       }
     );
 
