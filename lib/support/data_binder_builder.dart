@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 
 import 'data_binder.dart';
 
-// TODO promyslet jak to bude s key (jestli nedavat do buildWidget)
 class DataBinderBuilder
 {
   static const voidWidget = SizedBox.shrink(); // TODO zavest pouzivani voidWidget vsude kde je treba
@@ -56,12 +55,12 @@ class DataBinderBuilder
     return binder.getValue(bindValue, defaultValue: '').buildWidget
     (
       context, //
-      builder: <String>(context, value, child)
+      builder: (context, value, child)
       {
         return Text
         (
           value.readString(bindValueParam),
-          key: key,
+          key: key ?? value.key,
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
@@ -138,7 +137,7 @@ class DataBinderBuilder
 
         return ElevatedButton
         (
-          key: key,
+          key: key ?? value.key,
           onPressed: enableEvent
           ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
           : null,
@@ -198,7 +197,7 @@ class DataBinderBuilder
 
         return CupertinoButton
         (
-          key: key,
+          key: key ?? value.key,
           onPressed: enableEvent
           ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
           : null,
@@ -248,7 +247,7 @@ class DataBinderBuilder
 
         return CupertinoButton.filled
         (
-          key: key,
+          key: key ?? value.key,
           onPressed: enableEvent
           ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
           : null,
@@ -299,7 +298,7 @@ class DataBinderBuilder
 
         return ElevatedButton.icon
         (
-          key: key,
+          key: key ?? value.key,
           onPressed: enableEvent
           ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
           : null,
@@ -362,7 +361,7 @@ class DataBinderBuilder
 
         return TextButton
         (
-          key: key,
+          key: key ?? value.key,
           onPressed: enableEvent
           ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
           : null,
@@ -425,7 +424,7 @@ class DataBinderBuilder
 
         return TextButton.icon
         (
-          key: key,
+          key: key ?? value.key,
           onPressed: enableEvent
           ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
           : null,
@@ -488,7 +487,7 @@ class DataBinderBuilder
 
         return OutlinedButton
         (
-          key: key,
+          key: key ?? value.key,
           onPressed: enableEvent
           ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
           : null,
@@ -551,7 +550,7 @@ class DataBinderBuilder
 
         return OutlinedButton.icon
         (
-          key: key,
+          key: key ?? value.key,
           onPressed: enableEvent
           ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
           : null,
@@ -635,7 +634,7 @@ class DataBinderBuilder
 
         return IconButton
         (
-          key: key,
+          key: key ?? value.key,
           onPressed: enableEvent
           ? (() => value.doEvent(context: context, event: StdValueProperty.onPressed, parameter: eventParameter))
           : null,
@@ -729,7 +728,7 @@ class DataBinderBuilder
 
         return DropdownButton<T>
         (
-          key: key,
+          key: key ?? value.key,
           // style
           style: binder.readOrDefault
           (
@@ -823,7 +822,7 @@ class DataBinderBuilder
       {
         return Checkbox
         (
-          key: key,
+          key: key ?? value.key,
           // value
           value: binder.readOrDefault
           (
@@ -917,7 +916,7 @@ class DataBinderBuilder
       {
         return Radio<T>
         (
-          key: key,
+          key: key ?? value.key,
           value: checkedValue as T,
           groupValue: value.read<T?>(bindValueParam),
           // onChanged event
@@ -1003,7 +1002,7 @@ class DataBinderBuilder
       {
         return RadioListTile<T>
         (
-          key: key,
+          key: key ?? value.key,
           value: checkedValue as T,
           groupValue: value.read<T?>(bindValueParam),
           // onChanged event
@@ -1094,7 +1093,7 @@ class DataBinderBuilder
           (
             RadioListTile<T>
             (
-              key: key,
+              key: key ?? value.key,
               value: checkedValues[i] as T,
               groupValue: value.read<T?>(bindValueParam),
               // onChanged event
@@ -1230,7 +1229,7 @@ class DataBinderBuilder
 
         return TextField
         (
-          key: key,
+          key: key ?? value.key,
           controller: controller,
           focusNode: focusNode,
           decoration: decoration,
@@ -1357,7 +1356,7 @@ class DataBinderBuilder
 
         return Slider
         (
-          key: key,
+          key: key ?? value.key,
           value: value.read<double>(bindValueParam),
           // onChanged event
           onChanged:
@@ -1440,7 +1439,7 @@ class DataBinderBuilder
 
         return CupertinoSlider
         (
-          key: key,
+          key: key ?? value.key,
           value: value.read<double>(bindValueParam),
           // onChanged event
           onChanged:
@@ -1521,7 +1520,7 @@ class DataBinderBuilder
 
         return Slider.adaptive
         (
-          key: key,
+          key: key ?? value.key,
           value: value.read<double>(bindValueParam),
           // onChanged event
           onChanged:
@@ -1622,7 +1621,7 @@ class DataBinderBuilder
 
         return Switch
         (
-          key: key,
+          key: key ?? value.key,
           value: value.read<bool>(bindValueParam),
           // onChanged event
           onChanged:
@@ -1699,7 +1698,7 @@ class DataBinderBuilder
 
         return CupertinoSwitch
         (
-          key: key,
+          key: key ?? value.key,
           value: value.read<bool>(bindValueParam),
           // onChanged event
           onChanged:
@@ -1774,7 +1773,7 @@ class DataBinderBuilder
 
         return Switch.adaptive
         (
-          key: key,
+          key: key ?? value.key,
           value: value.read<bool>(bindValueParam),
           // onChanged event
           onChanged:
@@ -1855,7 +1854,7 @@ class DataBinderBuilder
       {
         return PopupMenuButton<T>
         (
-          key: key,
+          key: key ?? value.key,
           onSelected: (newValue) =>
           value.doEvent(context: context, event: StdValueProperty.onSelect, parameter: newValue),
           onCanceled: () => value.doEvent(context: context, event: StdValueProperty.onCanceled),
@@ -1927,7 +1926,7 @@ class DataBinderBuilder
 
         return CupertinoActionSheet
         (
-          key: key,
+          key: key ?? value.key,
           title: title,
           message: message,
           actions: actions,
@@ -1955,7 +1954,7 @@ class DataBinderBuilder
 
     return CupertinoActionSheetAction
     (
-      key: key,
+      key: key ?? value.key,
       onPressed: () =>
       value.doEvent(context: popupContext, event: StdValueProperty.onPressed, parameter: eventParameter),
       isDefaultAction: isDefaultAction,
@@ -1987,7 +1986,7 @@ class DataBinderBuilder
 
     return CupertinoDialogAction
     (
-      key: key,
+      key: key ?? value.key,
       onPressed: () =>
       value.doEvent(context: popupContext, event: StdValueProperty.onPressed, parameter: eventParameter),
       isDefaultAction: isDefaultAction,
@@ -2031,7 +2030,7 @@ class DataBinderBuilder
       {
         return CircularProgressIndicator
         (
-          key: key,
+          key: key ?? value.key,
           value: value.read<double>(bindValueParam),
           backgroundColor: backgroundColor,
           valueColor: valueColor,
@@ -2091,13 +2090,13 @@ class DataBinderBuilder
           case TargetPlatform.macOS:
           return CupertinoActivityIndicator.partiallyRevealed
           (
-            key: key, color: backgroundColor, progress: progress, radius: radius ?? 10.0
+            key: key ?? value.key, color: backgroundColor, progress: progress, radius: radius ?? 10.0
           );
 
           default:
           final indicator = CircularProgressIndicator
           (
-            key: key,
+            key: key ?? value.key,
             value: progress,
             backgroundColor: backgroundColor,
             valueColor: valueColor,
@@ -2156,7 +2155,7 @@ class DataBinderBuilder
         final progress = math.max(0.0, math.min(1.0, value.read<double>(bindValueParam)));
         return LinearProgressIndicator
         (
-          key: key,
+          key: key ?? value.key,
           value: progress,
           backgroundColor: backgroundColor,
           valueColor: valueColor,
@@ -2218,7 +2217,7 @@ class DataBinderBuilder
           (
             Visibility
             (
-              key: key,
+              key: key ?? value.key,
               visible: visible,
               replacement: replacement,
               maintainState: maintainState,
@@ -2230,6 +2229,20 @@ class DataBinderBuilder
             )
           );
         }
+      }
+    );
+  }
+
+  static Widget buildOffstage(BuildContext context,
+    {required String bindValue, dynamic bindValueParam, Key? key, bool offstage = true, Widget? child})
+  {
+    final value = ValueState.of(context, bindValue, defaultValue: true);
+
+    return value.buildWidget
+    (
+      context, builder: (context, value, child)
+      {
+        return Offstage(key: key ?? value.key, offstage: value.read<bool>(bindValueParam), child: child);
       }
     );
   }

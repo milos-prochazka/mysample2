@@ -139,9 +139,11 @@ class ValueState extends ChangeNotifier implements ValueListenable<dynamic>
       this.onEvent,
       this.onValueChanged,
       this.tag,
+      Key? key,
       Map<dynamic, dynamic>? properties}
   )
-  : _properties = properties;
+  : _properties = properties,
+  _key = key;
 
   T read<T>([dynamic parameter]) => (presenter == null) ? _value as T : presenter!(_value, parameter, T) as T;
 
@@ -149,7 +151,6 @@ class ValueState extends ChangeNotifier implements ValueListenable<dynamic>
   (presenter == null) ? _value.toString() : (presenter!(_value, parameter, String)).toString();
 
   dynamic _value;
-
   @override
   dynamic get value => _value;
 
@@ -161,6 +162,10 @@ class ValueState extends ChangeNotifier implements ValueListenable<dynamic>
       forceValueNotify();
     }
   }
+
+  final Key? _key;
+  Key? get key => _key;
+  GlobalKey? get globalKey => (_key != null && _key is GlobalKey) ? _key as GlobalKey : null;
 
   S setState<S>({required BuildContext context, required ValueStateInitializer initializer})
   {
