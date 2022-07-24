@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_this, avoid_print
+// ignore_for_file: unnecessary_this, avoid_print, unused_local_variable, prefer_const_constructors
 import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
