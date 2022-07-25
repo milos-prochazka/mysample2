@@ -133,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage>
       {
         if (value.state != null)
         {
-          final te = value.state as TextEditingController;
+          final te = (value.state as TextFieldControllers).editingController!;
           print('Text changed ${te.text}');
         }
       },
@@ -299,6 +299,12 @@ class _MyHomePageState extends State<MyHomePage>
                       }
                     ),
                     DataBinderBuilder.buildTextField(context, bindValue: 'editor1'),
+                    Padding
+                    (
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      child:
+                      DataBinderBuilder.buildCupertinoTextFieldBorderless(context, bindValue: 'editor1')
+                    ),
                     buildRadio(context, 'radio'),
                     DataBinderBuilder.buildElevatedButtonIcon
                     (

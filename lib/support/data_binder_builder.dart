@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'dart:ui';
+import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -65,26 +66,26 @@ class DataBinderBuilder
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
-            ),
+          ),
           strutStyle: binder.readOrDefault
           (
             defaultValue: strutStyle,
-              sourceValueName: bindStrutStyle,
-              propertySource: value,
-              keyParameter: bindStrutStyleParam
-            ),
+            sourceValueName: bindStrutStyle,
+            propertySource: value,
+            keyParameter: bindStrutStyleParam
+          ),
           textAlign: textAlign,
           textDirection: binder.readOrDefault
           (
             defaultValue: textDirection,
-              sourceValueName: bindTextDirection,
-              propertySource: value,
-              keyParameter: bindTextDirectionParam
-            ),
+            sourceValueName: bindTextDirection,
+            propertySource: value,
+            keyParameter: bindTextDirectionParam
+          ),
           locale: binder.readOrDefault
           (
             defaultValue: locale, sourceValueName: bindLocale, propertySource: value, keyParameter: bindLocaleParam
-            ),
+          ),
           softWrap: softWrap,
           overflow: overflow,
           textScaleFactor: textScaleFactor,
@@ -92,10 +93,85 @@ class DataBinderBuilder
           semanticsLabel: binder.readOrDefault
           (
             defaultValue: semanticsLabel,
-              sourceValueName: bindSemanticsLabel,
-              propertySource: value,
-              keyParameter: bindSemanticsLabelParam
-            ),
+            sourceValueName: bindSemanticsLabel,
+            propertySource: value,
+            keyParameter: bindSemanticsLabelParam
+          ),
+          textWidthBasis: textWidthBasis,
+          textHeightBehavior: textHeightBehavior
+        );
+      }
+    );
+  }
+
+  static Widget buildRichText
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      //////////////
+      required InlineSpan text,
+      TextAlign textAlign = TextAlign.start,
+      //////////////
+      TextDirection? textDirection,
+      String? bindTextDirection,
+      dynamic bindTextDirectionParam,
+      //////////////
+      bool softWrap = true,
+      TextOverflow overflow = TextOverflow.clip,
+      double textScaleFactor = 1.0,
+      int? maxLines,
+      //////////////
+      Locale? locale,
+      String? bindLocale,
+      dynamic bindLocaleParam,
+      //////////////
+      StrutStyle? strutStyle,
+      String? bindStrutStyle,
+      dynamic bindStrutStyleParam,
+      TextWidthBasis textWidthBasis = TextWidthBasis.parent,
+      TextHeightBehavior? textHeightBehavior}
+  )
+  {
+    final binder = DataBinder.of(context);
+
+    return binder.getValue(bindValue, defaultValue: '').buildWidget
+    (
+      context, //
+      builder: (context, value, child)
+      {
+        return RichText
+        (
+          key: value.setKey(key),
+          text: binder.readOrDefault
+          (
+            defaultValue: text, sourceValueName: bindValue, propertySource: value, keyParameter: bindValueParam
+          ),
+          textAlign: textAlign,
+          softWrap: softWrap,
+          overflow: overflow,
+          textScaleFactor: textScaleFactor,
+          maxLines: maxLines,
+          locale: binder.readOrDefault
+          (
+            defaultValue: locale, sourceValueName: bindLocale, propertySource: value, keyParameter: bindLocaleParam
+          ),
+          textDirection: binder.readOrDefault
+          (
+            defaultValue: textDirection,
+            sourceValueName: bindTextDirection,
+            propertySource: value,
+            keyParameter: bindTextDirectionParam
+          ),
+          strutStyle: binder.readOrDefault
+          (
+            defaultValue: strutStyle,
+            sourceValueName: bindStrutStyle,
+            propertySource: value,
+            keyParameter: bindStrutStyleParam
+          ),
           textWidthBasis: textWidthBasis,
           textHeightBehavior: textHeightBehavior
         );
@@ -134,7 +210,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return ElevatedButton
         (
@@ -153,7 +229,7 @@ class DataBinderBuilder
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
-            ),
+          ),
           focusNode: focusNode,
           autofocus: autofocus,
           clipBehavior: clipBehavior,
@@ -194,7 +270,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return CupertinoButton
         (
@@ -244,7 +320,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return CupertinoButton.filled
         (
@@ -295,7 +371,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return ElevatedButton.icon
         (
@@ -315,7 +391,7 @@ class DataBinderBuilder
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
-            ),
+          ),
           focusNode: focusNode,
           autofocus: autofocus,
           clipBehavior: clipBehavior,
@@ -358,7 +434,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return TextButton
         (
@@ -378,7 +454,7 @@ class DataBinderBuilder
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
-            ),
+          ),
           focusNode: focusNode,
           autofocus: autofocus,
           clipBehavior: clipBehavior,
@@ -421,7 +497,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return TextButton.icon
         (
@@ -441,7 +517,7 @@ class DataBinderBuilder
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
-            ),
+          ),
           focusNode: focusNode,
           autofocus: autofocus,
           clipBehavior: clipBehavior,
@@ -484,7 +560,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return OutlinedButton
         (
@@ -504,7 +580,7 @@ class DataBinderBuilder
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
-            ),
+          ),
           focusNode: focusNode,
           autofocus: autofocus,
           clipBehavior: clipBehavior,
@@ -547,7 +623,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return OutlinedButton.icon
         (
@@ -561,7 +637,7 @@ class DataBinderBuilder
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
-            ),
+          ),
           focusNode: focusNode,
           autofocus: autofocus,
           clipBehavior: clipBehavior,
@@ -626,12 +702,12 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         final btnStyle = binder.readOrDefault
         (
           defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
-          );
+        );
 
         return IconButton
         (
@@ -653,20 +729,20 @@ class DataBinderBuilder
           mouseCursor: binder.readOrDefault
           (
             defaultValue: mouseCursor,
-              sourceValueName: mouseValue,
-              propertySource: value,
-              keyParameter: mouseValueParam
-            ),
+            sourceValueName: mouseValue,
+            propertySource: value,
+            keyParameter: mouseValueParam
+          ),
           focusNode: focusNode,
           autofocus: autofocus,
           // mouseCursor
           tooltip: binder.readOrDefault
           (
             defaultValue: tooltip,
-              sourceValueName: tooltipValue,
-              propertySource: value,
-              keyParameter: tooltipValueParam
-            ),
+            sourceValueName: tooltipValue,
+            propertySource: value,
+            keyParameter: tooltipValueParam
+          ),
           enableFeedback: enableFeedback,
           constraints: constraints,
           icon: icon!
@@ -725,7 +801,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return DropdownButton<T>
         (
@@ -734,14 +810,14 @@ class DataBinderBuilder
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
-            ),
+          ),
           // items
           items: items,
           // value
           value: binder.readOrDefault
           (
             defaultValue: null, sourceValueName: bindValue, propertySource: value, keyParameter: bindValueParam
-            ),
+          ),
           selectedItemBuilder: selectedItemBuilder,
           hint: hint,
           disabledHint: disabledHint,
@@ -828,20 +904,20 @@ class DataBinderBuilder
           value: binder.readOrDefault
           (
             defaultValue: tristate ? null : false,
-              sourceValueName: bindValue,
-              propertySource: value,
-              keyParameter: bindValueParam
-            ),
+            sourceValueName: bindValue,
+            propertySource: value,
+            keyParameter: bindValueParam
+          ),
           // onChanged event
           onChanged:
           (
             binder.readOrDefault
             (
               defaultValue: enabled,
-                sourceValueName: enabledValue,
-                propertySource: value,
-                keyParameter: enabledValueParam
-              )
+              sourceValueName: enabledValue,
+              propertySource: value,
+              keyParameter: enabledValueParam
+            )
             ?
             (
               setValueAfterOnChanged
@@ -855,10 +931,10 @@ class DataBinderBuilder
           mouseCursor: binder.readOrDefault
           (
             defaultValue: mouseCursor,
-              sourceValueName: mouseValue,
-              propertySource: value,
-              keyParameter: mouseValueParam
-            ),
+            sourceValueName: mouseValue,
+            propertySource: value,
+            keyParameter: mouseValueParam
+          ),
           //
           activeColor: activeColor,
           fillColor: fillColor,
@@ -924,10 +1000,10 @@ class DataBinderBuilder
           onChanged: binder.readOrDefault
           (
             defaultValue: enabled,
-              sourceValueName: enabledValue,
-              propertySource: value,
-              keyParameter: enabledValueParam
-            )
+            sourceValueName: enabledValue,
+            propertySource: value,
+            keyParameter: enabledValueParam
+          )
           ?
           (
             setValueAfterOnChanged
@@ -940,10 +1016,10 @@ class DataBinderBuilder
           mouseCursor: binder.readOrDefault
           (
             defaultValue: mouseCursor,
-              sourceValueName: mouseValue,
-              propertySource: value,
-              keyParameter: mouseValueParam
-            ),
+            sourceValueName: mouseValue,
+            propertySource: value,
+            keyParameter: mouseValueParam
+          ),
           //
           toggleable: toggleable,
           activeColor: activeColor,
@@ -1010,10 +1086,10 @@ class DataBinderBuilder
           onChanged: binder.readOrDefault
           (
             defaultValue: enabled,
-              sourceValueName: enabledValue,
-              propertySource: value,
-              keyParameter: enabledValueParam
-            )
+            sourceValueName: enabledValue,
+            propertySource: value,
+            keyParameter: enabledValueParam
+          )
           ?
           (
             setValueAfterOnChanged
@@ -1101,10 +1177,10 @@ class DataBinderBuilder
               onChanged: binder.readOrDefault
               (
                 defaultValue: enabled,
-                  sourceValueName: enabledValue,
-                  propertySource: value,
-                  keyParameter: enabledValueParam
-                )
+                sourceValueName: enabledValue,
+                propertySource: value,
+                keyParameter: enabledValueParam
+              )
               ?
               (
                 setValueAfterOnChanged
@@ -1222,16 +1298,17 @@ class DataBinderBuilder
       builder: (context, value, child)
       {
         //final value = v as ValueState<String>;
-        final controller = value.setState
+        final TextFieldControllers controller = value.setState
         (
           context: context,
-          initializer: (context, value) => TextEditingController(text: value.readString(bindValueParam))
+          initializer: (context, value) =>
+          TextFieldControllers(TextEditingController(text: value.readString(bindValueParam)), scrollController)
         );
 
         return TextField
         (
           key: value.setKey(key),
-          controller: controller,
+          controller: controller.editingController,
           focusNode: focusNode,
           decoration: decoration,
           keyboardType: keyboardType,
@@ -1240,14 +1317,14 @@ class DataBinderBuilder
           style: binder.readOrDefault
           (
             defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
-            ),
+          ),
           strutStyle: binder.readOrDefault
           (
             defaultValue: strutStyle,
-              sourceValueName: bindStrutStyle,
-              propertySource: value,
-              keyParameter: bindStrutStyleParam
-            ),
+            sourceValueName: bindStrutStyle,
+            propertySource: value,
+            keyParameter: bindStrutStyleParam
+          ),
           textAlign: textAlign,
           textAlignVertical: textAlignVertical,
           textDirection: textDirection,
@@ -1259,10 +1336,10 @@ class DataBinderBuilder
           obscureText: binder.readOrDefault
           (
             defaultValue: obscureText,
-              sourceValueName: bindObscureText,
-              propertySource: value,
-              keyParameter: bindObscureTextParam
-            ),
+            sourceValueName: bindObscureText,
+            propertySource: value,
+            keyParameter: bindObscureTextParam
+          ),
           autocorrect: autocorrect,
           smartDashesType: smartDashesType,
           smartQuotesType: smartQuotesType,
@@ -1280,7 +1357,7 @@ class DataBinderBuilder
           enabled: binder.readOrDefault
           (
             defaultValue: enabled, sourceValueName: bindEnabled, propertySource: value, keyParameter: bindEnabledParam
-            ),
+          ),
           cursorWidth: cursorWidth,
           cursorHeight: cursorHeight,
           cursorRadius: cursorRadius,
@@ -1296,11 +1373,417 @@ class DataBinderBuilder
           mouseCursor: binder.readOrDefault
           (
             defaultValue: mouseCursor,
-              sourceValueName: bindMouseCursor,
-              propertySource: value,
-              keyParameter: bindMouseCursorParam
-            ),
+            sourceValueName: bindMouseCursor,
+            propertySource: value,
+            keyParameter: bindMouseCursorParam
+          ),
           buildCounter: buildCounter,
+          scrollController: scrollController,
+          scrollPhysics: scrollPhysics,
+          autofillHints: autofillHints,
+          clipBehavior: clipBehavior,
+          restorationId: restorationId,
+          scribbleEnabled: scribbleEnabled,
+          enableIMEPersonalizedLearning: enableIMEPersonalizedLearning,
+        );
+      }
+    );
+  }
+
+// Value inspected from Xcode 11 & iOS 13.0 Simulator.
+  static const BorderSide _kDefaultRoundedBorderSide = BorderSide
+  (
+    color: CupertinoDynamicColor.withBrightness
+    (
+      color: Color(0x33000000),
+      darkColor: Color(0x33FFFFFF),
+    ),
+    width: 0.0,
+  );
+
+  static const Border _kDefaultRoundedBorder = Border
+  (
+    top: _kDefaultRoundedBorderSide,
+    bottom: _kDefaultRoundedBorderSide,
+    left: _kDefaultRoundedBorderSide,
+    right: _kDefaultRoundedBorderSide,
+  );
+
+  static const BoxDecoration _kDefaultRoundedBorderDecoration = BoxDecoration
+  (
+    color: CupertinoDynamicColor.withBrightness
+    (
+      color: CupertinoColors.white,
+      darkColor: CupertinoColors.black,
+    ),
+    border: _kDefaultRoundedBorder,
+    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+  );
+
+  static Widget buildCupertinoTextField
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      TextEditingController? controller,
+      FocusNode? focusNode,
+      BoxDecoration? decoration = _kDefaultRoundedBorderDecoration,
+      EdgeInsetsGeometry padding = const EdgeInsets.all(6.0),
+      String? placeholder,
+      //////////////
+      TextStyle? placeholderStyle =
+      const TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText),
+      String? placeholderStyleValue,
+      dynamic placeholderStyleParam,
+      //////////////
+      Widget? prefix,
+      OverlayVisibilityMode prefixMode = OverlayVisibilityMode.always,
+      Widget? suffix,
+      OverlayVisibilityMode suffixMode = OverlayVisibilityMode.always,
+      OverlayVisibilityMode clearButtonMode = OverlayVisibilityMode.never,
+      TextInputType? keyboardType,
+      TextInputAction? textInputAction,
+      TextCapitalization textCapitalization = TextCapitalization.none,
+      //////////////
+      TextStyle? style,
+      String? styleValue,
+      dynamic styleParam,
+      //////////////
+      StrutStyle? strutStyle,
+      String? bindStrutStyle,
+      dynamic bindStrutStyleParam,
+      //////////////
+      TextAlign textAlign = TextAlign.start,
+      TextAlignVertical? textAlignVertical,
+      TextDirection? textDirection,
+      bool readOnly = false,
+      ToolbarOptions? toolbarOptions,
+      bool? showCursor,
+      bool autofocus = false,
+      String obscuringCharacter = '•',
+      //////////////
+      bool obscureText = false,
+      String? bindObscureText,
+      dynamic bindObscureTextParam,
+      //////////////
+      bool autocorrect = true,
+      SmartDashesType? smartDashesType,
+      SmartQuotesType? smartQuotesType,
+      bool enableSuggestions = true,
+      int? maxLines = 1,
+      int? minLines,
+      bool expands = false,
+      int? maxLength,
+      MaxLengthEnforcement? maxLengthEnforcement,
+      List<TextInputFormatter>? inputFormatters,
+      //////////////
+      bool enabled = true,
+      String? bindEnabled,
+      dynamic bindEnabledParam,
+      //////////////
+      double cursorWidth = 2.0,
+      double? cursorHeight,
+      Radius cursorRadius = const Radius.circular(2.0),
+      Color? cursorColor,
+      BoxHeightStyle selectionHeightStyle = ui.BoxHeightStyle.tight,
+      BoxWidthStyle selectionWidthStyle = ui.BoxWidthStyle.tight,
+      Brightness? keyboardAppearance,
+      EdgeInsets scrollPadding = const EdgeInsets.all(20.0),
+      DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+      bool? enableInteractiveSelection,
+      TextSelectionControls? selectionControls,
+      ScrollController? scrollController,
+      ScrollPhysics? scrollPhysics,
+      Iterable<String>? autofillHints = const <String>[],
+      Clip clipBehavior = Clip.hardEdge,
+      String? restorationId,
+      bool scribbleEnabled = true,
+      bool enableIMEPersonalizedLearning = true}
+  )
+  {
+    final binder = DataBinder.of(context);
+
+    return binder.getValue(bindValue, defaultValue: '').buildWidget
+    (
+      context, //
+      builder: (context, value, child)
+      {
+        //final value = v as ValueState<String>;
+        final TextFieldControllers controller = value.setState
+        (
+          context: context,
+          initializer: (context, value) =>
+          TextFieldControllers(TextEditingController(text: value.readString(bindValueParam)), scrollController)
+        );
+
+        return CupertinoTextField
+        (
+          key: value.setKey(key),
+          controller: controller.editingController,
+          focusNode: focusNode,
+          decoration: decoration,
+          padding: padding,
+          placeholder: placeholder,
+          placeholderStyle: binder.readOrDefault
+          (
+            defaultValue: placeholderStyle,
+            sourceValueName: placeholderStyleValue,
+            propertySource: value,
+            keyParameter: placeholderStyleParam
+          ),
+          prefix: prefix,
+          prefixMode: prefixMode,
+          suffix: suffix,
+          suffixMode: suffixMode,
+          clearButtonMode: clearButtonMode,
+          keyboardType: keyboardType,
+          textInputAction: textInputAction,
+          textCapitalization: textCapitalization,
+          style: binder.readOrDefault
+          (
+            defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
+          ),
+          strutStyle: binder.readOrDefault
+          (
+            defaultValue: strutStyle,
+            sourceValueName: bindStrutStyle,
+            propertySource: value,
+            keyParameter: bindStrutStyleParam
+          ),
+          textAlign: textAlign,
+          textAlignVertical: textAlignVertical,
+          textDirection: textDirection,
+          readOnly: readOnly,
+          toolbarOptions: toolbarOptions,
+          showCursor: showCursor,
+          autofocus: autofocus,
+          obscuringCharacter: obscuringCharacter,
+          obscureText: binder.readOrDefault
+          (
+            defaultValue: obscureText,
+            sourceValueName: bindObscureText,
+            propertySource: value,
+            keyParameter: bindObscureTextParam
+          ),
+          autocorrect: autocorrect,
+          smartDashesType: smartDashesType,
+          smartQuotesType: smartQuotesType,
+          enableSuggestions: enableSuggestions,
+          maxLines: maxLines,
+          minLines: minLines,
+          expands: expands,
+          maxLength: maxLength,
+          maxLengthEnforcement: maxLengthEnforcement,
+          onChanged: (data) => value.value = data,
+          onEditingComplete: () => value.doEvent(context: context, event: StdValueProperty.onComplete),
+          onSubmitted: (data) => value.doEvent(context: context, event: StdValueProperty.onSubmited, parameter: data),
+          inputFormatters: inputFormatters,
+          enabled: binder.readOrDefault
+          (
+            defaultValue: enabled, sourceValueName: bindEnabled, propertySource: value, keyParameter: bindEnabledParam
+          ),
+          cursorWidth: cursorWidth,
+          cursorHeight: cursorHeight,
+          cursorRadius: cursorRadius,
+          cursorColor: cursorColor,
+          selectionHeightStyle: selectionHeightStyle,
+          selectionWidthStyle: selectionWidthStyle,
+          keyboardAppearance: keyboardAppearance,
+          scrollPadding: scrollPadding,
+          dragStartBehavior: dragStartBehavior,
+          enableInteractiveSelection: enableInteractiveSelection,
+          selectionControls: selectionControls,
+          onTap: value.doEvent(context: context, event: StdValueProperty.onTap),
+          scrollController: scrollController,
+          scrollPhysics: scrollPhysics,
+          autofillHints: autofillHints,
+          clipBehavior: clipBehavior,
+          restorationId: restorationId,
+          scribbleEnabled: scribbleEnabled,
+          enableIMEPersonalizedLearning: enableIMEPersonalizedLearning,
+        );
+      }
+    );
+  }
+
+  static Widget buildCupertinoTextFieldBorderless
+  (
+    BuildContext context,
+    {required String bindValue,
+      dynamic bindValueParam,
+      //////////////
+      Key? key,
+      TextEditingController? controller,
+      FocusNode? focusNode,
+      BoxDecoration? decoration = _kDefaultRoundedBorderDecoration,
+      EdgeInsetsGeometry padding = const EdgeInsets.all(6.0),
+      String? placeholder,
+      //////////////
+      TextStyle? placeholderStyle =
+      const TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText),
+      String? placeholderStyleValue,
+      dynamic placeholderStyleParam,
+      //////////////
+      Widget? prefix,
+      OverlayVisibilityMode prefixMode = OverlayVisibilityMode.always,
+      Widget? suffix,
+      OverlayVisibilityMode suffixMode = OverlayVisibilityMode.always,
+      OverlayVisibilityMode clearButtonMode = OverlayVisibilityMode.never,
+      TextInputType? keyboardType,
+      TextInputAction? textInputAction,
+      TextCapitalization textCapitalization = TextCapitalization.none,
+      //////////////
+      TextStyle? style,
+      String? styleValue,
+      dynamic styleParam,
+      //////////////
+      StrutStyle? strutStyle,
+      String? bindStrutStyle,
+      dynamic bindStrutStyleParam,
+      //////////////
+      TextAlign textAlign = TextAlign.start,
+      TextAlignVertical? textAlignVertical,
+      TextDirection? textDirection,
+      bool readOnly = false,
+      ToolbarOptions? toolbarOptions,
+      bool? showCursor,
+      bool autofocus = false,
+      String obscuringCharacter = '•',
+      //////////////
+      bool obscureText = false,
+      String? bindObscureText,
+      dynamic bindObscureTextParam,
+      //////////////
+      bool autocorrect = true,
+      SmartDashesType? smartDashesType,
+      SmartQuotesType? smartQuotesType,
+      bool enableSuggestions = true,
+      int? maxLines = 1,
+      int? minLines,
+      bool expands = false,
+      int? maxLength,
+      MaxLengthEnforcement? maxLengthEnforcement,
+      List<TextInputFormatter>? inputFormatters,
+      //////////////
+      bool enabled = true,
+      String? bindEnabled,
+      dynamic bindEnabledParam,
+      //////////////
+      double cursorWidth = 2.0,
+      double? cursorHeight,
+      Radius cursorRadius = const Radius.circular(2.0),
+      Color? cursorColor,
+      BoxHeightStyle selectionHeightStyle = ui.BoxHeightStyle.tight,
+      BoxWidthStyle selectionWidthStyle = ui.BoxWidthStyle.tight,
+      Brightness? keyboardAppearance,
+      EdgeInsets scrollPadding = const EdgeInsets.all(20.0),
+      DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+      bool? enableInteractiveSelection,
+      TextSelectionControls? selectionControls,
+      ScrollController? scrollController,
+      ScrollPhysics? scrollPhysics,
+      Iterable<String>? autofillHints = const <String>[],
+      Clip clipBehavior = Clip.hardEdge,
+      String? restorationId,
+      bool scribbleEnabled = true,
+      bool enableIMEPersonalizedLearning = true}
+  )
+  {
+    final binder = DataBinder.of(context);
+
+    return binder.getValue(bindValue, defaultValue: '').buildWidget
+    (
+      context, //
+      builder: (context, value, child)
+      {
+        //final value = v as ValueState<String>;
+        final TextFieldControllers controller = value.setState
+        (
+          context: context,
+          initializer: (context, value) =>
+          TextFieldControllers(TextEditingController(text: value.readString(bindValueParam)), scrollController)
+        );
+
+        return CupertinoTextField.borderless
+        (
+          key: value.setKey(key),
+          controller: controller.editingController,
+          focusNode: focusNode,
+          decoration: decoration,
+          padding: padding,
+          placeholder: placeholder,
+          placeholderStyle: binder.readOrDefault
+          (
+            defaultValue: placeholderStyle,
+            sourceValueName: placeholderStyleValue,
+            propertySource: value,
+            keyParameter: placeholderStyleParam
+          ),
+          prefix: prefix,
+          prefixMode: prefixMode,
+          suffix: suffix,
+          suffixMode: suffixMode,
+          clearButtonMode: clearButtonMode,
+          keyboardType: keyboardType,
+          textInputAction: textInputAction,
+          textCapitalization: textCapitalization,
+          style: binder.readOrDefault
+          (
+            defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
+          ),
+          strutStyle: binder.readOrDefault
+          (
+            defaultValue: strutStyle,
+            sourceValueName: bindStrutStyle,
+            propertySource: value,
+            keyParameter: bindStrutStyleParam
+          ),
+          textAlign: textAlign,
+          textAlignVertical: textAlignVertical,
+          textDirection: textDirection,
+          readOnly: readOnly,
+          toolbarOptions: toolbarOptions,
+          showCursor: showCursor,
+          autofocus: autofocus,
+          obscuringCharacter: obscuringCharacter,
+          obscureText: binder.readOrDefault
+          (
+            defaultValue: obscureText,
+            sourceValueName: bindObscureText,
+            propertySource: value,
+            keyParameter: bindObscureTextParam
+          ),
+          autocorrect: autocorrect,
+          smartDashesType: smartDashesType,
+          smartQuotesType: smartQuotesType,
+          enableSuggestions: enableSuggestions,
+          maxLines: maxLines,
+          minLines: minLines,
+          expands: expands,
+          maxLength: maxLength,
+          maxLengthEnforcement: maxLengthEnforcement,
+          onChanged: (data) => value.value = data,
+          onEditingComplete: () => value.doEvent(context: context, event: StdValueProperty.onComplete),
+          onSubmitted: (data) => value.doEvent(context: context, event: StdValueProperty.onSubmited, parameter: data),
+          inputFormatters: inputFormatters,
+          enabled: binder.readOrDefault
+          (
+            defaultValue: enabled, sourceValueName: bindEnabled, propertySource: value, keyParameter: bindEnabledParam
+          ),
+          cursorWidth: cursorWidth,
+          cursorHeight: cursorHeight,
+          cursorRadius: cursorRadius,
+          cursorColor: cursorColor,
+          selectionHeightStyle: selectionHeightStyle,
+          selectionWidthStyle: selectionWidthStyle,
+          keyboardAppearance: keyboardAppearance,
+          scrollPadding: scrollPadding,
+          dragStartBehavior: dragStartBehavior,
+          enableInteractiveSelection: enableInteractiveSelection,
+          selectionControls: selectionControls,
+          onTap: value.doEvent(context: context, event: StdValueProperty.onTap),
           scrollController: scrollController,
           scrollPhysics: scrollPhysics,
           autofillHints: autofillHints,
@@ -1353,7 +1836,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return Slider
         (
@@ -1394,10 +1877,10 @@ class DataBinderBuilder
           mouseCursor: binder.readOrDefault
           (
             defaultValue: mouseCursor,
-              sourceValueName: bindMouseCursor,
-              propertySource: value,
-              keyParameter: bindMouseCursorParam
-            ),
+            sourceValueName: bindMouseCursor,
+            propertySource: value,
+            keyParameter: bindMouseCursorParam
+          ),
           semanticFormatterCallback: semanticFormatterCallback,
           focusNode: focusNode,
           autofocus: autofocus,
@@ -1436,7 +1919,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return CupertinoSlider
         (
@@ -1517,7 +2000,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return Slider.adaptive
         (
@@ -1558,10 +2041,10 @@ class DataBinderBuilder
           mouseCursor: binder.readOrDefault
           (
             defaultValue: mouseCursor,
-              sourceValueName: bindMouseCursor,
-              propertySource: value,
-              keyParameter: bindMouseCursorParam
-            ),
+            sourceValueName: bindMouseCursor,
+            propertySource: value,
+            keyParameter: bindMouseCursorParam
+          ),
           semanticFormatterCallback: semanticFormatterCallback,
           focusNode: focusNode,
           autofocus: autofocus,
@@ -1618,7 +2101,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return Switch
         (
@@ -1651,10 +2134,10 @@ class DataBinderBuilder
           mouseCursor: binder.readOrDefault
           (
             defaultValue: mouseCursor,
-              sourceValueName: bindMouseCursor,
-              propertySource: value,
-              keyParameter: bindMouseCursorParam
-            ),
+            sourceValueName: bindMouseCursor,
+            propertySource: value,
+            keyParameter: bindMouseCursorParam
+          ),
           focusColor: focusColor,
           hoverColor: hoverColor,
           overlayColor: overlayColor,
@@ -1695,7 +2178,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return CupertinoSwitch
         (
@@ -1770,7 +2253,7 @@ class DataBinderBuilder
         final enableEvent = binder.readOrDefault
         (
           defaultValue: enabled, sourceValueName: enabledValue, propertySource: value, keyParameter: enabledValueParam
-          );
+        );
 
         return Switch.adaptive
         (
@@ -1803,10 +2286,10 @@ class DataBinderBuilder
           mouseCursor: binder.readOrDefault
           (
             defaultValue: mouseCursor,
-              sourceValueName: bindMouseCursor,
-              propertySource: value,
-              keyParameter: bindMouseCursorParam
-            ),
+            sourceValueName: bindMouseCursor,
+            propertySource: value,
+            keyParameter: bindMouseCursorParam
+          ),
           focusColor: focusColor,
           hoverColor: hoverColor,
           overlayColor: overlayColor,
@@ -1862,10 +2345,10 @@ class DataBinderBuilder
           enabled: binder.readOrDefault
           (
             defaultValue: enabled,
-              sourceValueName: enabledValue,
-              propertySource: value,
-              keyParameter: enabledValueParam
-            ),
+            sourceValueName: enabledValue,
+            propertySource: value,
+            keyParameter: enabledValueParam
+          ),
           itemBuilder: itemBuilder,
           initialValue: value.read<T?>(bindValueParam),
           tooltip: tooltip,
@@ -1995,7 +2478,7 @@ class DataBinderBuilder
       textStyle: binder.readOrDefault
       (
         defaultValue: style, sourceValueName: styleValue, propertySource: value, keyParameter: styleParam
-        ),
+      ),
       child: child,
     );
   }
@@ -2039,17 +2522,17 @@ class DataBinderBuilder
           semanticsLabel: binder.readOrDefault
           (
             defaultValue: semanticsLabel,
-              sourceValueName: semanticsLabelValue,
-              propertySource: value,
-              keyParameter: semanticsLabelParam
-            ),
+            sourceValueName: semanticsLabelValue,
+            propertySource: value,
+            keyParameter: semanticsLabelParam
+          ),
           semanticsValue: binder.readOrDefault
           (
             defaultValue: semanticsValue,
-              sourceValueName: semanticsValueValue,
-              propertySource: value,
-              keyParameter: semanticsValueParam
-            ),
+            sourceValueName: semanticsValueValue,
+            propertySource: value,
+            keyParameter: semanticsValueParam
+          ),
         );
       }
     );
@@ -2089,35 +2572,35 @@ class DataBinderBuilder
         {
           case TargetPlatform.iOS:
           case TargetPlatform.macOS:
-            return CupertinoActivityIndicator.partiallyRevealed
-            (
-              key: value.setKey(key), color: backgroundColor, progress: progress, radius: radius ?? 10.0
-            );
+          return CupertinoActivityIndicator.partiallyRevealed
+          (
+            key: value.setKey(key), color: backgroundColor, progress: progress, radius: radius ?? 10.0
+          );
 
           default:
-            final indicator = CircularProgressIndicator
+          final indicator = CircularProgressIndicator
+          (
+            key: value.setKey(key),
+            value: progress,
+            backgroundColor: backgroundColor,
+            valueColor: valueColor,
+            strokeWidth: strokeWidth,
+            semanticsLabel: binder.readOrDefault
             (
-              key: value.setKey(key),
-              value: progress,
-              backgroundColor: backgroundColor,
-              valueColor: valueColor,
-              strokeWidth: strokeWidth,
-              semanticsLabel: binder.readOrDefault
-              (
-                defaultValue: semanticsLabel,
-                  sourceValueName: semanticsLabelValue,
-                  propertySource: value,
-                  keyParameter: semanticsLabelParam
-                ),
-              semanticsValue: binder.readOrDefault
-              (
-                defaultValue: semanticsValue,
-                  sourceValueName: semanticsValueValue,
-                  propertySource: value,
-                  keyParameter: semanticsValueParam
-                ),
-            );
-            return (radius == null) ? indicator : SizedBox(width: radius, height: radius, child: indicator);
+              defaultValue: semanticsLabel,
+              sourceValueName: semanticsLabelValue,
+              propertySource: value,
+              keyParameter: semanticsLabelParam
+            ),
+            semanticsValue: binder.readOrDefault
+            (
+              defaultValue: semanticsValue,
+              sourceValueName: semanticsValueValue,
+              propertySource: value,
+              keyParameter: semanticsValueParam
+            ),
+          );
+          return (radius == null) ? indicator : SizedBox(width: radius, height: radius, child: indicator);
         }
       }
     );
@@ -2164,17 +2647,17 @@ class DataBinderBuilder
           semanticsLabel: binder.readOrDefault
           (
             defaultValue: semanticsLabel,
-              sourceValueName: semanticsLabelValue,
-              propertySource: value,
-              keyParameter: semanticsLabelParam
-            ),
+            sourceValueName: semanticsLabelValue,
+            propertySource: value,
+            keyParameter: semanticsLabelParam
+          ),
           semanticsValue: binder.readOrDefault
           (
             defaultValue: semanticsValue,
-              sourceValueName: semanticsValueValue,
-              propertySource: value,
-              keyParameter: semanticsValueParam
-            ),
+            sourceValueName: semanticsValueValue,
+            propertySource: value,
+            keyParameter: semanticsValueParam
+          ),
         );
       }
     );
@@ -2370,6 +2853,14 @@ class IconButtonStyle
       disabledColor: disabledColor ?? this.disabledColor
     );
   }
+}
+
+class TextFieldControllers
+{
+  final TextEditingController? editingController;
+  final ScrollController? scrollController;
+
+  TextFieldControllers(this.editingController, this.scrollController);
 }
 
 class CupertinoActionSheetState
